@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fildisi temasinin zemin rengi. Acilista beyaz parlama olmasin. -->
+    <color name="zemin">#F2EDE4</color>
+    <color name="murekkep">#26221E</color>
+</resources>

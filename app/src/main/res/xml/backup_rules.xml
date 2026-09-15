@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  YEDEKLEME KURALLARI (Android 11 ve oncesi)
+
+  NE YEDEKLENIR: Oyun ilerlemesi.
+    bolum, en yuksek bolum, yildizlar, isik, canlar,
+    acilan temalar, secili tema, dekorasyonlar, basarilar,
+    gunluk gorev durumu, ayarlar, sayaclar
+  Hepsi WebView'in localStorage'inda duruyor.
+
+  NEDEN: Telefon degistiren oyuncu ilerlemesini kaybetmemeli.
+  Bulmaca oyununda 200 bolum ilerlemek uzun emek. Kaybolursa
+  oyuncu geri donmez.
+
+  NE YEDEKLENMEZ: Onbellek. Gecici, anlamsiz, yer kaplar.
+-->
+<full-backup-content>
+    <!-- WebView verisi: localStorage burada -->
+    <include domain="database" path="." />
+    <include domain="file" path="." />
+    <include domain="sharedpref" path="." />
+
+    <!-- Onbellek yedeklenmez -->
+    <exclude domain="file" path="cache" />
+    <exclude domain="external" path="." />
+</full-backup-content>

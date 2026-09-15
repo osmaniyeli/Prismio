@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PrismioTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/zemin</item>
+        <item name="android:statusBarColor">@color/zemin</item>
+        <item name="android:navigationBarColor">@color/zemin</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

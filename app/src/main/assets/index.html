@@ -1,0 +1,4027 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prismio</title>
+<style>
+
+  :root{
+    --kirmizi:#EF4B57; --kirmizi-alt:#C6303B;
+    --sari:#F5C93F;    --sari-alt:#D6A518;
+    --yesil:#2E9E6B;   --yesil-alt:#237A52;
+    --metin:#26221E;   --metin-soft:#6B6259;
+    --yuzey:#FFFFFF;   --zemin:#F2EDE4;  --zemin-alt:#E7DFD1;
+    --cizgi:#D8CFBE;
+    --tahta-cell:#F5F1E8; --tahta-alt:#EDE8DC; --tahta-grid:#D8D0BF;
+    --tahta-frame:#A79880; --murekkep:#2A2620;
+    --kabart:4px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--zemin); color:var(--metin);
+    font-family:Nunito,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-weight:700; line-height:1.4; -webkit-font-smoothing:antialiased;
+    overscroll-behavior-y:none;
+  }
+  .tnum{font-variant-numeric:tabular-nums}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+  /* ---------- KABARTMALI BUTON ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:Nunito,sans-serif;font-weight:900;font-size:1.05rem;
+    letter-spacing:.01em; color:#fff; cursor:pointer; user-select:none;
+    padding:14px 22px; border:none; border-radius:14px;
+    background:var(--kirmizi); box-shadow:0 var(--kabart) 0 var(--kirmizi-alt);
+    transition:transform .06s ease, box-shadow .06s ease;
+    position:relative; text-decoration:none;
+  }
+  .btn:active{transform:translateY(var(--kabart));box-shadow:0 0 0 var(--kirmizi-alt)}
+  .btn:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  .btn.sari{background:var(--sari);box-shadow:0 var(--kabart) 0 var(--sari-alt);color:var(--metin)}
+  .btn.sari:active{box-shadow:0 0 0 var(--sari-alt)}
+  .btn.yesil{background:var(--yesil);box-shadow:0 var(--kabart) 0 var(--yesil-alt)}
+  .btn.yesil:active{box-shadow:0 0 0 var(--yesil-alt)}
+  .btn.sade{background:var(--yuzey);color:var(--metin);box-shadow:0 var(--kabart) 0 var(--cizgi)}
+  .btn.sade:active{box-shadow:0 0 0 var(--cizgi)}
+  .btn.buyuk{font-size:1.3rem;padding:18px 30px;border-radius:18px;--kabart:6px}
+  .btn.tam{display:flex;width:100%}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .btn[hidden]{display:none!important}
+
+  /* ---------- EKRAN YAPISI ---------- */
+  .ekran{display:none;height:100dvh;flex-direction:column;overflow:hidden}
+  /* Kayan ekranlarda ic kutu kayar, sayfa kaymaz. Ust cubuk boylece durur. */
+  .ekran > .ust{flex:0 0 auto;position:relative;z-index:5}
+  .ekran.acik{display:flex}
+  .kap{width:100%;max-width:520px;margin:0 auto;padding:0 16px}
+
+  /* ---------- ÜST ÇUBUK ---------- */
+  .ust{display:flex;align-items:center;gap:10px;padding:12px 16px;
+    max-width:520px;margin:0 auto;width:100%}
+  /* Tiklanabilir rozet: buton gibi davranir ama rozet gibi gorunur. */
+  button.rozet{cursor:pointer;border:none;font:inherit;color:inherit;
+    transition:transform .06s ease,box-shadow .06s ease}
+  button.rozet:active{transform:translateY(2px)}
+  button.rozet:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  /* Dokunma hedefi en az 44px (denetim bulgusu).
+     Gorsel boyut aynI kalir, tiklanabilir alan buyur. */
+  button.rozet{min-height:44px}
+  .rozet{display:inline-flex;align-items:center;gap:6px;background:var(--yuzey);
+    border-radius:999px;padding:7px 13px;box-shadow:0 2px 0 var(--cizgi);
+    font-weight:900;font-size:.95rem}
+  .rozet .ik{font-size:1.05rem;line-height:1}
+  .rozet small{font-weight:700;font-size:.68rem;color:var(--metin-soft);margin-left:2px}
+  .ust .bosluk{flex:1}
+  .geri{width:42px;height:42px;border-radius:12px;border:none;background:var(--yuzey);
+    box-shadow:0 3px 0 var(--cizgi);font-size:1.3rem;font-weight:900;color:var(--metin);
+    cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .geri:active{transform:translateY(3px);box-shadow:none}
+
+  /* ---------- BANNER ---------- */
+  .banner{max-width:520px;margin:14px auto 0;padding:0 16px;width:100%}
+  .banner .kutu{height:56px;border-radius:12px;background:var(--zemin-alt);
+    border:2px dashed var(--cizgi);display:flex;align-items:center;justify-content:center;
+    font-family:"IBM Plex Mono",monospace;font-size:.66rem;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--metin-soft)}
+  .banner[hidden]{display:none!important}
+
+  /* ---------- ANA MENÜ ---------- */
+  #menu{background:var(--zemin)}
+  .menu-orta{flex:1;display:flex;flex-direction:column;justify-content:center;
+    align-items:center;padding:20px 16px;text-align:center}
+  .logo{margin-bottom:6px}
+  .logo svg{display:block;width:96px;height:96px}
+  .oyunadi{font-size:clamp(2.6rem,13vw,3.6rem);font-weight:900;letter-spacing:-.02em;
+    margin:6px 0 2px;line-height:1}
+  .slogan{font-size:1rem;font-weight:700;color:var(--metin-soft);margin:0 0 26px}
+  /* ---- DEVAM KARTI ---- */
+  .devam-kart{display:flex;align-items:center;gap:12px;width:100%;max-width:300px;
+    background:var(--yuzey);border:none;border-radius:var(--kart-kose,18px);
+    padding:12px 14px;margin-bottom:14px;cursor:pointer;text-align:left;
+    font:inherit;color:inherit;box-shadow:0 4px 0 var(--cizgi);
+    transition:transform .06s ease,box-shadow .06s ease}
+  .devam-kart:active{transform:translateY(4px);box-shadow:none}
+  /* Devam karti varken o ANA eylemdir. Karta agirlik ver. */
+  .devam-kart{box-shadow:0 5px 0 var(--yesil-alt),0 0 0 3px var(--yesil);padding:14px}
+  .dk-bolum{font-size:1.24rem}
+  .devam-kart:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  .devam-kart[hidden]{display:none!important}
+  .dk-sol{flex:1;min-width:0;display:block}
+  .dk-etiket{display:block;font-size:.7rem;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--metin-soft)}
+  .dk-bolum{display:block;font-size:1.16rem;font-weight:900;line-height:1.15;margin-top:1px}
+  .dk-bolge{display:block;font-size:.76rem;font-weight:700;color:var(--metin-soft);
+    margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dk-sag{position:relative;width:46px;height:46px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center}
+  .dk-oyna{position:relative;z-index:2;width:34px;height:34px;border-radius:50%;
+    background:var(--yesil);color:#fff;display:flex;align-items:center;
+    justify-content:center;font-size:.86rem;padding-left:2px}
+  /* bolge ilerleme halkasi: conic-gradient, ek kutuphane yok */
+  .dk-halka{position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(var(--yesil) calc(var(--oran,0)*1%), var(--zemin-alt) 0)}
+  .dk-halka::after{content:"";position:absolute;inset:5px;border-radius:50%;
+    background:var(--yuzey)}
+
+  .menu-btnler{display:flex;flex-direction:column;gap:12px;width:100%;max-width:300px}
+  /* Kart gorunurken Oyna ikincil olur: harita gezmek icin. */
+  .menu-orta.devamli #btnOyna{background:var(--yuzey);color:var(--metin);
+    box-shadow:0 4px 0 var(--cizgi);font-size:1.05rem;padding:14px 22px}
+  .menu-orta.devamli #btnOyna:active{box-shadow:0 0 0 var(--cizgi)}
+  .menu-alt{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+  .menu-alt .btn{font-size:.9rem;padding:13px 16px;--kabart:3px;min-height:44px}
+  .tezgah{width:100%;max-width:520px;margin:22px auto 0}
+  .tezgah svg{display:block;width:100%;height:auto}
+  /* Tezgahtaki parcalar cok yavas nefes alir. Menu olu gorunmesin diye.
+     Hareket kucuk tutuldu; dikkat cekmemeli, sadece canlilik vermeli. */
+  @keyframes tzSalin{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes tzDon{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  .tz-prizma{animation:tzSalin 4.2s ease-in-out infinite;transform-origin:172px 67px}
+  .tz-ayna{animation:tzDon 5.6s ease-in-out infinite;transform-origin:247px 69px}
+  .tz-kristal{animation:tzSalin 3.4s ease-in-out infinite .8s;transform-origin:330px 68px}
+  html.az-hareket .tz-prizma,
+  html.az-hareket .tz-ayna,
+  html.az-hareket .tz-kristal{animation:none}
+
+  /* ---------- BÖLÜM HARİTASI ---------- */
+  #harita{background:var(--zemin)}
+  .harita-kaydir{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:8px 0 26px;scroll-padding-top:64px}
+  /* ================= HARITA ================= */
+  .yol{position:relative;max-width:340px;margin:0 auto;padding:4px 0 14px}
+  .harita-kaydir{padding-top:0}
+
+  /* ---- BOLGE BASLIGI ---- */
+  .bolge-bas{position:sticky;top:-2px;z-index:4;
+    display:flex;align-items:center;gap:9px;
+    background:var(--zemin);padding:11px 14px;margin:16px 0 10px;
+    border-radius:14px;box-shadow:0 3px 0 var(--cizgi);
+    border:2px solid var(--cizgi)}
+  .bolge-bas:first-child{margin-top:2px}
+  .bolge-ik{display:flex;color:var(--metin)}
+  .bolge-ad{flex:1;font-weight:900;font-size:1rem;letter-spacing:.01em}
+  .bolge-say{font-weight:800;font-size:.82rem;color:var(--metin-soft)}
+  .bolge-bas.kilit{opacity:.6}
+  .bolge-bas.kilit .bolge-ad{color:var(--metin-soft)}
+
+  /* ---- DUGUM ---- */
+  .dugum{position:relative;display:flex;align-items:center;justify-content:center;
+    padding:11px 0;scroll-margin-top:80px;scroll-margin-bottom:80px}
+  .dugum .nokta{width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    font-family:inherit;font-weight:900;font-size:1.12rem;
+    background:var(--yuzey);color:var(--metin);box-shadow:0 5px 0 var(--cizgi);
+    transition:transform .06s ease,box-shadow .06s ease;position:relative;z-index:2}
+  .dugum .nokta:active{transform:translateY(5px);box-shadow:none}
+  .dugum .nokta:disabled{cursor:default;transform:none}
+  .dugum .nokta:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  .dugum .no{line-height:1}
+
+  /* durumlar */
+  .dugum.bitti .nokta{background:var(--yesil);color:#fff;box-shadow:0 5px 0 var(--yesil-alt)}
+  .dugum.simdi .nokta{background:var(--kirmizi);color:#fff;box-shadow:0 5px 0 var(--kirmizi-alt)}
+  .dugum.simdi .nokta{animation:dugumNabiz 2.1s ease-in-out infinite}
+  .dugum.kilit .nokta{background:var(--zemin-alt);color:var(--metin-soft);
+    box-shadow:0 5px 0 var(--cizgi)}
+  .dugum.kilit .nokta{font-size:1rem}
+  .dugum.kilit .kilitik{display:flex;opacity:.5;margin-top:1px}
+  .dugum.burada .nokta{box-shadow:0 5px 0 var(--cizgi),0 0 0 4px var(--sari)}
+  .dugum.burada.bitti .nokta{box-shadow:0 5px 0 var(--yesil-alt),0 0 0 4px var(--sari)}
+  .dugum.burada.simdi .nokta{box-shadow:0 5px 0 var(--kirmizi-alt),0 0 0 4px var(--sari)}
+
+  /* buyuk bolum: kare ve genis. Bir bakista farkli oldugu anlasilmali. */
+  .dugum.buyuk .nokta{border-radius:20px;width:80px;height:80px;font-size:1.32rem}
+  .dugum.buyuk::after{content:"";position:absolute;width:104px;height:104px;
+    border-radius:26px;border:2px dashed var(--cizgi);z-index:1}
+  .dugum.buyuk.bitti::after{border-color:var(--yesil)}
+
+  /* yildizlar: kucuk nokta. Metin yildizi bu boyutta lekeye donuyordu. */
+  .dugum .yildiz{display:flex;gap:3px;line-height:1}
+  .dugum .yn{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.42);
+    display:block}
+  .dugum .yn.dolu{background:var(--sari)}
+
+  /* baglanti cizgisi */
+  .dugum::before{content:"";position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+    width:5px;height:28px;background:var(--cizgi);border-radius:3px;z-index:0}
+  .yol > .dugum:first-child::before{display:none}
+  /* liste sonunda asagi sarkan cizgi ucu olmasin */
+  .yol > .dugum:last-child::before{height:25px;top:-14px}
+  .dugum.bitti::before{background:var(--yesil)}
+  .bolge-bas + .dugum::before{display:none}
+  .bolge-bas + .dugum{padding-top:4px}
+  /* son dugumun altindaki cizgi ucu gorunmesin */
+  .dugum:last-child{padding-bottom:6px}
+  /* liste sonundaki cizgi ucu: bir sonraki dugum yoksa gorunmemeli */
+  .yol::after{content:"";display:block;height:10px}
+
+  @keyframes dugumNabiz{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  html.az-hareket .dugum.simdi .nokta{animation:none}
+
+  .harita-basI{text-align:center;font-size:1.4rem;font-weight:900;margin:2px 0 10px}
+
+  /* ---------- OYUN EKRANI ---------- */
+  #oyun{background:var(--zemin)}
+  .oyun-govde{flex:1;display:flex;flex-direction:column;padding-bottom:14px}
+  .bolumbasI{text-align:center;margin:2px 0 10px}
+  .bolumbasI .no{font-size:1.5rem;font-weight:900;line-height:1.1}
+  .bolumbasI .alt{font-size:.82rem;font-weight:700;color:var(--metin-soft)}
+  .bolumbasI.buyuk .no{color:var(--sari-alt)}
+  .hedefler{display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+  .hedef{display:flex;align-items:center;gap:5px;background:var(--yuzey);border-radius:999px;
+    padding:5px 11px;box-shadow:0 2px 0 var(--cizgi);font-size:.86rem;font-weight:900}
+  .hedef.tamam{background:var(--yesil);color:#fff;box-shadow:0 2px 0 var(--yesil-alt)}
+  .tahtakutu{background:var(--tahta-cell);border-radius:18px;padding:10px;
+    box-shadow:0 4px 0 var(--tahta-frame);margin:0 auto;width:100%;max-width:460px}
+  .tahtakutu.buyuk{box-shadow:0 4px 0 var(--sari-alt)}
+  svg.tahta{display:block;width:100%;height:auto;touch-action:manipulation}
+  svg.tahta .hit{cursor:pointer}
+  .tahtakutu.kilitli svg.tahta .hit{cursor:default;pointer-events:none}
+  .tahtakutu.kilitli .oyunalt{opacity:.5}
+  svg.tahta .hit:focus-visible{outline:3px solid var(--kirmizi);outline-offset:-3px}
+  .oyunalt{display:flex;gap:9px;margin-top:14px;justify-content:center}
+  .oyunalt .btn{flex:1;font-size:.92rem;padding:12px 10px;--kabart:3px}
+  .ipucu{text-align:center;font-size:.86rem;font-weight:700;color:var(--metin-soft);
+    margin-top:10px;min-height:20px}
+  .ipucu.hata{color:var(--kirmizi)}
+
+  .sayac{display:flex;justify-content:space-between;align-items:center;
+    background:var(--kirmizi);color:#fff;border-radius:14px;padding:10px 16px;
+    margin-bottom:10px;box-shadow:0 3px 0 var(--kirmizi-alt)}
+  .sayac b{font-size:1.5rem;font-weight:900}
+  .sayac span{font-size:.85rem;font-weight:800;opacity:.95}
+  .sayac.az b{animation:yanip .6s ease-in-out infinite alternate}
+  @keyframes yanip{from{opacity:1}to{opacity:.45}}
+  .sayac[hidden]{display:none!important}
+
+  /* ---------- ÖDÜL / SONUÇ KATMANI ---------- */
+  .katman{position:fixed;inset:0;background:rgba(38,34,30,.55);z-index:60;
+    display:none;align-items:center;justify-content:center;padding:20px}
+  .katman.acik{display:flex}
+  .kart{background:var(--yuzey);border-radius:24px;padding:26px 22px 22px;
+    width:100%;max-width:360px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.15);
+    animation:zipla .28s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes zipla{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+  .kart h2{font-size:1.7rem;font-weight:900;margin:0 0 4px}
+  .kart .altyazi{font-size:.95rem;font-weight:700;color:var(--metin-soft);margin:0 0 16px}
+  .yildizlar{display:flex;justify-content:center;gap:10px;margin:6px 0 14px}
+  .yildizlar svg{width:52px;height:52px}
+  .yildizlar .y{opacity:.22}
+  .yildizlar .y.dolu{opacity:1;animation:patla .34s cubic-bezier(.34,1.56,.64,1) backwards}
+  .yildizlar .y.dolu:nth-child(1){animation-delay:.05s}
+  .yildizlar .y.dolu:nth-child(2){animation-delay:.18s}
+  .yildizlar .y.dolu:nth-child(3){animation-delay:.31s}
+  @keyframes patla{from{transform:scale(.3) rotate(-25deg);opacity:0}to{transform:scale(1);opacity:1}}
+  .odul{display:inline-flex;align-items:center;gap:7px;background:var(--zemin);
+    border-radius:999px;padding:8px 16px;font-weight:900;margin-bottom:16px}
+  .kart .btnler{display:flex;flex-direction:column;gap:10px}
+  .hediye{background:var(--sari);border-radius:14px;padding:11px 14px;font-size:.9rem;
+    font-weight:800;margin-bottom:14px;box-shadow:0 3px 0 var(--sari-alt)}
+
+  /* ---------- MAĞAZA ---------- */
+  #magaza{background:var(--zemin)}
+  .magaza-kaydir{min-height:0;flex:1;overflow-y:auto;padding-bottom:24px}
+  .bolumbaslik{font-size:1.5rem;font-weight:900;text-align:center;margin:4px 0 14px}
+  .temalar{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  /* ================= TEMA KOLEKSIYONU ================= */
+  .temalar{align-items:stretch}
+  .tema{
+    background:var(--yuzey); border-radius:var(--kart-kose,18px); padding:12px;
+    display:flex; flex-direction:column; height:100%;
+    cursor:pointer; text-align:left; width:100%;
+    border:var(--kart-cerceve,0px) solid var(--cizgi);
+    box-shadow:0 4px 0 var(--cizgi); position:relative;
+    transition:transform .06s ease, box-shadow .06s ease;
+    display:block; font:inherit; color:inherit;
+  }
+  .tema:active{transform:translateY(4px);box-shadow:none}
+  .tema:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  .tema .onizle{border-radius:calc(var(--kart-kose,18px) - 8px);overflow:hidden;margin-bottom:9px;
+    position:relative}
+  .tema .onizle svg{display:block;width:100%;height:auto}
+  .tema .ad{font-weight:900;font-size:1rem;display:flex;align-items:center;gap:6px}
+  .tema .ozet{font-size:.76rem;font-weight:700;color:var(--metin-soft);
+    margin-top:2px;line-height:1.3;min-height:2.1em}
+  .tema .durum{font-size:.82rem;font-weight:800;margin-top:auto;padding-top:6px;
+    display:flex;align-items:center;gap:5px}
+  .tema .pul{font-size:.9rem;line-height:1}
+  .tema .durum.acik{color:var(--yesil)}
+  .tema .durum.secili{color:var(--yesil)}
+  .tema .durum.alinabilir{color:var(--yesil)}
+  .tema .durum.pahali{color:var(--metin-soft)}
+  .tema .durum.kilit{color:var(--metin-soft)}
+  .tema.yetersiz .onizle{opacity:.5}
+  .tema.kilitli .onizle{opacity:.62}
+  .tema.kilitli .ad{color:var(--metin-soft)}
+  .tema[aria-pressed="true"]{box-shadow:0 4px 0 var(--yesil-alt),0 0 0 3px var(--yesil)}
+  /* secili rozet */
+  .tema .tik{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;
+    background:var(--yesil);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 0 var(--yesil-alt)}
+  .tema .tik svg{width:15px;height:15px;display:block}
+  /* kilit rozeti */
+  .tema .kilitrozet{position:absolute;top:8px;right:8px;
+    background:var(--metin);color:var(--yuzey);font-size:.7rem;font-weight:900;
+    padding:3px 8px;border-radius:999px}
+  .tema-ustbilgi{display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:8px;font-size:.8rem;font-weight:800;color:var(--metin-soft)}
+
+  /* ---- MAGAZA SEKMELERI ---- */
+  .sekmeler{display:flex;gap:6px;background:var(--zemin-alt);padding:4px;
+    border-radius:14px;margin-bottom:12px}
+  .sekme{flex:1;border:none;background:transparent;font:inherit;font-weight:900;
+    font-size:.92rem;color:var(--metin-soft);padding:9px 4px;border-radius:10px;
+    cursor:pointer;transition:background .12s ease,color .12s ease}
+  .sekme.acik{background:var(--yuzey);color:var(--metin);box-shadow:0 2px 0 var(--cizgi)}
+  .sekme:focus-visible{outline:3px solid var(--metin);outline-offset:2px}
+  .sekme-icerik{display:none}
+  .sekme-icerik.acik{display:block}
+
+  /* ---- URUN KARTI (isik / can) ---- */
+  .urunler{display:flex;flex-direction:column;gap:10px}
+  .urun{display:flex;align-items:center;gap:12px;background:var(--yuzey);
+    border-radius:var(--kart-kose,18px);padding:12px 14px;
+    box-shadow:0 4px 0 var(--cizgi);width:100%;text-align:left;
+    border:var(--kart-cerceve,0px) solid var(--cizgi);
+    font:inherit;color:inherit;cursor:pointer;
+    transition:transform .06s ease,box-shadow .06s ease}
+  .urun:active{transform:translateY(4px);box-shadow:none}
+  .urun:disabled{opacity:.5;cursor:default;transform:none;box-shadow:0 4px 0 var(--cizgi)}
+  .urun:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  .urun .simge{width:46px;height:46px;border-radius:12px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--zemin-alt);font-size:1.4rem}
+  .urun .simge.reklam{background:var(--sari);color:var(--metin)}
+  .urun .simge.dolu{background:var(--yesil);color:#fff}
+  .urun .govde{flex:1;min-width:0}
+  .urun .govde{display:block}
+  .urun .basI{display:block;font-weight:900;font-size:1rem}
+  .urun .aciklama{display:block;font-size:.78rem;font-weight:700;color:var(--metin-soft);
+    margin-top:2px;line-height:1.3}
+  .urun .sag{font-weight:900;font-size:.95rem;color:var(--yesil);
+    flex:0 0 auto;text-align:right}
+  .urun .sag.kapali{color:var(--metin-soft)}
+  .magaza-bilgi{background:var(--zemin-alt);border-radius:14px;padding:12px 14px;
+    font-size:.82rem;font-weight:700;color:var(--metin-soft);line-height:1.45;
+    margin-top:12px}
+  .magaza-bilgi b{color:var(--metin)}
+
+  /* ================= DÜNYAM ================= */
+  .dunya-kaydir{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:0 0 26px}
+  .manzara{background:var(--tahta-cell);border-radius:var(--kart-kose,18px);
+    overflow:hidden;box-shadow:0 4px 0 var(--tahta-frame);margin-bottom:14px}
+  .manzara-svg{display:block;width:100%;height:auto}
+  .manzara-bos{padding:44px 16px;text-align:center;font-weight:800;
+    font-size:.92rem;color:var(--metin-soft);line-height:1.5}
+  @keyframes mzGir{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .mz-parca{animation:mzGir .5s ease both;transform-box:fill-box;transform-origin:center}
+  html.az-hareket .mz-parca{animation:none}
+
+  .dunya-ustbilgi{display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:10px;font-size:.8rem;font-weight:800;color:var(--metin-soft)}
+  .deko-kat{font-weight:900;font-size:.88rem;margin:14px 0 8px;
+    color:var(--metin-soft);letter-spacing:.04em;text-transform:uppercase}
+  .deko-izgara{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .deko{background:var(--yuzey);border-radius:14px;padding:9px 6px;
+    border:2px solid transparent;box-shadow:0 3px 0 var(--cizgi);
+    font:inherit;color:inherit;cursor:pointer;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    transition:transform .06s ease,box-shadow .06s ease}
+  .deko:active{transform:translateY(3px);box-shadow:none}
+  .deko:disabled{cursor:default;transform:none;opacity:.55}
+  .deko:focus-visible{outline:3px solid var(--metin);outline-offset:2px}
+  .deko.aktif{border-color:var(--yesil)}
+  .dk-gorsel{display:flex;align-items:center;justify-content:center;height:54px}
+  .dk-gorsel svg{display:block}
+  .dk-ad{font-weight:900;font-size:.76rem;line-height:1.15}
+  .dk-kosul{font-weight:700;font-size:.66rem;color:var(--metin-soft)}
+  .deko.aktif .dk-kosul{color:var(--yesil)}
+  .deko.kilitli .dk-gorsel{opacity:.4}
+
+  /* menudeki Dunyam butonu: kapali iken kalan tahta sayisini gosterir */
+  #btnDunya .kilitsay{font-size:.7rem;font-weight:900;margin-left:5px;
+    background:var(--zemin-alt);color:var(--metin-soft);
+    padding:2px 6px;border-radius:999px}
+  #btnDunya.kilitli{color:var(--metin-soft)}
+
+  /* ---- DÜNYAM TANITIM (kapi kapaliyken) ---- */
+  .dunya-tanitim{background:var(--yuzey);border-radius:var(--kart-kose,18px);
+    padding:22px 18px;text-align:center;box-shadow:0 4px 0 var(--cizgi)}
+  .dunya-tanitim[hidden]{display:none!important}
+  .dt-gorsel{display:flex;justify-content:center;gap:14px;margin-bottom:14px}
+  .dt-ornek{display:flex;align-items:center;justify-content:center;
+    width:70px;height:70px;background:var(--tahta-cell);border-radius:14px;
+    box-shadow:0 3px 0 var(--tahta-frame)}
+  .dt-bas{margin:0 0 6px;font-size:1.28rem;font-weight:900}
+  .dt-metin{margin:0 0 18px;font-size:.88rem;font-weight:700;
+    color:var(--metin-soft);line-height:1.55}
+  .dt-cubuk{height:12px;background:var(--zemin-alt);border-radius:999px;
+    overflow:hidden;margin-bottom:8px}
+  .dt-cubuk span{display:block;height:100%;background:var(--yesil);
+    border-radius:999px;transition:width .5s ease}
+  .dt-sayi{font-size:1.02rem;font-weight:900}
+  .dt-sayi b{font-size:1.3rem;color:var(--yesil)}
+  .dt-alt{margin:4px 0 0;font-size:.82rem;font-weight:800;color:var(--metin-soft)}
+
+  /* ================= GÖREV / BAŞARI ================= */
+  .gorev-serit{display:flex;align-items:center;gap:10px;width:100%;max-width:300px;
+    background:var(--zemin-alt);border:none;border-radius:14px;padding:10px 13px;
+    margin-bottom:12px;cursor:pointer;text-align:left;font:inherit;color:inherit;
+    transition:transform .06s ease}
+  .gorev-serit:active{transform:scale(.98)}
+  .gorev-serit[hidden]{display:none!important}
+  .gorev-serit:focus-visible{outline:3px solid var(--metin);outline-offset:3px}
+  .gs-sol{flex:1;min-width:0;display:block}
+  .gs-etiket{display:block;font-size:.66rem;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--metin-soft)}
+  .gs-metin{display:block;font-size:.9rem;font-weight:900;margin-top:1px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gs-sag{flex:0 0 auto;font-size:.8rem;font-weight:900;color:var(--yesil)}
+  .gs-sag.bekle{color:var(--metin-soft)}
+
+  .basari-kaydir,.hakkinda-kaydir,.ayar-kaydir{flex:1;min-height:0;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;padding:0 0 26px}
+
+  .gorev-liste,.basari-liste{display:flex;flex-direction:column;gap:10px}
+  .gorev,.basaris{display:flex;align-items:center;gap:12px;background:var(--yuzey);
+    border-radius:var(--kart-kose,18px);padding:12px 14px;
+    box-shadow:0 4px 0 var(--cizgi);width:100%;text-align:left;
+    border:var(--kart-cerceve,0px) solid var(--cizgi);font:inherit;color:inherit}
+  .gorev.alinabilir{box-shadow:0 4px 0 var(--yesil-alt),0 0 0 3px var(--yesil);
+    cursor:pointer;transition:transform .06s ease,box-shadow .06s ease}
+  .gorev.alinabilir:active{transform:translateY(4px);box-shadow:none}
+  .gorev.alindi{opacity:.6}
+  .gv-govde{flex:1;min-width:0}
+  .gv-ad{display:block;font-weight:900;font-size:.96rem}
+  .gv-cubuk{display:block;height:8px;background:var(--zemin-alt);border-radius:999px;
+    overflow:hidden;margin-top:6px}
+  .gv-cubuk span{display:block;height:100%;background:var(--yesil);border-radius:999px;
+    transition:width .4s ease}
+  .gv-sayi{display:block;font-size:.74rem;font-weight:800;color:var(--metin-soft);margin-top:4px}
+  .gv-odul{flex:0 0 auto;font-weight:900;font-size:.9rem;text-align:right;
+    display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+  .gv-odul .pul{color:var(--sari-alt)}
+  .gv-durum{font-size:.72rem;font-weight:800;color:var(--metin-soft)}
+  .gorev.alinabilir .gv-durum{color:var(--yesil)}
+
+  .bs-simge{width:46px;height:46px;border-radius:12px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;background:var(--zemin-alt)}
+  .basaris.acik .bs-simge{background:var(--sari);color:var(--metin)}
+  .basaris.acik{box-shadow:0 4px 0 var(--sari-alt)}
+  .bs-ack{display:block;font-size:.76rem;font-weight:700;color:var(--metin-soft);margin-top:1px}
+
+  /* ================= AYARLAR ================= */
+  .ayar-grup{font-weight:900;font-size:.8rem;margin:16px 0 6px;
+    color:var(--metin-soft);letter-spacing:.05em;text-transform:uppercase}
+  .ayar-grup:first-child{margin-top:4px}
+  .ayar-secim{display:flex;gap:5px}
+  .ayar-secim button{border:none;background:var(--zemin-alt);font:inherit;
+    font-weight:800;font-size:.78rem;color:var(--metin-soft);
+    padding:7px 11px;border-radius:9px;cursor:pointer}
+  .ayar-secim button.acik{background:var(--yesil);color:#fff}
+  .ayar-alt{margin-top:18px}
+  .ayar .not{font-size:.72rem;font-weight:800;color:var(--sari-alt);margin-top:3px}
+
+  /* ================= HESAP ================= */
+  .hesap-kaydir{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:0 0 26px}
+  .hs-durum{display:flex;align-items:center;gap:12px;background:var(--yuzey);
+    border-radius:var(--kart-kose,18px);padding:14px;margin-bottom:10px;
+    box-shadow:0 4px 0 var(--cizgi)}
+  .hs-ik{width:46px;height:46px;border-radius:12px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;background:var(--zemin-alt)}
+  .hs-govde{flex:1;min-width:0}
+  .hs-bas{display:block;font-weight:900;font-size:.98rem}
+  .hs-ack{display:block;font-size:.78rem;font-weight:700;color:var(--metin-soft);
+    margin-top:2px;line-height:1.35}
+  .hs-kutu{width:100%;min-height:86px;resize:vertical;font-family:"IBM Plex Mono",monospace;
+    font-size:.72rem;font-weight:500;line-height:1.45;padding:10px 12px;
+    border-radius:12px;border:2px solid var(--cizgi);background:var(--zemin-alt);
+    color:var(--metin);margin-bottom:8px;word-break:break-all}
+  .hs-kutu:focus{outline:none;border-color:var(--yesil)}
+  .hs-btnler{display:flex;flex-direction:column;gap:8px}
+  .hs-not{font-size:.8rem;font-weight:800;margin-top:8px;min-height:1.1em}
+  .hs-not.iyi{color:var(--yesil)}
+  .hs-not.uyari{color:var(--kirmizi)}
+
+  /* ================= HAKKINDA ================= */
+  .hk-blok{background:var(--yuzey);border-radius:var(--kart-kose,18px);
+    padding:16px 16px;margin-bottom:10px;box-shadow:0 4px 0 var(--cizgi)}
+  .hk-blok h4{margin:0 0 8px;font-size:.98rem;font-weight:900}
+  .hk-satir{display:flex;justify-content:space-between;gap:12px;
+    padding:6px 0;font-size:.86rem;font-weight:700}
+  .hk-satir + .hk-satir{border-top:1px solid var(--cizgi)}
+  .hk-satir .et{color:var(--metin-soft)}
+  .hk-satir .dg{font-weight:900;text-align:right}
+  .hk-metin{font-size:.85rem;font-weight:700;color:var(--metin-soft);
+    line-height:1.6;margin:0}
+  .hk-logo{display:flex;flex-direction:column;align-items:center;gap:6px;
+    padding:20px 0 14px}
+  .hk-logo svg{width:76px;height:76px;display:block}
+  .hk-ad{font-size:1.7rem;font-weight:900;letter-spacing:-.02em}
+  .hk-slogan{font-size:.84rem;font-weight:700;color:var(--metin-soft)}
+  .hk-bag{display:block;width:100%;text-align:left;background:none;border:none;
+    font:inherit;font-weight:800;font-size:.86rem;color:var(--metin);
+    padding:9px 0;cursor:pointer;display:flex;justify-content:space-between;
+    align-items:center;gap:10px}
+  .hk-bag + .hk-bag{border-top:1px solid var(--cizgi)}
+  .hk-bag .ok{color:var(--metin-soft);font-weight:900}
+  .hk-tesekkur{font-size:.8rem;font-weight:700;color:var(--metin-soft);
+    line-height:1.7;text-align:center;padding:6px 0 18px}
+
+  /* ---- ONIZLEME PENCERESI ---- */
+  .onizPencere{position:fixed;inset:0;z-index:60;display:none;
+    align-items:flex-end;justify-content:center;background:rgba(20,16,12,.55)}
+  .onizPencere.acik{display:flex}
+  .onizKart{background:var(--yuzey);width:100%;max-width:520px;
+    border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));
+    max-height:92dvh;overflow:auto;box-shadow:0 -6px 0 rgba(0,0,0,.08)}
+  .onizKart h3{margin:0 0 2px;font-size:1.35rem;font-weight:900}
+  .onizKart .alt{margin:0 0 12px;font-size:.86rem;font-weight:700;color:var(--metin-soft)}
+  .oniz-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .oniz-kutu{border-radius:14px;overflow:hidden;border:2px solid var(--cizgi)}
+  .oniz-kutu svg{display:block;width:100%;height:auto}
+  .oniz-etiket{font-size:.7rem;font-weight:800;color:var(--metin-soft);
+    padding:4px 8px;background:var(--zemin-alt)}
+  .oniz-btnler{display:flex;flex-direction:column;gap:8px}
+
+  .magaza-not.iyi{color:var(--yesil)}
+  .magaza-not.uyari{color:var(--kirmizi)}
+  .magaza-not{font-size:.8rem;font-weight:700;color:var(--metin-soft);
+    text-align:center;margin-top:16px;line-height:1.5}
+
+  /* ---------- AYARLAR ---------- */
+  .ayarlar{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .ayar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--yuzey);border-radius:14px;padding:13px 16px;box-shadow:0 3px 0 var(--cizgi)}
+  .ayar .ad{font-weight:800;font-size:.95rem}
+  .anahtar{width:56px;height:32px;border-radius:999px;border:none;cursor:pointer;
+    background:var(--cizgi);position:relative;transition:background .15s}
+  .anahtar::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;
+    border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .anahtar[aria-pressed="true"]{background:var(--yesil)}
+  .anahtar[aria-pressed="true"]::after{transform:translateX(24px)}
+
+
+  /* ---------- AYAR SINIFLARI ---------- */
+  /* Hareketi azalt: animasyonlari sadelestir ama gameplay calismaya devam eder */
+  html.az-hareket .logo svg,
+  html.az-hareket svg.tahta .isin,
+  html.az-hareket svg.tahta .kaynakIc,
+  html.az-hareket svg.tahta .delikKol{animation:none!important}
+  html.az-hareket .ekran.acik{animation-duration:.08s}
+  html.az-hareket svg.tahta .akan{animation-duration:.12s}
+  html.az-hareket svg.tahta .yandi,
+  html.az-hareket svg.tahta .halka{animation-duration:.16s}
+  html.az-hareket .kart{animation-duration:.1s}
+  html.az-hareket .rozet.degisti,
+  html.az-hareket .hedef.tamam,
+  html.az-hareket .tahtakutu.zafer{animation:none!important}
+
+  /* Parcacik kapali */
+  html.parcacik-yok .parcacik{display:none!important}
+
+  /* Yuksek kontrast: kenarlari keskinlestir */
+  html.yuksek-kontrast{--cizgi:#8A8172}
+  html.yuksek-kontrast .rozet,
+  html.yuksek-kontrast .ayar,
+  /* ---- TEMA DOKUSU: zemin deseni ---- */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    opacity:.5;background-repeat:repeat}
+  html[data-desen="nokta"] body::before{
+    background-image:radial-gradient(circle at 1px 1px, var(--cizgi) 1px, transparent 0);
+    background-size:22px 22px}
+  html[data-desen="cizgi"] body::before{
+    background-image:repeating-linear-gradient(90deg,var(--cizgi) 0 1px,transparent 1px 26px);
+    opacity:.35}
+  html[data-desen="yildiz"] body::before{
+    background-image:radial-gradient(circle at 6px 6px, var(--cizgi) 1.2px, transparent 0),
+                     radial-gradient(circle at 30px 22px, var(--cizgi) .9px, transparent 0);
+    background-size:44px 44px;opacity:.45}
+  html[data-desen="cam"] body::before{
+    background-image:repeating-linear-gradient(60deg,var(--cizgi) 0 1.5px,transparent 1.5px 34px),
+                     repeating-linear-gradient(-60deg,var(--cizgi) 0 1.5px,transparent 1.5px 34px);
+    opacity:.3}
+  html[data-desen="kat"] body::before{
+    background-image:repeating-linear-gradient(45deg,var(--cizgi) 0 1px,transparent 1px 30px);
+    opacity:.28}
+  html.parcacik-yok body::before{display:none}
+  /* OYUN EKRANINDA DESEN KISILIR.
+     Cekirdek dongu her zaman en gorunur sey olmali. Zemin deseni menude
+     karakter katar, tahtanin yaninda dikkat calar. */
+  html.oyunda body::before{opacity:.18}
+  html.yuksek-kontrast body::before{display:none}
+
+  html.yuksek-kontrast .tema{box-shadow:0 3px 0 var(--cizgi),0 0 0 2px var(--metin)}
+  html.yuksek-kontrast .btn{outline:2px solid var(--metin);outline-offset:-2px}
+
+  /* Gorsel kalite: dusukte agir efektler kapanir */
+  html[data-kalite="LOW"] .parcacik{display:none!important}
+  html[data-kalite="LOW"] svg.tahta .isin{animation:none!important}
+  html[data-kalite="LOW"] .kart{box-shadow:0 4px 0 rgba(0,0,0,.12)}
+
+  /* ---------- IKON HIZALAMA ---------- */
+  .ik{display:block;flex:0 0 auto}
+  .rozet .ik{margin-right:-2px}
+
+  /* ================= ANİMASYONLAR ================= */
+  /* Kural: sadece transform ve opacity. Ucuz telefonda da akar. */
+
+  /* Işın akışı — zafer anında kaynaktan uçlara doğru */
+  @keyframes isinAk{ from{stroke-dashoffset:var(--uz)} to{stroke-dashoffset:0} }
+  svg.tahta .akan{ animation:isinAk .24s ease-out backwards }
+
+  /* Işın nabzı — normal oyunda ışın canlı dursun */
+  @keyframes isinNabiz{ 0%{opacity:.78} 100%{opacity:1} }
+  svg.tahta .isin{ animation:isinNabiz 1.9s ease-in-out infinite alternate }
+
+  /* Kristal yanma — zıpla ve otur */
+  @keyframes kristalYan{
+    0%{transform:scale(.55);opacity:.2}
+    55%{transform:scale(1.28)}
+    100%{transform:scale(1);opacity:1} }
+  svg.tahta .yandi{ transform-box:fill-box; transform-origin:center;
+    animation:kristalYan .42s cubic-bezier(.34,1.56,.64,1) backwards }
+
+  /* Kristal halkası — dışarı açılıp sabitlenir */
+  @keyframes halkaAc{ from{transform:scale(.5);opacity:.9} to{transform:scale(1);opacity:.45} }
+  svg.tahta .halka{ transform-box:fill-box; transform-origin:center;
+    animation:halkaAc .42s ease-out backwards }
+
+  /* Ayna yerine otur */
+  @keyframes aynaOtur{
+    0%{transform:scale(.4) rotate(-18deg);opacity:0}
+    60%{transform:scale(1.15) rotate(3deg)}
+    100%{transform:scale(1) rotate(0);opacity:1} }
+  svg.tahta .yeniAyna{ transform-box:fill-box; transform-origin:center;
+    animation:aynaOtur .26s cubic-bezier(.34,1.56,.64,1) }
+
+  /* Kaynak nabzı — ışığın çıktığı yer canlı dursun */
+  @keyframes kaynakNabiz{ 0%{transform:scale(1)} 100%{transform:scale(1.14)} }
+  svg.tahta .kaynakIc{ transform-box:fill-box; transform-origin:center;
+    animation:kaynakNabiz 1.5s ease-in-out infinite alternate }
+
+  /* Karadelik dönsün — yuttuğu belli olsun */
+  @keyframes delikDon{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  svg.tahta .delikKol{ transform-box:fill-box; transform-origin:center;
+    animation:delikDon 9s linear infinite }
+
+  /* Tahta zafer sarsıntısı */
+  @keyframes tahtaZafer{
+    0%{transform:scale(1)} 30%{transform:scale(1.035)} 100%{transform:scale(1)} }
+  .tahtakutu.zafer{ animation:tahtaZafer .5s ease-out }
+
+  /* Döngü patlaması */
+  @keyframes boomPulse{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.3);opacity:.55}}
+  @keyframes boomRayGo{0%{opacity:.2}100%{opacity:1}}
+  svg.tahta .boomCore{transform-box:fill-box;transform-origin:center;
+    animation:boomPulse .55s ease-out infinite alternate}
+  svg.tahta .boomRay{animation:boomRayGo .55s ease-out infinite alternate}
+
+  /* Hedef rozeti tamamlanınca */
+  @keyframes rozetTamam{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
+  .hedef.tamam{animation:rozetTamam .38s cubic-bezier(.34,1.56,.64,1)}
+
+  /* Ekran geçişi */
+  @keyframes ekranGel{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .ekran.acik{animation:ekranGel .22s ease-out}
+
+  /* Menü logosu hafif salınsın */
+  @keyframes logoSalin{0%{transform:translateY(0)}100%{transform:translateY(-7px)}}
+  .logo svg{animation:logoSalin 2.6s ease-in-out infinite alternate}
+
+  /* Para/can rozeti değişince */
+  @keyframes rozetZipla{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .rozet.degisti{animation:rozetZipla .34s cubic-bezier(.34,1.56,.64,1)}
+
+  @media(prefers-reduced-motion:reduce){
+    svg.tahta *, .tahtakutu, .ekran, .logo svg, .rozet, .hedef{animation:none!important}
+  }
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(min-width:560px){ .kap,.ust,.banner{max-width:520px} }
+</style>
+</head><body>
+
+<!-- ================= ANA MENÜ ================= -->
+<div class="ekran acik" id="ek-menu">
+  <div class="ust">
+    <button class="rozet" id="rozCanMenu" type="button" aria-label="Can"><span class="ik">❤</span><span class="tnum" id="mCan">5</span><small id="mCanSure"></small></button>
+    <div class="bosluk"></div>
+    <button class="rozet" id="rozParaMenu" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="mPara">0</span></button>
+  </div>
+
+  <div class="menu-orta">
+    <div class="logo">
+      <svg viewBox="0 0 100 100" aria-label="Prismio">
+        <rect width="100" height="100" rx="22" fill="#26221E"/>
+        <path d="M50 24 L74 70 H26 Z" fill="none" stroke="#F5F1E8" stroke-width="7"
+              stroke-linejoin="round"/>
+        <rect x="8" y="52" width="20" height="6" rx="3" fill="#FFFFFF"/>
+        <rect x="74" y="40" width="20" height="6" rx="3" fill="#E0483C" transform="rotate(-12 84 43)"/>
+        <rect x="74" y="52" width="20" height="6" rx="3" fill="#2E9E6B"/>
+        <rect x="74" y="64" width="20" height="6" rx="3" fill="#3B72C4" transform="rotate(12 84 67)"/>
+      </svg>
+    </div>
+    <h1 class="oyunadi">Prismio</h1>
+    <p class="slogan">Çöz. Sonra daha iyi çöz.</p>
+
+    <!-- DEVAM KARTI: kaldigin bolume tek dokunusla don.
+         Yeni oyuncuda gizlenir, "Oyna" tek basina kalir. -->
+    <button class="devam-kart" id="devamKart" type="button" hidden>
+      <span class="dk-sol">
+        <span class="dk-etiket">Kaldığın yer</span>
+        <span class="dk-bolum" id="dkBolum">Bölüm 1</span>
+        <span class="dk-bolge" id="dkBolge">Fildişi Bahçesi</span>
+      </span>
+      <span class="dk-sag">
+        <span class="dk-halka" id="dkHalka"></span>
+        <span class="dk-oyna">▶</span>
+      </span>
+    </button>
+
+    <!-- GÜNLÜK GÖREV ÖZETİ: menüde küçük şerit.
+         Yeni ekran açmaz, mevcut menüye sığar. -->
+    <button class="gorev-serit" id="gorevSerit" type="button" hidden>
+      <span class="gs-sol">
+        <span class="gs-etiket">Günlük görev</span>
+        <span class="gs-metin" id="gsMetin">—</span>
+      </span>
+      <span class="gs-sag" id="gsSag"></span>
+    </button>
+
+    <div class="menu-btnler">
+      <button class="btn buyuk tam" id="btnOyna">Oyna</button>
+      <button class="btn sari tam" id="btnZaman">Zamana karşı</button>
+      <div class="menu-alt">
+        <button class="btn sade" id="btnMagaza">Temalar</button>
+        <!-- Dünyam: 100 tahta çözülmeden GÖRÜNMEZ -->
+        <button class="btn sade" id="btnDunya" hidden>Dünyam</button>
+        <button class="btn sade" id="btnAyar">Ayarlar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tezgah" aria-hidden="true">
+    <svg viewBox="0 0 520 110">
+      <rect x="0" y="86" width="520" height="10" rx="4" fill="var(--tahta-frame)"/>
+      <rect x="60" y="96" width="10" height="14" fill="var(--tahta-frame)"/>
+      <rect x="450" y="96" width="10" height="14" fill="var(--tahta-frame)"/>
+      <path d="M150 86 L172 48 L194 86 Z" fill="var(--tahta-cell)" stroke="var(--murekkep)"
+            stroke-width="4" stroke-linejoin="round" class="tz-prizma"/>
+      <circle cx="165" cy="76" r="3.5" fill="var(--tz-r)"/><circle cx="172" cy="76" r="3.5" fill="var(--tz-g)"/>
+      <circle cx="179" cy="76" r="3.5" fill="var(--tz-b)"/>
+      <rect x="238" y="52" width="18" height="34" rx="4" fill="var(--tahta-cell)"
+            stroke="var(--murekkep)" stroke-width="4" class="tz-ayna"/>
+      <circle cx="330" cy="68" r="18" fill="var(--tahta-cell)" stroke="var(--murekkep)"
+              stroke-width="4" class="tz-kristal"/>
+    </svg>
+  </div>
+
+  <div class="banner" id="bnMenu"><div class="kutu">Reklam alanı · 320×50</div></div>
+  <div style="height:14px"></div>
+</div>
+
+<!-- ================= BÖLÜM HARİTASI ================= -->
+<div class="ekran" id="ek-harita">
+  <div class="ust">
+    <button class="geri" data-git="menu" aria-label="Geri">‹</button>
+    <button class="rozet" id="rozCanHarita" type="button" aria-label="Can"><span class="ik">❤</span><span class="tnum" id="hCan">5</span></button>
+    <div class="bosluk"></div>
+    <button class="rozet" id="rozParaHarita" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="hPara">0</span></button>
+  </div>
+  <div class="kap"><div class="harita-basI">Yolculuk</div></div>
+  <div class="harita-kaydir"><div class="yol" id="yol"></div></div>
+  <div class="banner" id="bnHarita"><div class="kutu">Reklam alanı · 320×50</div></div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ================= OYUN ================= -->
+<div class="ekran" id="ek-oyun">
+  <div class="ust">
+    <button class="geri" data-git="harita" aria-label="Geri">‹</button>
+    <div class="rozet"><span class="ik">❤</span><span class="tnum" id="oCan">5</span></div>
+    <div class="bosluk"></div>
+    <div class="rozet"><span class="ik">◆</span><span class="tnum" id="oPara">0</span></div>
+  </div>
+
+  <div class="kap oyun-govde">
+    <div class="sayac" id="sayac" hidden>
+      <b class="tnum" id="sayacSure">3:00</b>
+      <span id="sayacSkor">0 bölüm</span>
+    </div>
+
+    <div class="bolumbasI" id="bolumBas">
+      <div class="no" id="bolumNo">Bölüm 1</div>
+      <div class="alt" id="bolumAlt">En iyi: 3 ayna</div>
+    </div>
+
+    <div class="hedefler" id="hedefler"></div>
+
+    <div class="tahtakutu" id="tahtakutu">
+      <svg class="tahta" id="svg" viewBox="0 0 600 600" role="application"
+           aria-label="Işık bulmacası tahtası"></svg>
+    </div>
+
+    <div class="ipucu" id="ipucu">Aynaları yerleştir, ışığı kristallere ulaştır.</div>
+
+    <div class="oyunalt">
+      <button class="btn sade" id="btnSifirla">Sıfırla</button>
+      <button class="btn sade" id="btnIpucu">İpucu</button>
+      <button class="btn sade" id="btnYeni">Yeni tahta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAĞAZA ================= -->
+<div class="ekran" id="ek-magaza">
+  <div class="ust">
+    <button class="geri" data-git="menu" aria-label="Geri">‹</button>
+    <button class="rozet" id="rozCanMagaza" type="button" aria-label="Can"><span class="ik">❤</span><span class="tnum" id="gCan">5</span></button>
+    <div class="bosluk"></div>
+    <div class="rozet"><span class="ik">◆</span><span class="tnum" id="gPara">0</span></div>
+  </div>
+  <div class="kap">
+    <div class="bolumbaslik">Mağaza</div>
+    <div class="sekmeler" role="tablist">
+      <button class="sekme acik" data-sekme="tema" role="tab" aria-selected="true">Temalar</button>
+      <button class="sekme" data-sekme="isik" role="tab" aria-selected="false">Işık</button>
+      <button class="sekme" data-sekme="can" role="tab" aria-selected="false">Can</button>
+    </div>
+  </div>
+  <div class="magaza-kaydir">
+    <div class="kap">
+      <!-- SEKME: TEMALAR -->
+      <div class="sekme-icerik acik" id="sk-tema">
+        <div class="tema-ustbilgi" id="temaUst"></div>
+        <div class="temalar" id="temalar"></div>
+        <p class="magaza-not" id="magazaNot">Işık, bölüm bitirerek kazanılır.<br>
+          Zarif çözüm daha çok kazandırır. Üç yıldız 12, büyük bölüm +25.</p>
+      </div>
+      <!-- SEKME: IŞIK -->
+      <div class="sekme-icerik" id="sk-isik"><div class="urunler" id="isikListe"></div></div>
+      <!-- SEKME: CAN -->
+      <div class="sekme-icerik" id="sk-can"><div class="urunler" id="canListe"></div></div>
+    </div>
+  </div>
+  <div class="banner" id="bnMagaza"><div class="kutu">Reklam alanı · 320×50</div></div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ========= TEMA ÖNİZLEME ========= -->
+<div class="onizPencere" id="onizPencere" role="dialog" aria-modal="true" aria-labelledby="onizAd">
+  <div class="onizKart">
+    <h3 id="onizAd">Tema</h3>
+    <p class="alt" id="onizAlt"></p>
+    <div class="oniz-grid" id="onizGrid"></div>
+    <div class="oniz-btnler" id="onizBtnler"></div>
+  </div>
+</div>
+
+<!-- ================= DÜNYAM ================= -->
+<div class="ekran" id="ek-dunya">
+  <div class="ust">
+    <button class="geri" data-git="menu" aria-label="Geri">‹</button>
+    <div class="bosluk"></div>
+    <button class="rozet" id="rozParaDunya" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="dPara">0</span></button>
+  </div>
+  <div class="kap">
+    <div class="bolumbaslik">Dünyam</div>
+  </div>
+  <div class="dunya-kaydir">
+    <div class="kap">
+      <!-- manzara -->
+      <div class="dunya-tanitim" id="dunyaTanitim" hidden></div>
+      <div class="manzara" id="manzara"></div>
+      <div class="dunya-ustbilgi" id="dunyaUst"></div>
+      <div class="deko-liste" id="dekoListe"></div>
+    </div>
+  </div>
+  <div class="banner" id="bnDunya"><div class="kutu">Reklam alanı · 320×50</div></div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ================= BAŞARILAR ================= -->
+<div class="ekran" id="ek-basari">
+  <div class="ust">
+    <button class="geri" data-git="menu" aria-label="Geri">‹</button>
+    <div class="bosluk"></div>
+    <button class="rozet" id="rozParaBasari" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="bPara">0</span></button>
+  </div>
+  <div class="kap">
+    <div class="bolumbaslik">Görevler</div>
+    <div class="sekmeler" role="tablist">
+      <button class="sekme acik" data-bsekme="gunluk" role="tab" aria-selected="true">Günlük</button>
+      <button class="sekme" data-bsekme="basari" role="tab" aria-selected="false">Başarılar</button>
+    </div>
+  </div>
+  <div class="basari-kaydir">
+    <div class="kap">
+      <div class="sekme-icerik acik" id="bsk-gunluk">
+        <div class="gorev-liste" id="gorevListe"></div>
+        <div class="magaza-bilgi" id="gorevBilgi"></div>
+      </div>
+      <div class="sekme-icerik" id="bsk-basari">
+        <div class="basari-liste" id="basariListe"></div>
+      </div>
+    </div>
+  </div>
+  <div class="banner" id="bnBasari"><div class="kutu">Reklam alanı · 320×50</div></div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ================= HESAP VE YEDEKLEME ================= -->
+<div class="ekran" id="ek-hesap">
+  <div class="ust">
+    <button class="geri" data-git="ayar" aria-label="Geri">‹</button>
+    <div class="bosluk"></div>
+  </div>
+  <div class="hesap-kaydir">
+    <div class="kap">
+      <div class="bolumbaslik">Hesap</div>
+      <div id="hesapIcerik"></div>
+    </div>
+  </div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ================= HAKKINDA ================= -->
+<div class="ekran" id="ek-hakkinda">
+  <div class="ust">
+    <button class="geri" data-git="ayar" aria-label="Geri">‹</button>
+    <div class="bosluk"></div>
+  </div>
+  <div class="hakkinda-kaydir">
+    <div class="kap">
+      <div class="bolumbaslik">Hakkında</div>
+      <div id="hakkindaIcerik"></div>
+    </div>
+  </div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ================= AYARLAR ================= -->
+<div class="ekran" id="ek-ayar">
+  <div class="ust">
+    <button class="geri" data-git="menu" aria-label="Geri">‹</button>
+    <div class="bosluk"></div>
+  </div>
+  <div class="kap"><div class="bolumbaslik">Ayarlar</div></div>
+  <div class="ayar-kaydir">
+    <div class="kap">
+      <!-- SETTINGS_DEF tablosundan üretilir -->
+      <div class="ayarlar" id="ayarListe"></div>
+      <div class="ayar-alt">
+        <button class="btn sade tam" id="btnHesap">Hesap ve yedekleme</button>
+        <button class="btn sade tam" id="btnHakkinda" style="margin-top:8px">Hakkında</button>
+      </div>
+    </div>
+  </div>
+  <div class="banner" id="bnAyar"><div class="kutu">Reklam alanı · 320×50</div></div>
+  <div style="height:12px"></div>
+</div>
+
+<!-- ================= SONUÇ KATMANI ================= -->
+<div class="katman" id="katman">
+  <div class="kart">
+    <h2 id="kBaslik">Çözdün</h2>
+    <p class="altyazi" id="kAlt"></p>
+    <div class="yildizlar" id="kYildiz"></div>
+    <div id="kHediye"></div>
+    <div class="odul" id="kOdul"><span>◆</span><span class="tnum" id="kOdulSayi">0</span><span>ışık</span></div>
+    <div class="btnler" id="kBtnler"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var DX=[0,1,0,-1], DY=[-1,0,1,0];
+  var SLASH=[1,0,3,2], BACK=[3,2,1,0];
+  var EMPTY=0, WALL=1, PRISM=2, CRYSTAL=3, SOURCE=4, HOLE=5;
+  // Renk paleti. 4 renkle baslar, her 50 bolumde bir yenisi acilir.
+  // Her rengin ayri bir SEKLI var (renk korlugu ayari acikken kullanilir).
+  var PAL=[
+    {id:'R',ad:'kırmızı',sekil:'daire',   dash:'none'},
+    {id:'G',ad:'yeşil',  sekil:'ucgen',   dash:'16 10'},
+    {id:'B',ad:'mavi',   sekil:'kare',    dash:'3 9'},
+    {id:'Y',ad:'sarı',   sekil:'besgen',   dash:'11 6 3 6'},
+    {id:'C',ad:'turkuaz',sekil:'altigen', dash:'20 8'},
+    {id:'M',ad:'mor',    sekil:'yildiz',  dash:'6 6'}
+  ];
+  var DASH={}; for(var _i=0;_i<PAL.length;_i++)DASH[PAL[_i].id]=PAL[_i].dash;
+  function renkSayisi(level){ return Math.min(PAL.length, 4 + Math.floor(level/50)); }
+  function aktifRenkler(level){ return PAL.slice(0,renkSayisi(level)).map(function(x){return x.id;}); }
+
+  // ==========================================================================
+  //  TEMA SISTEMI
+  // --------------------------------------------------------------------------
+  //  Bir tema artik sadece tahta rengi degil. Uc bolume ayrilir:
+  //    c   -> TAHTA renkleri. Puzzle cizimi SADECE burayi okur. Sema degismedi.
+  //    ui  -> ARAYUZ renkleri. CSS degiskenlerine yazilir. Menu/harita/buton.
+  //    dok -> DOKU. Zemin deseni, kart kosesi, cizgi kalinligi gibi karakter.
+  //  Yeni tema eklemek icin bu tabloya bir satir eklenir. Kod degismez.
+  //
+  //  ONEMLI: c bloguna yeni anahtar EKLENEBILIR, mevcut anahtar SILINEMEZ.
+  //  draw() bu anahtarlari isimle okuyor.
+  // ==========================================================================
+  var THEMES=[
+    {
+      id:'fildisi', ad:'Fildişi', lv:1, fiyat:0,
+      ozet:'Sade ve sıcak. Müze salonu gibi.',
+      karakter:'Doğal kâğıt, yumuşak gölge, sakin bir oda.',
+      c:{cell:'#F5F1E8',alt:'#EDE8DC',grid:'#D8D0BF',frame:'#A79880',ink:'#2A2620',
+         R:'#E0483C',G:'#2E9E6B',B:'#3B72C4',Y:'#E0A32A',C:'#1E9BA6',M:'#8055B0'},
+      ui:{zemin:'#F2EDE4',zeminAlt:'#E7DFD1',yuzey:'#FFFFFF',cizgi:'#D8CFBE',
+          metin:'#26221E',metinSoft:'#6B6259',
+          vurgu:'#EF4B57',vurguAlt:'#C6303B',
+          ikinci:'#F5C93F',ikinciAlt:'#D6A518',
+          onay:'#2E9E6B',onayAlt:'#237A52'},
+      dok:{desen:'nokta', kose:18, cerceve:0}
+    },
+    {
+      id:'pirinc', ad:'Pirinç', lv:10, fiyat:60,
+      ozet:'Saat çarkı ve gözlemevi havası.',
+      karakter:'Sarı metal, ince çizgi, ölçü aleti hissi.',
+      c:{ink:'#3A2E1C',cell:'#F3EADB',alt:'#EAE0CE',grid:'#C2AF88',frame:'#8A6B33',
+         R:'#A8281C',G:'#2F6B28',B:'#254C86',Y:'#8A5B06',C:'#0A5F66',M:'#5E2670'},
+      ui:{zemin:'#EFE3CE',zeminAlt:'#E2D3B8',yuzey:'#FBF5EA',cizgi:'#C9B48A',
+          metin:'#33280F',metinSoft:'#7A6841',
+          vurgu:'#B0721A',vurguAlt:'#87540E',
+          ikinci:'#D9A93C',ikinciAlt:'#AE8117',
+          onay:'#2F6B28',onayAlt:'#22501D'},
+      dok:{desen:'cizgi', kose:12, cerceve:2}
+    },
+    {
+      id:'murekkep', ad:'Mürekkep', lv:20, fiyat:140,
+      ozet:'Gece. Koyu zemin, parlak ışık.',
+      karakter:'Karanlık oda, mürekkep lekesi, yıldızlı gökyüzü.',
+      c:{ink:'#EDF2F5',cell:'#20262E',alt:'#1A2027',grid:'#39424E',frame:'#6B7684',
+         R:'#E85D4E',G:'#4FBE7E',B:'#5C9BF0',Y:'#E8B84B',C:'#3FC6CE',M:'#B57BD6'},
+      ui:{zemin:'#151A21',zeminAlt:'#10141A',yuzey:'#222933',cizgi:'#39424E',
+          metin:'#EDF2F5',metinSoft:'#93A0AE',
+          vurgu:'#E85D4E',vurguAlt:'#B23F33',
+          ikinci:'#E8B84B',ikinciAlt:'#B08C2C',
+          onay:'#4FBE7E',onayAlt:'#35915C'},
+      dok:{desen:'yildiz', kose:20, cerceve:0}
+    },
+    {
+      id:'vitray', ad:'Vitray', lv:30, fiyat:260,
+      ozet:'Renkli cam ve katedral ışığı.',
+      karakter:'Kalın kurşun çizgi, derin renk, kilise penceresi.',
+      c:{ink:'#2E2418',cell:'#F4F1EA',alt:'#EAE5DA',grid:'#B5A98F',frame:'#6E5E45',
+         R:'#96182E',G:'#1E6544',B:'#1D3C7E',Y:'#8A6008',C:'#0B5C62',M:'#57206B'},
+      ui:{zemin:'#EBE4D6',zeminAlt:'#DCD2BE',yuzey:'#FAF7F0',cizgi:'#B7A98C',
+          metin:'#2E2418',metinSoft:'#6E5E45',
+          vurgu:'#96182E',vurguAlt:'#6E0F20',
+          ikinci:'#C08A12',ikinciAlt:'#8A6008',
+          onay:'#1E6544',onayAlt:'#144A31'},
+      dok:{desen:'cam', kose:8, cerceve:3}
+    },
+    {
+      id:'kagit', ad:'Kâğıt', lv:40, fiyat:420,
+      ozet:'Origami ve el çizimi.',
+      karakter:'Beyaz kâğıt, katlanma izi, kalem eskizi.',
+      c:{ink:'#2E2A22',cell:'#FBF9F4',alt:'#F2EFE7',grid:'#D5CEBE',frame:'#7E7565',
+         R:'#B5301F',G:'#1F6E39',B:'#274B96',Y:'#8F6405',C:'#0C6E75',M:'#6B2F85'},
+      ui:{zemin:'#F7F4EC',zeminAlt:'#EBE7DB',yuzey:'#FFFFFF',cizgi:'#DAD3C3',
+          metin:'#2E2A22',metinSoft:'#7E7565',
+          vurgu:'#B5301F',vurguAlt:'#8A2214',
+          ikinci:'#C99A22',ikinciAlt:'#8F6405',
+          onay:'#1F6E39',onayAlt:'#155028'},
+      dok:{desen:'kat', kose:14, cerceve:1}
+    }
+  ];
+  function temaBul(id){
+    for(var i=0;i<THEMES.length;i++) if(THEMES[i].id===id) return THEMES[i];
+    return THEMES[0];
+  }
+
+  var state={n:6,cells:[],src:null,crystals:[],mirrors:{},best:null,solution:null,
+             level:1,enYuksek:1,theme:'fildisi',unlocked:{fildisi:1},cfg:null,justWon:false,shapes:true,
+             prismColors:['R','G','B'], stars:{},
+             // --- WORLD katmani ---
+             decos:{},          // acilan dekorasyonlar   {id:1}
+             decoAktif:{},      // haritada duran         {id:1}
+             basari:{},         // acilan basarilar       {id:zaman}
+             gorev:{gun:'',ilerleme:{},alinan:{}},   // gunluk gorev
+             ayar:null,         // SETTINGS_DEF'ten dolar
+             sayac:{cozulen:0,ucYildiz:0,zamanBolum:0},
+             magaza:{},   // urun son alim zamanlari
+             oynamaSn:0,  // toplam oynama suresi (saniye) - bulut kaydi icin
+             dunyaAcildi:0,  // Dunyam kapisi acildi mi
+             // can + para + mod
+             lives:5,livesAt:0,coins:0,mistakes:0,loopSeen:false,
+             mode:'yolculuk',tLeft:0,tScore:0,tTimer:null,tTohum:0,tBaslangic:1};
+  var MAX_LIVES=5, LIFE_MS=4*60*60*1000, MISTAKE_LIMIT=2, TIME_SEC=180;
+
+  // --- kalici kayit (varsa) ---
+  // ==========================================================================
+  //  KAYIT SISTEMI - SURUMLU
+  //  prismio_v2 kullanilir. v1 kaydi varsa OTOMATIK gocurulur, silinmez.
+  //  Yeni alan eklerken: sadece SAVE_ALANLAR'a ekle. Goc kodu degismez.
+  // ==========================================================================
+  var SAVE_KEY='prismio_v2', SAVE_ESKI='prismio_v1', SAVE_SURUM=2;
+  var SAVE_ALANLAR=['level','enYuksek','theme','unlocked','shapes','lives','livesAt',
+                    'coins','stars','decos','decoAktif','basari','gorev','ayar','sayac',
+                    'magaza','dunyaAcildi','oynamaSn'];
+
+  function save(){
+    try{
+      var d={_v:SAVE_SURUM};
+      SAVE_ALANLAR.forEach(function(k){ d[k]=state[k]; });
+      localStorage.setItem(SAVE_KEY, JSON.stringify(d));
+    }catch(e){}
+  }
+  function load(){
+    var d=null;
+    try{ d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); }catch(e){}
+    if(!d){
+      // ---- GOC: v1 -> v2. Eski oyuncunun ilerlemesi kaybolmaz. ----
+      try{ var eski=JSON.parse(localStorage.getItem(SAVE_ESKI)||'null');
+        if(eski&&eski.level){ d=eski; d._v=1; state._gocEdildi=true; }
+      }catch(e){}
+    }
+    if(!d)  { state.ayar=varsayilanAyarlar(); return; }
+
+    // Bozuk veya elle kurcalanmis kayit oyunu cokertmemeli.
+    // Her alan tipi dogrulanir, bozuksa varsayilana doner.
+    function sayi(v,vars,enAz,enCok){
+      if(typeof v!=='number'||!isFinite(v))return vars;
+      if(enAz!==undefined&&v<enAz)return vars;
+      if(enCok!==undefined&&v>enCok)return vars;
+      return Math.floor(v);
+    }
+    function nesne(v,vars){
+      return (v&&typeof v==='object'&&!Array.isArray(v)) ? v : vars;
+    }
+    function metin(v,vars){ return (typeof v==='string'&&v) ? v : vars; }
+
+    // --- ortak alanlar (her surumde var) ---
+    state.level     = sayi(d.level, 1, 1, 999999);
+    state.enYuksek  = Math.max(1, sayi(d.enYuksek, state.level, 1, 999999));
+    if(state.level>state.enYuksek) state.level=state.enYuksek;
+    state.theme     = metin(d.theme,'fildisi');
+    if(!temaBul(state.theme) || temaBul(state.theme).id!==state.theme) state.theme='fildisi';
+    state.unlocked  = nesne(d.unlocked,{fildisi:1});
+    if(!state.unlocked.fildisi) state.unlocked.fildisi=1;   // ilk tema hep acik
+    state.shapes    = (d.shapes===false)?false:true;
+    state.lives     = sayi(d.lives, MAX_LIVES, 0, MAX_LIVES);
+    state.livesAt   = sayi(d.livesAt, 0, 0);
+    state.coins     = Math.max(0, sayi(d.coins, 0, 0));
+    state.stars     = nesne(d.stars,{});
+
+    // --- v2 alanlari (v1'de yoktu, varsayilanla dolar) ---
+    state.decos     = nesne(d.decos,{});
+    state.decoAktif = nesne(d.decoAktif,{});
+    state.basari    = nesne(d.basari,{});
+    state.gorev     = nesne(d.gorev,{gun:'',ilerleme:{},alinan:{}});
+    if(!nesne(state.gorev.alinan,null))   state.gorev.alinan={};
+    if(!nesne(state.gorev.ilerleme,null)) state.gorev.ilerleme={};
+    state.sayac     = nesne(d.sayac,{cozulen:0,ucYildiz:0,zamanBolum:0});
+    ['cozulen','ucYildiz','zamanBolum'].forEach(function(k){
+      state.sayac[k]=Math.max(0, sayi(state.sayac[k],0,0));
+    });
+    state.magaza    = nesne(d.magaza,{});
+    state.dunyaAcildi = d.dunyaAcildi?1:0;
+    state.oynamaSn  = Math.max(0, sayi(d.oynamaSn,0,0));
+
+    // --- ayarlar: eksik anahtar varsa varsayilandan tamamla ---
+    var va=varsayilanAyarlar();
+    state.ayar = nesne(d.ayar,{});
+    for(var k in va) if(!(k in state.ayar)) state.ayar[k]=va[k];
+    // shapes eski sistemde ayri tutuluyordu, ayar tablosuna baglanir
+    state.ayar.shapes = state.shapes;
+
+    if((d._v||1) < SAVE_SURUM) save();   // gocurulen kaydi yeni formatta yaz
+  }
+
+  // --- CAN SISTEMI ---
+  function canYenile(){
+    if(state.lives>=MAX_LIVES){ state.livesAt=0; return; }
+    if(!state.livesAt){ state.livesAt=Date.now(); return; }
+    var gecen=Date.now()-state.livesAt;
+    var kazanilan=Math.floor(gecen/LIFE_MS);
+    if(kazanilan>0){
+      state.lives=Math.min(MAX_LIVES,state.lives+kazanilan);
+      state.livesAt=(state.lives>=MAX_LIVES)?0:(state.livesAt+kazanilan*LIFE_MS);
+      save();
+    }
+  }
+  function canKalanSure(){
+    if(state.lives>=MAX_LIVES||!state.livesAt)return '';
+    var kalan=LIFE_MS-((Date.now()-state.livesAt)%LIFE_MS);
+    var dk=Math.floor(kalan/60000), sa=Math.floor(dk/60);
+    return sa>0?(sa+'sa '+(dk%60)+'dk'):(dk+'dk');
+  }
+  function canKaybet(){
+    if(state.lives>0){
+      if(state.lives===MAX_LIVES)state.livesAt=Date.now();
+      state.lives--;
+      save();
+    }
+  }
+
+  function idx(x,y){return y*state.n+x;}
+  function inb(x,y){return x>=0&&y>=0&&x<state.n&&y<state.n;}
+  function cellAt(x,y){return state.cells[idx(x,y)];}
+  // ---- TOHUMLU RASTGELE ----
+  // Bolum numarasi tohumdur. Bolum 4 her zaman, her cihazda AYNI tahtadir.
+  // Yildiz sistemi bunu sart kosuyor: 3 yildiz aldigin tahta tekrar gelmezse
+  // "daha az aynayla coz" olcusu anlamsiz olur.
+  var _tohum=1;
+  function tohumla(n){ _tohum = (n*2654435761) % 4294967296; if(_tohum<=0)_tohum+=4294967296; }
+  function rnd(a){
+    // mulberry32 - kucuk, hizli, tekrar uretilebilir
+    _tohum |= 0; _tohum = (_tohum + 0x6D2B79F5) | 0;
+    var t = Math.imul(_tohum ^ (_tohum >>> 15), 1 | _tohum);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return Math.floor((((t ^ (t >>> 14)) >>> 0) / 4294967296) * a);
+  }
+  function rndF(){ return rnd(1000000)/1000000; }
+  function theme(){ for(var i=0;i<THEMES.length;i++) if(THEMES[i].id===state.theme) return THEMES[i].c; return THEMES[0].c; }
+  function COLOF(c){ var t=theme(); return t[c]||t.R; }
+
+  // ---- ARAYUZ KATMANI: tema -> CSS degiskeni ----
+  // Puzzle cizimi bunlari OKUMAZ. Sadece menu/harita/buton/kart kullanir.
+  // Boylece tema degistirmek tahta mantigina hic dokunmaz.
+  var UI_HARITA={
+    zemin:'--zemin', zeminAlt:'--zemin-alt', yuzey:'--yuzey', cizgi:'--cizgi',
+    metin:'--metin', metinSoft:'--metin-soft',
+    vurgu:'--kirmizi', vurguAlt:'--kirmizi-alt',
+    ikinci:'--sari',   ikinciAlt:'--sari-alt',
+    onay:'--yesil',    onayAlt:'--yesil-alt'
+  };
+  function temaUygula(id){
+    var t=temaBul(id||state.theme), r=document.documentElement;
+    var u=t.ui||{};
+    for(var k in UI_HARITA) if(u[k]) r.style.setProperty(UI_HARITA[k], u[k]);
+    // tahta degiskenleri: sonuc karti ve onizleme bunlari kullanir
+    r.style.setProperty('--tahta-cell',  t.c.cell);
+    r.style.setProperty('--tahta-alt',   t.c.alt);
+    r.style.setProperty('--tahta-grid',  t.c.grid);
+    r.style.setProperty('--tahta-frame', t.c.frame);
+    r.style.setProperty('--murekkep',    t.c.ink);
+    // menu tezgahindaki prizma noktalari
+    r.style.setProperty('--tz-r', t.c.R);
+    r.style.setProperty('--tz-g', t.c.G);
+    r.style.setProperty('--tz-b', t.c.B);
+    var d=t.dok||{};
+    r.style.setProperty('--kart-kose', (d.kose||18)+'px');
+    r.style.setProperty('--kart-cerceve', (d.cerceve||0)+'px');
+    r.setAttribute('data-tema', t.id);
+    r.setAttribute('data-desen', d.desen||'nokta');
+    var m=document.querySelector('meta[name="theme-color"]');
+    if(!m){ m=document.createElement('meta'); m.name='theme-color'; document.head.appendChild(m); }
+    m.content = (u.zemin||'#F2EDE4');
+  }
+
+  function INK(){ var t=theme(); return t.ink||'#2A2620'; }
+
+  // ==========================================================================
+  //  KATMAN 2 + 3 : VERI MIMARISI
+  // --------------------------------------------------------------------------
+  //  PRISMIO uc katmandir:
+  //    CORE PUZZLE   - isik, ayna, prizma, kristal, uretici   (bu dosyada, dokunulmadi)
+  //    PROGRESSION   - kademe, bolum, yildiz, para, can, basari, gorev
+  //    WORLD         - menu, harita, tema, dekorasyon, animasyon, ayar
+  //
+  //  Asagidaki tablolar VERIDIR, kod degil. Yeni tema/dekorasyon/basari eklemek
+  //  icin sadece bu tablolara satir eklenir. Arayuz kodu degistirilmez.
+  // ==========================================================================
+
+  // ---------- BOLGELER (her 10 bolum bir bolge) ----------
+  // ==========================================================================
+  //  BOLGELER - 100 KADEME (BOLUM 1-1000)
+  // --------------------------------------------------------------------------
+  //  Her 10 bolum bir bolge. Eskiden 5 isimli bolge vardi, sonrasi
+  //  "Bolge 6", "Bolge 7" diye devam ediyordu. Oyuncu 51. bolumde yeni bir
+  //  yere geldigini hissetmiyordu.
+  //
+  //  Isimler oyunun kimligine baglidir: isik, cam, prizma, gokyuzu, atolye.
+  //  Rastgele fantezi ismi YOK. Her isim bir MEKAN, bir yer.
+  //  Tema 5'li dongude tekrar eder, isim tekrar etmez.
+  // ==========================================================================
+  var BOLGE_ADLARI=[
+    'Fildişi Bahçesi','Pirinç Gözlemevi','Mürekkep Odası','Vitray Katedrali','Kâğıt Atölyesi',
+    'Kireç Avlusu','Bakır Kulesi','Gece Kitaplığı','Renkli Pencere','Katlanan Salon',
+    'Tuz Terası','Saat Kulesi','Karanlık Oda','Cam Fırını','Origami Bahçesi',
+    'Mermer Koridor','Teleskop Balkonu','Gölge Geçidi','Mozaik Havuzu','Defter Kulesi',
+    'Sedef Odası','Usturlap Sofası','Yıldız Haritası','Renk Değirmeni','Zarf Atölyesi',
+    'Alçı Galerisi','Pusula Meydanı','Ay Işığı Sarnıcı','Buzlu Cam Seti','Kalem Ormanı',
+    'Beyaz Kemer','Dişli Mahzeni','Sessiz Kuyu','Işık Kırıcı','Katlanmış Merdiven',
+    'Kum Saati Odası','Bronz Rasathane','Gece Nöbeti','Renk Kuyusu','Parşömen Salonu',
+    'Porselen Terası','Çark Bahçesi','Karanlık Kanal','Alev Camı','Kıvrım Atölyesi',
+    'Kaymaktaşı Holü','Sextant Kulesi','Uykulu Kütüphane','Gül Penceresi','Mektup Kulesi',
+    'İnci Sarayı','Kronometre Odası','Kör Nokta','Kırık Cam Sokağı','Kırışık Salon',
+    'Kaymaktaşı Kubbe','Yıldız Çarkı','Fener Kuyusu','Işık Kubbesi','Kanat Atölyesi',
+    'Sis Avlusu','Sarkaç Salonu','Gece Rıhtımı','Cam Köprü','Kağıt Fener',
+    'Alabaster Oda','Gök Küresi','Dip Karanlık','Renkli Kubbe','Kıvrımlı Kule',
+    'Tebeşir Sokağı','Kadran Bahçesi','Yankı Odası','Prizma Çarşısı','Katlı Çatı',
+    'Süt Camı Salonu','Zenit Terası','Dolunay Odası','Işık Tüneli','Zarf Kulesi',
+    'Kar Avlusu','Yıldız Saati','Gece Vadisi','Yakut Penceresi','Kırma Atölyesi',
+    'Ayaz Galerisi','Meridyen Kulesi','Uzak Karanlık','Gökkuşağı Holü','Menteşe Odası',
+    'Buzul Sarayı','Sonsuz Kadran','Son Karanlık','Işık Tacı','Katlanan Gökyüzü',
+    'Kristal Zirve','Büyük Mercek','Sessiz Yıldız','Son Prizma','Işığın Sonu'
+  ];
+  // Tema ve ikon 5'li dongude tekrar eder. Isim tekrar etmez.
+  var BOLGE_DONGU=[
+    {tema:'fildisi',  ikon:'leaf'},
+    {tema:'pirinc',   ikon:'gear'},
+    {tema:'murekkep', ikon:'moon'},
+    {tema:'vitray',   ikon:'window'},
+    {tema:'kagit',    ikon:'fold'}
+  ];
+  // Geriye uyumluluk: eski kod MAP_ZONES bekliyor olabilir.
+  var MAP_ZONES=BOLGE_ADLARI.slice(0,5).map(function(ad,i){
+    return { id:['ivory','brass','ink','glass','paper'][i], tier:i+1, ad:ad,
+             tema:BOLGE_DONGU[i].tema, ikon:BOLGE_DONGU[i].ikon };
+  });
+
+  function zoneOfLevel(level){
+    var t=getDifficultyTier(level);
+    if(t<1)t=1;
+    var d=BOLGE_DONGU[(t-1)%BOLGE_DONGU.length];
+    // 100 kademeden sonra (bolum 1000+) isimler dongusel tekrar eder.
+    var ad = (t<=BOLGE_ADLARI.length)
+      ? BOLGE_ADLARI[t-1]
+      : BOLGE_ADLARI[(t-1)%BOLGE_ADLARI.length]+' II';
+    return { id:'b'+t, tier:t, ad:ad, tema:d.tema, ikon:d.ikon };
+  }
+
+  // ---------- DEKORASYONLAR ----------
+  // Gameplay'i ETKILEMEZ. Sadece gorsel ilerleme.
+  // kosul: {tip:'level'|'stars'|'themes', deger:N}
+  // DUNYAM KAPISI: kac tahta cozulunce acilir.
+  // Tek sayi, tek yerden. Dengelemek icin sadece bunu degistir.
+  var DUNYA_ESIK=100;
+  function dunyaAcikMi(){ return (state.sayac&&state.sayac.cozulen||0)>=DUNYA_ESIK; }
+  function dunyaKalan(){ return Math.max(0, DUNYA_ESIK-((state.sayac&&state.sayac.cozulen)||0)); }
+
+  var DECORATIONS=[
+    {id:'d-fidan',  ad:'Fidan',        kat:'Nature',       kosul:{tip:'level',  deger:5},  cizim:'fidan'},
+    {id:'d-tas',    ad:'Taş Öbeği',    kat:'Nature',       kosul:{tip:'level',  deger:12}, cizim:'tas'},
+    {id:'d-cali',   ad:'Çalı',         kat:'Nature',       kosul:{tip:'stars',  deger:20}, cizim:'cali'},
+    {id:'d-sutun',  ad:'Sütun',        kat:'Architecture', kosul:{tip:'level',  deger:20}, cizim:'sutun'},
+    {id:'d-kemer',  ad:'Kemer',        kat:'Architecture', kosul:{tip:'level',  deger:30}, cizim:'kemer'},
+    {id:'d-heykel', ad:'Heykel',       kat:'Architecture', kosul:{tip:'stars',  deger:60}, cizim:'heykel'},
+    {id:'d-kume',   ad:'Kristal Küme', kat:'Crystal',      kosul:{tip:'level',  deger:15}, cizim:'kume'},
+    {id:'d-prizma', ad:'Dev Prizma',   kat:'Crystal',      kosul:{tip:'stars',  deger:40}, cizim:'devprizma'},
+    {id:'d-fener',  ad:'Fener',        kat:'Light',        kosul:{tip:'level',  deger:8},  cizim:'fener'},
+    {id:'d-lamba',  ad:'Asma Lamba',   kat:'Light',        kosul:{tip:'level',  deger:25}, cizim:'lamba'},
+    {id:'d-yildiz', ad:'Yıldız',       kat:'Sky',          kosul:{tip:'level',  deger:35}, cizim:'yildizd'},
+    {id:'d-bulut',  ad:'Bulut',        kat:'Sky',          kosul:{tip:'level',  deger:18}, cizim:'bulut'},
+    {id:'d-cesme',  ad:'Çeşme',        kat:'Special',      kosul:{tip:'themes', deger:3},  cizim:'cesme'},
+    {id:'d-kapi',   ad:'Işık Kapısı',  kat:'Special',      kosul:{tip:'level',  deger:50}, cizim:'kapi'}
+  ];
+  var DECO_KATEGORI=['Nature','Architecture','Crystal','Light','Sky','Special'];
+
+  // ---------- BASARILAR ----------
+  // kontrol(st) -> ilerleme sayisi. hedef'e ulasinca acilir.
+  var ACHIEVEMENTS=[
+    {id:'a-ilk',    ad:'İlk Işık',       aciklama:'İlk bölümü tamamla.',            hedef:1,
+     kontrol:function(st){ return Math.max(0,st.enYuksek-1); }},
+    {id:'a-usta',   ad:'Usta',           aciklama:'10 bölümü 3 yıldızla bitir.',    hedef:10,
+     kontrol:function(st){ var n=0; for(var k in st.stars) if(st.stars[k]===3)n++; return n; }},
+    {id:'a-kolek',  ad:'Koleksiyoncu',   aciklama:'3 tema aç.',                     hedef:3,
+     kontrol:function(st){ var n=0; for(var k in st.unlocked)n++; return n; }},
+    {id:'a-gezgin', ad:'Gezgin',         aciklama:'50 bölüm tamamla.',              hedef:50,
+     kontrol:function(st){ return Math.max(0,st.enYuksek-1); }},
+    {id:'a-mile',   ad:'Bölge Ustası',   aciklama:'İlk bölgeyi tamamla.',           hedef:10,
+     kontrol:function(st){ return Math.min(10,Math.max(0,st.enYuksek-1)); }},
+    {id:'a-mukem',  ad:'Mükemmeliyetçi', aciklama:'20 bölümü en iyi çözümle bitir.',hedef:20,
+     kontrol:function(st){ var n=0; for(var k in st.stars) if(st.stars[k]===3)n++; return n; }},
+    {id:'a-deko',   ad:'Dünya Kurucu',   aciklama:'5 dekorasyon aç.',               hedef:5,
+     kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }},
+    // --- ilk saatte alinabilir olanlar (Play Games Kalite Kontrol 2.2) ---
+    {id:'a-bes',    ad:'Isınma',         aciklama:'5 bölüm tamamla.',                hedef:5,
+     kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
+    {id:'a-ilkuc',  ad:'Temiz İş',       aciklama:'Bir bölümü 3 yıldızla bitir.',    hedef:1,
+     kontrol:function(st){ var n=0; for(var k in (st.stars||{})) if(st.stars[k]===3)n++; return n; }},
+    {id:'a-zaman',  ad:'Hızlı Düşün',    aciklama:'Zamana karşı 3 bölüm çöz.',       hedef:3,
+     kontrol:function(st){ return (st.sayac&&st.sayac.zamanBolum)||0; }}
+  ];
+
+  // ---------- GUNLUK GOREVLER ----------
+  // Opsiyonel. Gameplay'i bozmaz, sadece ekstra odul.
+  var DAILY_TASKS=[
+    {id:'g-coz3',   ad:'3 bölüm çöz',            hedef:3,  odul:15, sayac:'cozulen'},
+    {id:'g-yildiz2',ad:'2 kez 3 yıldız al',      hedef:2,  odul:20, sayac:'ucYildiz'},
+    {id:'g-zaman',  ad:'Zamana karşı 5 bölüm',   hedef:5,  odul:25, sayac:'zamanBolum'}
+  ];
+
+  // ---------- AYARLAR ----------
+  // Her satir bir ayar. Arayuz bu tablodan uretilir.
+  var SETTINGS_DEF=[
+    {grup:'Oynanış',   id:'haptic',    ad:'Titreşim',            aciklama:'Dokunma geri bildirimi', vars:true},
+    {grup:'Oynanış',   id:'animasyon', ad:'Animasyonlar',        aciklama:'Geçiş ve ödül efektleri',vars:true},
+    {grup:'Oynanış',   id:'parcacik',  ad:'Parçacık efektleri',  aciklama:'Arka plan ışıkları',     vars:true},
+    {grup:'Oynanış',   id:'otoGec',    ad:'Otomatik geçiş',      aciklama:'Bölüm bitince ilerle',   vars:false},
+    {grup:'Ses',       id:'muzik',     ad:'Müzik',               aciklama:'',                       vars:true},
+    {grup:'Ses',       id:'efekt',     ad:'Ses efektleri',       aciklama:'',                       vars:true},
+    {grup:'Ses',       id:'ortam',     ad:'Ortam sesi',          aciklama:'Temaya özel fon',        vars:false},
+    {grup:'Erişim',    id:'shapes',    ad:'Şekil göstergeleri',  aciklama:'Renk körü desteği',      vars:true},
+    {grup:'Erişim',    id:'kontrast',  ad:'Yüksek kontrast',     aciklama:'Daha keskin kenarlar',   vars:false},
+    {grup:'Erişim',    id:'azHareket', ad:'Hareketi azalt',      aciklama:'Animasyonları sadeleştir',vars:false},
+    {grup:'Görüntü',   id:'kalite',    ad:'Görsel kalite',       aciklama:'Düşük / Orta / Yüksek',  vars:'HIGH', tip:'secim',
+     secenek:[['LOW','Düşük'],['MED','Orta'],['HIGH','Yüksek']]}
+  ];
+  function varsayilanAyarlar(){
+    var o={}; SETTINGS_DEF.forEach(function(d){ o[d.id]=d.vars; }); return o;
+  }
+
+  // ==========================================================================
+  //  SVG IKON SISTEMI  -  emoji YOK, hepsi ayni gorsel dilde
+  //  ikon(ad, boyut, renk) -> <svg> string
+  // ==========================================================================
+  var ICONS={
+    map:      'M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z M9 3v15 M15 6v15',
+    world:    'M12 3a9 9 0 100 18 9 9 0 000-18z M3 12h18 M12 3c2.5 2.6 2.5 15.4 0 18 M12 3c-2.5 2.6-2.5 15.4 0 18',
+    themes:   'M12 3l7 4v10l-7 4-7-4V7z M12 3v18 M5 7l7 4 7-4',
+    settings: 'M12 9a3 3 0 100 6 3 3 0 000-6z M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-2.7 1.1v.2a2 2 0 11-4 0v-.1a1.6 1.6 0 00-2.7-1.2l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.6 1.6 0 004.6 15a2 2 0 01-2-2 2 2 0 012-2 1.6 1.6 0 001.1-2.7l-.1-.1a2 2 0 112.8-2.8l.1.1A1.6 1.6 0 0011 4.6a2 2 0 012-2 2 2 0 012 2 1.6 1.6 0 002.7 1.1l.1-.1a2 2 0 112.8 2.8l-.1.1A1.6 1.6 0 0019.4 11a2 2 0 012 2 2 2 0 01-2 2z',
+    star:     'M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.95z',
+    coin:     'M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z M12 8.5v7 M9.5 10.5h5 M9.5 13.5h5',
+    life:     'M12 20.5S4 14.8 4 9.6A4.6 4.6 0 0112 7a4.6 4.6 0 018 2.6c0 5.2-8 10.9-8 10.9z',
+    lock:     'M7 11V8a5 5 0 0110 0v3 M5 11h14v9H5z',
+    trophy:   'M7 4h10v5a5 5 0 01-10 0z M7 6H4v2a3 3 0 003 3 M17 6h3v2a3 3 0 01-3 3 M10 14h4v3h-4z M8 20h8',
+    deco:     'M12 3l2.2 5.3 5.8.5-4.4 3.8 1.3 5.6L12 15.3 7.1 18.2l1.3-5.6L4 8.8l5.8-.5z',
+    timer:    'M12 7v5l3 2 M12 3a9 9 0 100 18 9 9 0 000-18z M9 1h6',
+    play:     'M8 5l11 7-11 7z',
+    back:     'M15 5l-7 7 7 7',
+    reset:    'M3 12a9 9 0 109-9 M3 3v6h6',
+    hint:     'M12 3a6 6 0 00-3 11v3h6v-3a6 6 0 00-3-11z M10 20h4',
+    sound:    'M4 9h4l5-4v14l-5-4H4z M17 8.5a5 5 0 010 7',
+    music:    'M9 18V6l10-2v12 M9 18a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z M19 16a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z',
+    vibrate:  'M8 5h8v14H8z M4 9v6 M20 9v6',
+    check:    'M4 12.5l5 5 11-11',
+    leaf:     'M5 19c0-8 6-13 14-13 0 8-6 13-14 13z M5 19c3-4 6-6 9-7',
+    gear:     'M12 8a4 4 0 100 8 4 4 0 000-8z M12 2v3 M12 19v3 M2 12h3 M19 12h3 M5 5l2 2 M17 17l2 2 M19 5l-2 2 M7 17l-2 2',
+    moon:     'M20 14a8 8 0 11-9.5-10 6.5 6.5 0 009.5 10z',
+    window:   'M6 21V8l6-5 6 5v13z M12 3v18 M6 12h12',
+    fold:     'M4 20l8-16 8 16z M12 4v16 M4 20l8-4 8 4'
+  };
+  function ikon(ad,boy,renk,kalinlik){
+    var d=ICONS[ad]; if(!d)return '';
+    boy=boy||22; renk=renk||'currentColor';
+    return '<svg class="ik" viewBox="0 0 24 24" width="'+boy+'" height="'+boy+'" fill="none" '+
+      'stroke="'+renk+'" stroke-width="'+(kalinlik||1.9)+'" stroke-linecap="round" '+
+      'stroke-linejoin="round" aria-hidden="true"><path d="'+d+'"/></svg>';
+  }
+  function ikonDolu(ad,boy,renk){
+    var d=ICONS[ad]; if(!d)return '';
+    return '<svg class="ik" viewBox="0 0 24 24" width="'+(boy||22)+'" height="'+(boy||22)+'" '+
+      'fill="'+(renk||'currentColor')+'" aria-hidden="true"><path d="'+d+'"/></svg>';
+  }
+
+  // ==========================================================================
+  //  ZORLUK KADEMESI (DIFFICULTY TIER) SISTEMI  -
+  // --------------------------------------------------------------------------
+  //  Her 10 bolum bir kademe. Kademe = genel zorluk. Milestone = her 10. bolum.
+  //  IKISI AYRI SEYDIR ve birbirine karistirilmaz.
+  //
+  //  Yeni kademe eklemek icin: TIERS dizisinin sonuna bir satir ekle. Baska
+  //  hicbir yeri degistirmen gerekmez. Son kademenin otesi otomatik olceklenir.
+  //
+  //  ONEMLI SINIR - KRISTAL TAVANI 3:
+  //  Prizma UC yone isin veriyor (sol / duz / sag). Geri yon'de kaldirildi.
+  //  Bu yuzden bir tahtada en fazla 3 kristal olabilir. 4+ kristal ikinci bir
+  //  prizma gerektirir, o ayri bir mekanik. Zorluk diger parametrelerden gelir.
+  // ==========================================================================
+  var TIERS=[
+    // kademe 1  (bolum 1-10)   - OGRETICI
+    { n:[5,6],  cry:[2,3], mir:[2,4], wall:[4,8],   holes:0, path:[6,99],  srcPrism:2 },
+    // kademe 2  (bolum 11-20)  - DUSUNMEYE BASLA
+    { n:[6,6],  cry:[2,3], mir:[3,5], wall:[7,11],  holes:1, path:[8,99],  srcPrism:2 },
+    // kademe 3  (bolum 21-30)  - GERCEK BULMACA
+    { n:[6,7],  cry:[3,3], mir:[4,6], wall:[9,14],  holes:1, path:[10,99], srcPrism:3 },
+    // kademe 4  (bolum 31-40)  - ZORLASIYOR
+    { n:[7,7],  cry:[3,3], mir:[5,7], wall:[12,17], holes:2, path:[12,99], srcPrism:3 },
+    // kademe 5  (bolum 41-50)  - USTALIK
+    { n:[7,8],  cry:[3,3], mir:[6,8], wall:[14,20], holes:2, path:[14,99], srcPrism:4 },
+    // kademe 6  (bolum 51-60)  - MASTERY
+    { n:[8,8],  cry:[3,3], mir:[7,9], wall:[16,23], holes:3, path:[16,99], srcPrism:4 }
+  ];
+  // Kademe basina hedef zorluk puani araligi. Uretilen tahta bu araliga girmezse
+
+  var TIER_SKOR=[ [8,22], [18,34], [28,46], [40,60], [52,74], [64,90] ];
+
+  function getDifficultyTier(level){ return Math.floor((level-1)/10)+1; }
+
+  // ==========================================================================
+  //  KADEME PROFILI - 1000 BOLUME KADAR
+  // --------------------------------------------------------------------------
+
+  //    - duvar sayisi 59-64'e cikti (81 hucrenin 3/4'u dolu)
+  //    - solucan deligi hic konmadi (delik 0)
+  //    - hedef skor [244,842] gibi imkansiz hale geldi
+  //    - uretici HER SEFERINDE en son care adimina dustu (gevsetmeAdimi 5)
+  //    - zorluk 900 bolumde sadece 27 puan artti
+  //  Oyuncu bunu "bolum 200 ile 800 ayni" diye hisseder.
+  //
+  //  COZUM: Dogrusal buyume yerine TAVAN + DONGU.
+  //   1. Tahta 9x9'da durur. Daha buyugu telefonda okunmaz.
+  //   2. Duvar TAHTA ALANINA ORANLA hesaplanir, sabit sayi degil.
+  //      En fazla %38. Ustu cozulemez tahta uretir.
+  //   3. Ayna sayisi 12'de tavan yapar. Daha fazlasi bulmaca degil, angarya.
+  //   4. 7. kademeden sonra zorluk DONGUSEL degisir: ayni tavanda kalir
+  //      ama her kademe farkli bir KARAKTER alir (duvarli / aynali / delikli).
+  //      Boylece bolum 300 ile 700 ayni hissettirmez.
+  //   5. Her 50. bolum OZEL: en zor tahta.
+  // ==========================================================================
+  var TAVAN={ n:9, mir:12, cry:3, holes:4, duvarOran:0.38, srcPrism:6 };
+  // Buyuk sinav (her 50. bolum) tahtasi. Normal tavanin BIR USTU.
+  // Oyuncu 10x10 tahtayi gorunce "bu farkli" der. Sayilari biraz
+
+  var BUYUK_N=10;
+
+  // 7+ kademeler icin karakter dongusu. Her karakter farkli bir zorluk kaynagi.
+  // 4 karakter, 4 kademede bir tekrar eder. Ayni tavanda ama farkli his.
+  var KADEME_KARAKTER=[
+    { ad:'duvar',  duvar:1.00, mir:0.85, delik:0.5 },  // dar koridorlar
+    { ad:'ayna',   duvar:0.70, mir:1.00, delik:0.5 },  // uzun cozum zinciri
+    { ad:'delik',  duvar:0.80, mir:0.90, delik:1.0 },  // isinlanma bulmacasi
+    { ad:'karma',  duvar:0.88, mir:0.95, delik:0.8 }   // hepsinden biraz
+  ];
+
+  function getDifficultyTier(level){ return Math.floor((level-1)/10)+1; }
+  // Her 50. bolum "buyuk sinav". Normal milestone'dan daha zor.
+  function buyukMilestone(level){ return level%50===0; }
+
+  function tierProfil(tier){
+    if(tier<=TIERS.length){
+      var t=TIERS[tier-1];
+      return {n:t.n.slice(), cry:t.cry.slice(), mir:t.mir.slice(),
+              wall:t.wall.slice(), holes:t.holes, path:t.path.slice(),
+              srcPrism:t.srcPrism, karakter:'temel'};
+    }
+    // --- KADEME 7+ ---
+    var son=TIERS[TIERS.length-1];
+    var f=tier-TIERS.length;                 // 1, 2, 3, ...
+    var k=KADEME_KARAKTER[(tier-1)%KADEME_KARAKTER.length];
+
+    // Tahta 7. kademede 9x9'a cikar ve orada KALIR.
+    var n=Math.min(TAVAN.n, son.n[1]+1);
+    var alan=n*n;
+
+    // Duvar: tahta alaninin orani. Sabit sayi degil.
+    // f arttikca orana dogru yaklasir ama tavani asmaz.
+    var duvarTavan=Math.floor(alan*TAVAN.duvarOran*k.duvar);
+    var duvarTaban=Math.max(son.wall[0], Math.floor(duvarTavan*0.72));
+
+    // Taban 9'da durur, tavan 12. Uretici bu araliktan rahat bulur.
+    var mirTaban=Math.min(9, son.mir[0]+Math.floor(f/3));
+    var mirTavan=Math.min(TAVAN.mir, mirTaban+3);
+
+    // Delik: karaktere gore. 'delik' kademesinde en cok.
+    var delik=Math.max(1, Math.round(Math.min(TAVAN.holes, son.holes+1)*k.delik));
+
+    return {
+      n:[n,n],
+      cry:[Math.min(TAVAN.cry,son.cry[0]), TAVAN.cry],
+      mir:[mirTaban, mirTavan],
+      wall:[duvarTaban, duvarTavan],
+      holes:delik,
+
+      path:[Math.min(20, son.path[0]+Math.floor(f/3)), 99],
+      srcPrism:Math.min(TAVAN.srcPrism, son.srcPrism+Math.floor(f/3)),
+      karakter:k.ad
+    };
+  }
+
+  function tierSkorAralik(tier){
+    if(tier<=TIER_SKOR.length)return TIER_SKOR[tier-1].slice();
+
+    // Eski formul [244,842] gibi imkansiz hedefler uretiyordu, bu yuzden
+    // uretici her seferinde kurallari birakiyordu.
+    // Artik aralik GERCEKCI bir tavanda durur. Kademe arttikca TABAN yukselir,
+    // yani kolay tahtalar elenir; tavan sabit kalir.
+    var f=tier-TIER_SKOR.length;
+    var taban=Math.min(78, 62+f*1.2);
+    return [Math.round(taban), 130];
+  }
+
+  // Kademe ICI rampa. Ayni kademedeki 10 bolum birbirinin kopyasi olmamali.
+  // pos 0..9 -> 0..1 arasi bir agirlik. 10. bolum (milestone) en tepede.
+  function rampa(level){
+    var pos=(level-1)%10;              // 0..9
+    return pos/9;                      // 0 = kademenin en kolayi, 1 = en zoru
+  }
+
+  // Iki sayi arasinda oranla, tam sayiya yuvarla
+  function ara(dizi,t){ return Math.round(dizi[0]+(dizi[1]-dizi[0])*t); }
+
+  // ==========================================================================
+  //  ZORLUK PUANI
+  //  Zorluk "daha cok nesne" demek degildir. Alti bilesenin toplamidir.
+  // ==========================================================================
+  function difficultyScore(o){
+    var boardComplexity   = (o.n-5)*3;                       // tahta buyudukce arama alani buyur
+    var mirrorComplexity  = o.best*3.2;                      // en agir bilesen: kac ayna gerekiyor
+    var pathComplexity    = Math.min(o.path,30)*0.6;         // isigin katettigi yol
+    var wallComplexity    = o.walls*0.45;                    // engel yogunlugu
+    var holeComplexity    = o.holes*4;                       // solucan deligi ciddi yuk getirir
+    var solutionComplexity= (o.cry-2)*3 + (o.altCozum?Math.max(0,4-o.altCozum)*1.5:0);
+    return Math.round(boardComplexity+mirrorComplexity+pathComplexity+
+                      wallComplexity+holeComplexity+solutionComplexity);
+  }
+
+  // ==========================================================================
+  //  curve(level) - ESKI IMZA KORUNDU
+  //  build() ve buildRelaxed() ayni alan adlarini bekliyor, bozmuyoruz.
+  //  Ic mantik tamamen kademe sistemine tasindi.
+  // ==========================================================================
+  function curve(level){
+    var tier=getDifficultyTier(level);
+    var pr=tierProfil(tier);
+    var t=rampa(level);
+    var milestone=(level%10===0);
+
+    var n=ara(pr.n,t);
+    var minBest=ara(pr.mir,t);
+    var maxBest=Math.min(pr.mir[1], minBest+1);
+    var walls=ara(pr.wall,t);
+    var cry=ara(pr.cry,t);
+    var cryMin=Math.max(2,cry-1);
+    var minPath=ara([pr.path[0], pr.path[0]+4], t);
+    var minSrcPrism=pr.srcPrism;
+    var holePairs=pr.holes;
+
+    // MILESTONE (her 10. bolum): kademenin en zoru + bir tik daha.
+    if(milestone){
+      n=Math.min(9,n+ (tier<=2?1:0));
+      minBest=Math.min(pr.mir[1]+1, minBest+1);
+      maxBest=minBest+1;
+      walls=Math.min(pr.wall[1]+2, walls+2);
+      cry=Math.min(3,Math.max(cry,3));
+      minPath+=2;
+    }
+    // BUYUK SINAV (her 50. bolum): gercekten zor olmali.
+    //  - en fazla ayna
+    //  - en uzun yol
+    //  - en cok kristal
+    //  - solucan deligi garanti
+    // Oyuncu 50, 100, 150... bolumlerini hatirlamali.
+    var buyuk=buyukMilestone(level);
+    if(buyuk){
+
+      // Zorluk AYNA sayisindan gelir, yol sarti gevsek birakilir ki
+      // uretici gercekten bulabilsin.
+      // Kademe 5'ten sonra tahta BUYUR. Gorunur fark yaratir.
+      if(tier>=5) n=BUYUK_N;
+      minBest=Math.min(12, Math.max(minBest+1, 9));
+      maxBest=Math.min(14, minBest+2);
+      cry=Math.min(TAVAN.cry, 3);
+      cryMin=3;                              // ucu de olacak
+      minPath=Math.min(24, minPath+3);
+      holePairs=Math.max(1, holePairs);      // solucan deligi garanti
+      walls=Math.min(Math.floor(n*n*0.34), Math.round(walls*1.2));
+    }
+    // Bolum 1 ozel: hicbir sey ogretilmemis, en yalin hali
+    if(level===1){ n=5; minBest=2; maxBest=3; walls=3; cry=2; cryMin=2; minPath=4; holePairs=0; }
+
+    return {n:n, minBest:minBest, maxBest:maxBest, walls:walls, cry:cry, cryMin:cryMin,
+            milestone:milestone, buyuk:buyuk, karakter:pr.karakter,
+            minPath:minPath, minSrcPrism:minSrcPrism,
+            holePairs:holePairs, tier:tier, skor:tierSkorAralik(tier)};
+  }
+
+  function simulate(mirrors){
+    var segs=[],lit={},seen={},steps=0,booms={};
+    var stack=[{x:state.src.x,y:state.src.y,d:state.src.d,c:'W'}];
+    while(stack.length&&steps<4000){
+      steps++;
+      var b=stack.pop();
+      var nx=b.x+DX[b.d], ny=b.y+DY[b.d];
+      if(!inb(nx,ny)){segs.push({x1:b.x,y1:b.y,x2:nx,y2:ny,c:b.c});continue;}
+      var key=nx+','+ny+','+b.d+','+b.c;
+      seen[key]=(seen[key]||0)+1;
+      if(seen[key]>3){ booms[nx+','+ny]=b.c; continue; }   // dongu: 3 sekmeden sonra patlar
+      if(seen[key]>1){ /* dongude donuyor, cizmeye devam */ }
+      segs.push({x1:b.x,y1:b.y,x2:nx,y2:ny,c:b.c});
+      var cell=cellAt(nx,ny);
+      if(cell.t===WALL||cell.t===SOURCE)continue;
+      if(cell.t===HOLE){
+        // SOLUCAN DELIGI: esine isinlanir, YON DEGISMEZ.
+        // Yon degisseydi oyuncu kafasinda yolu kuramazdi. Ayna zaten donduruyor.
+        var es=state.holePairs&&state.holePairs[cell.id];
+        if(!es)continue;                      // esi yoksa yutar (guvenlik)
+        segs.push({x1:nx,y1:ny,x2:es.x,y2:es.y,c:b.c,warp:1});
+        stack.push({x:es.x,y:es.y,d:b.d,c:b.c});
+        continue;
+      }
+      if(cell.t===CRYSTAL){ if(cell.c===b.c)lit[cell.id]=1; continue; }
+      if(cell.t===PRISM){
+        if(b.c==='W'){
+          //: sadece UC yon. Geri yon kaldirildi, beyaz isinin ustunu kapatiyordu.
+          var pc=state.prismColors||['R','G','B'];
+          stack.push({x:nx,y:ny,d:(b.d+3)%4,c:pc[0]});   // sol
+          stack.push({x:nx,y:ny,d:b.d,      c:pc[1]});   // duz
+          stack.push({x:nx,y:ny,d:(b.d+1)%4,c:pc[2]});   // sag
+        }
+        else stack.push({x:nx,y:ny,d:b.d,c:b.c});
+        continue;
+      }
+      var m=mirrors[nx+','+ny]; var nd=b.d;
+      if(m==='/')nd=SLASH[b.d]; else if(m==='\\')nd=BACK[b.d];
+      stack.push({x:nx,y:ny,d:nd,c:b.c});
+    }
+    var count=0; for(var k in lit)count++;
+    return {segs:segs,lit:lit,count:count,booms:booms};
+  }
+  function solvedBy(m){return simulate(m).count===state.crystals.length;}
+
+  function findBest(limit){
+    // Butce tahta boyutuna gore. Buyuk tahtada arama agaci katlanarak buyuyor,
+    // sabit butce 9x9'da saniyeler suruyordu.
+    // Arama butcesi tahta boyutuna gore. 10x10 arama uzayi cok daha buyuk,
+
+    var budget=(state.n<=6)?45000:(state.n===7)?30000:(state.n===8)?14000:
+               (state.n===9)?7000:5000;
+    var seenSets={};
+    function cands(sim,mirrors){
+      var out={},arr=[];
+      for(var i=0;i<sim.segs.length;i++){
+        var s=sim.segs[i];
+        if(!inb(s.x2,s.y2))continue;
+        if(cellAt(s.x2,s.y2).t!==EMPTY)continue;
+        var k=s.x2+','+s.y2;
+        if(mirrors[k]||out[k])continue;
+        out[k]=1; arr.push(k);
+      }
+      return arr;
+    }
+    function dfs(mirrors,left){
+      if(budget--<=0)return false;
+      var sim=simulate(mirrors);
+      if(sim.count===state.crystals.length)return true;
+      if(left===0)return false;
+      var cand=cands(sim,mirrors);
+      for(var i=0;i<cand.length;i++){
+        var k=cand[i];
+        for(var o=0;o<2;o++){
+          mirrors[k]=o?'\\':'/';
+          var sig=Object.keys(mirrors).sort().join('|');
+          if(!seenSets[sig]){ seenSets[sig]=1; if(dfs(mirrors,left-1)){delete mirrors[k];return true;} }
+          delete mirrors[k];
+        }
+      }
+      return false;
+    }
+    for(var k=0;k<=limit;k++){ budget=(state.n<=6)?45000:(state.n===7?30000:18000); seenSets={}; if(dfs({},k))return k; }
+    return null;
+  }
+
+  function walk(x,y,d,steps,placed){
+    for(var i=0;i<steps;i++){
+      if(i>0 && rndF()<0.7){
+        var m = rndF()<0.5?'/':'\\';
+        var k=x+','+y;
+        if(cellAt(x,y).t!==EMPTY||placed.mirrors[k])return null;
+        placed.mirrors[k]=m;
+        d = (m==='/')?SLASH[d]:BACK[d];
+      }
+      var nx=x+DX[d], ny=y+DY[d];
+      if(!inb(nx,ny))return null;
+      if(cellAt(nx,ny).t!==EMPTY)return null;
+      x=nx;y=ny;
+    }
+    return {x:x,y:y,d:d};
+  }
+
+  function build(cfg){
+    // Deneme tavani. Yuksek kademede tahta buyuyor, her deneme pahali.
+    // Tavani dusuk tutup buildRelaxed'in gevsetme adimlarina birakiyoruz:
+    // 6 adim x 500 deneme, tek adimda 1500 denemekten hem hizli hem esnek.
+    var tavan=(state.n>=10)?260:500;   // 10x10 daha pahali, daha az dene
+    // TOPLAM sure butcesi. buildRelaxed baslatir, butun gevsetme adimlari
+    // ayni butceyi paylasir. Boylece bolum uretimi hicbir zaman
+    // ongorulemez sekilde uzamaz.
+    function simdi(){ return (window.performance&&performance.now)?performance.now():Date.now(); }
+    if(!state._uretimBaslangic) state._uretimBaslangic=simdi();
+    var toplamButce=state._genisButce ? ((state.n>=10)?700:600) : ((state.n>=10)?520:420);
+    function gecenMs(){ return simdi()-state._uretimBaslangic; }
+    var sureSiniri=toplamButce;
+    for(var attempt=0;attempt<tavan;attempt++){
+      if((attempt&7)===0 && gecenMs()>sureSiniri) return false;   // sure doldu
+      state.n=cfg.n; state.cells=[];
+      for(var i=0;i<state.n*state.n;i++)state.cells.push({t:EMPTY,c:null,id:null});
+      state.crystals=[]; state.holePairs={}; state.holeList=[];
+      var placed={mirrors:{}};
+      var edge=rnd(4), sx,sy,sd;
+      if(edge===0){sx=rnd(state.n);sy=0;sd=2;}
+      else if(edge===1){sx=state.n-1;sy=rnd(state.n);sd=3;}
+      else if(edge===2){sx=rnd(state.n);sy=state.n-1;sd=0;}
+      else {sx=0;sy=rnd(state.n);sd=1;}
+      state.cells[idx(sx,sy)]={t:SOURCE,c:null,id:null};
+      state.src={x:sx,y:sy,d:sd};
+      var w=walk(sx,sy,sd,cfg.minSrcPrism+rnd(3),placed);
+      if(!w||cellAt(w.x,w.y).t!==EMPTY)continue;
+      // prizma kaynaga cok yakin olmasin
+      if(Math.abs(w.x-sx)+Math.abs(w.y-sy) < cfg.minSrcPrism)continue;
+      // prizma kenarda olmasin: 4 yonun de gidecek yeri olmali
+      if(cfg.n>=6 && (w.x===0||w.y===0||w.x===cfg.n-1||w.y===cfg.n-1))continue;
+      state.cells[idx(w.x,w.y)]={t:PRISM,c:null,id:null};
+      // aktif paletten 4 renk sec, prizmanin 4 yonune ata (sol / duz / sag / geri)
+      var pool=aktifRenkler(state.level).slice();
+      for(var q=pool.length-1;q>0;q--){var j=rnd(q+1);var tm=pool[q];pool[q]=pool[j];pool[j]=tm;}
+      state.prismColors=pool.slice(0,3);
+      var pcs=state.prismColors;
+      var dirs={}; dirs[pcs[0]]=(w.d+3)%4; dirs[pcs[1]]=w.d; dirs[pcs[2]]=(w.d+1)%4;
+      // Her yonu dener; tutmayan yonu ATLAR (eskiden tum tahtayi cope atiyordu).
+      // Yerlesemeyen renk sadece bosa akar - bu gorsel zenginlik, hata degil.
+      var chosen=pcs.slice(0,Math.min(cfg.cry,pcs.length));
+      for(var ci=0;ci<chosen.length;ci++){
+        var col=chosen[ci];
+        var r=walk(w.x,w.y,dirs[col],2+rnd(4),placed);
+        if(!r||cellAt(r.x,r.y).t!==EMPTY)continue;
+        var tooClose=false;
+        for(var pz=0;pz<state.crystals.length;pz++){
+          var oc=state.crystals[pz];
+          if(Math.abs(oc.x-r.x)+Math.abs(oc.y-r.y)<2){tooClose=true;break;}
+        }
+        if(tooClose)continue;
+        var cid='c'+state.crystals.length;
+        state.cells[idx(r.x,r.y)]={t:CRYSTAL,c:col,id:cid};
+        state.crystals.push({x:r.x,y:r.y,c:col,id:cid});
+      }
+      if(state.crystals.length<cfg.cryMin)continue;
+      if(!solvedBy(placed.mirrors))continue;
+      var need=Object.keys(placed.mirrors).length;
+      if(need<cfg.minBest||need>cfg.maxBest)continue;
+      // isigin katettigi yol yeterince uzun mu? (tahtanin kullanilmasini zorlar)
+      if(simulate(placed.mirrors).segs.length < cfg.minPath)continue;
+      var tries=0,added=0;
+      while(added<cfg.walls&&tries<200){
+        tries++;
+        var wx=rnd(state.n),wy=rnd(state.n);
+        if(cellAt(wx,wy).t!==EMPTY||placed.mirrors[wx+','+wy])continue;
+        state.cells[idx(wx,wy)]={t:WALL,c:null,id:null};
+        if(!solvedBy(placed.mirrors)){state.cells[idx(wx,wy)]={t:EMPTY,c:null,id:null};continue;}
+        added++;
+      }
+      // SOLUCAN DELIGI: Delik cozum YOLUNUN USTUNE konur.
+      // Onceki hali bos hucrelere koyuyordu, isik hic ugramiyordu: 59 bolumun
+      // sadece 1'inde kullaniliyordu. Simdi isinin GECTIGI bir hucre giris,
+      // AYNI YONDE ilerideki bir hucre cikis olur. Boylece delik yolu kisaltir
+      // ve gercekten ise yarar.
+      state.holePairs={}; state.holeList=[];
+      var hCift=0, hWant=cfg.holePairs||0;
+      if(hWant>0){
+        var yol=simulate(placed.mirrors).segs;
+        // Isinin gectigi hucreleri yonleriyle topla
+        var adaylar=[];
+        for(var si=0;si<yol.length;si++){
+          var sg=yol[si];
+          if(!inb(sg.x2,sg.y2))continue;
+          if(cellAt(sg.x2,sg.y2).t!==EMPTY)continue;
+          if(placed.mirrors[sg.x2+','+sg.y2])continue;
+          var dx=sg.x2-sg.x1, dy=sg.y2-sg.y1;
+          var dd=-1;
+          for(var q2=0;q2<4;q2++) if(DX[q2]===dx&&DY[q2]===dy) dd=q2;
+          if(dd<0)continue;
+          adaylar.push({x:sg.x2,y:sg.y2,d:dd});
+        }
+        // Karistir (tohumlu)
+        for(var q3=adaylar.length-1;q3>0;q3--){var j3=rnd(q3+1);var t3=adaylar[q3];adaylar[q3]=adaylar[j3];adaylar[j3]=t3;}
+
+        for(var ai=0; ai<adaylar.length && hCift<hWant; ai++){
+          var g=adaylar[ai];
+          // Cikis: ayni yonde, en az 2 hucre ileride, bos bir yer
+          for(var uzT=0; uzT<2 && hCift<hWant; uzT++)
+          for(var uz=(uzT?1:3); uz<=state.n; uz++){
+            var ox=g.x+DX[g.d]*uz, oy=g.y+DY[g.d]*uz;
+            if(!inb(ox,oy))break;
+            if(cellAt(ox,oy).t!==EMPTY||placed.mirrors[ox+','+oy])continue;
+            var idA='h'+hCift+'a', idB='h'+hCift+'b';
+            state.cells[idx(g.x,g.y)]={t:HOLE,c:null,id:idA};
+            state.cells[idx(ox,oy)]={t:HOLE,c:null,id:idB};
+            state.holePairs[idA]={x:ox,y:oy}; state.holePairs[idB]={x:g.x,y:g.y};
+            if(!solvedBy(placed.mirrors)){
+              state.cells[idx(g.x,g.y)]={t:EMPTY,c:null,id:null};
+              state.cells[idx(ox,oy)]={t:EMPTY,c:null,id:null};
+              delete state.holePairs[idA]; delete state.holePairs[idB];
+              continue;
+            }
+            state.holeList.push({a:{x:g.x,y:g.y},b:{x:ox,y:oy},ci:hCift});
+            hCift++; break;
+          }
+        }
+      }
+      // Cift konamadiysa tahtayi atmiyoruz. Deliksiz bolum de gecerli bir bolumdur.
+      state.solution=placed.mirrors; state.mirrors={};
+
+      // ---- KABUL KONTROLLERI ----
+      // Sirasi onemli: once ucuz kontroller, en son pahali findBest.
+      var simSon=simulate(placed.mirrors);
+      var duvarSay=0, delikSay=0;
+      for(var ck=0;ck<state.cells.length;ck++){
+        if(state.cells[ck].t===WALL)duvarSay++;
+        if(state.cells[ck].t===HOLE)delikSay++;
+      }
+      // 1) Cozulebilir mi
+      if(simSon.count!==state.crystals.length)continue;
+      // 2) Kristal sarti
+      if(state.crystals.length<cfg.cryMin)continue;
+      // 3) Yol uzunlugu kademe araliginda mi
+      if(simSon.segs.length<cfg.minPath)continue;
+      // 4) Delik cifti dogru mu (istenmisse ve konulabilmisse)
+      if((cfg.holePairs||0)>0 && state.holeList.length===0 && !cfg._delikGevsek)continue;
+
+      // 5) GERCEK optimal cozum - pahali, en sona birakildi
+      var b=findBest(need);
+      state.best=(b===null)?need:b;
+      if(state.best<cfg.minBest||state.best>cfg.maxBest)continue;
+
+      // 6) Zorluk puani kademe araliginda mi
+      state.skor=difficultyScore({n:state.n, best:state.best, path:simSon.segs.length,
+                                  walls:duvarSay, holes:state.holeList.length,
+                                  cry:state.crystals.length});
+      if(cfg.skor && !cfg._skorGevsek){
+        if(state.skor<cfg.skor[0]||state.skor>cfg.skor[1])continue;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  var DELIK_RENK=['#8055B0','#1E9BA6','#C2569B'];   // cift basina bir renk
+  var SZ=100;
+  function px(v){return v*SZ+SZ/2;}
+  function el(tag,a){var e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(var k in a)e.setAttribute(k,a[k]);return e;}
+
+  // Kristal sekli. Renk korlugu ayari acikken her renk kendi seklini alir.
+  function kristalSekli(cid,cx,cy,col,on){
+    var f=on?col:'none', sekil='daire';
+    if(state.shapes){ for(var i=0;i<PAL.length;i++) if(PAL[i].id===cid) sekil=PAL[i].sekil; }
+    if(sekil==='ucgen')
+      return el('polygon',{points:cx+','+(cy-28)+' '+(cx+27)+','+(cy+22)+' '+(cx-27)+','+(cy+22),
+        fill:f,stroke:col,'stroke-width':6,'stroke-linejoin':'round'});
+    if(sekil==='kare')
+      return el('rect',{x:cx-25,y:cy-25,width:50,height:50,rx:5,fill:f,stroke:col,'stroke-width':6});
+    if(sekil==='besgen'){
+      var p5=[];
+      for(var k5=0;k5<5;k5++){var a5=Math.PI/180*(72*k5-90);
+        p5.push((cx+29*Math.cos(a5)).toFixed(1)+','+(cy+29*Math.sin(a5)).toFixed(1));}
+      return el('polygon',{points:p5.join(' '),fill:f,stroke:col,'stroke-width':6,'stroke-linejoin':'round'});
+    }
+    if(sekil==='altigen'){
+      var pts=[];
+      for(var k=0;k<6;k++){var a=Math.PI/180*(60*k-30);
+        pts.push((cx+27*Math.cos(a)).toFixed(1)+','+(cy+27*Math.sin(a)).toFixed(1));}
+      return el('polygon',{points:pts.join(' '),fill:f,stroke:col,'stroke-width':6,'stroke-linejoin':'round'});
+    }
+    if(sekil==='yildiz'){
+      var p2=[];
+      for(var k2=0;k2<10;k2++){var r2=(k2%2?12:29),a2=Math.PI/180*(36*k2-90);
+        p2.push((cx+r2*Math.cos(a2)).toFixed(1)+','+(cy+r2*Math.sin(a2)).toFixed(1));}
+      return el('polygon',{points:p2.join(' '),fill:f,stroke:col,'stroke-width':4,'stroke-linejoin':'round'});
+    }
+    return el('circle',{cx:cx,cy:cy,r:26,fill:f,stroke:col,'stroke-width':6});
+  }
+
+  function draw(){
+    var svg=document.getElementById('svg'), N=state.n, T=theme();
+    svg.setAttribute('viewBox','0 0 '+(N*SZ)+' '+(N*SZ));
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    for(var y=0;y<N;y++)for(var x=0;x<N;x++)
+      svg.appendChild(el('rect',{x:x*SZ,y:y*SZ,width:SZ,height:SZ,
+        fill:((x+y)%2?T.alt:T.cell),stroke:T.grid,'stroke-width':1.5}));
+
+    // Cift bagi: iki deligi birlestiren ince kesikli cizgi. Izgaranin hemen ustunde,
+    // isinlarin altinda kalir ki oyunu kapatmasin.
+    if(state.holeList&&state.holeList.length){
+      state.holeList.forEach(function(hp){
+        svg.appendChild(el('line',{x1:px(hp.a.x),y1:px(hp.a.y),x2:px(hp.b.x),y2:px(hp.b.y),
+          stroke:DELIK_RENK[hp.ci%DELIK_RENK.length],'stroke-width':3,
+          'stroke-dasharray':'4 12','stroke-linecap':'round',opacity:.4}));
+      });
+    }
+
+    var sim=simulate(state.mirrors);
+    var zafer = (sim.count===state.crystals.length && state.crystals.length>0);
+    //: Kilit TAM BURADA kurulur. kazandI() cizimden sonra calisiyordu,
+    // aradaki bosluktan tiklama geciyor ve cozulmus tahta bozulabiliyordu.
+    if(zafer && state.mode==='yolculuk') state.bitti=true;
+    // Zaferde isinlar kaynaktan uca dogru SIRAYLA akar. segs zaten kaynaktan baslar.
+    var akSure = zafer ? (0.45/Math.max(1,sim.segs.length)) : 0;   // toplam akis SABIT 0.45sn
+    for(var i=0;i<sim.segs.length;i++){
+      var sg=sim.segs[i];
+      if(sg.warp)continue;              // isinlanma atlamasi cizilmez, kafa karistirir
+      var stroke=(sg.c==='W')?INK():COLOF(sg.c);
+      var ln=el('line',{x1:px(sg.x1),y1:px(sg.y1),x2:px(sg.x2),y2:px(sg.y2),
+        stroke:stroke,'stroke-width':(sg.c==='W'?9:7),'stroke-linecap':'round',opacity:.9});
+      if(state.shapes&&sg.c!=='W'&&DASH[sg.c]!=='none')ln.setAttribute('stroke-dasharray',DASH[sg.c]);
+      if(zafer){
+        // Akis efekti: cizgiyi dash ile gizleyip acarak "ilerliyor" hissi ver.
+        var uz=Math.abs(px(sg.x2)-px(sg.x1))+Math.abs(px(sg.y2)-px(sg.y1))+2;
+        ln.setAttribute('stroke-dasharray',uz);
+        ln.style.setProperty('--uz',uz);
+        ln.setAttribute('class','akan');
+        ln.style.animationDelay=(i*akSure).toFixed(3)+'s';
+      } else {
+        ln.setAttribute('class','isin');
+        ln.style.animationDelay=(-(i%9)*0.21).toFixed(2)+'s';
+      }
+      svg.appendChild(ln);
+    }
+    state._akToplam = zafer ? 0.45+0.24 : 0;   // akis penceresi + son cizginin suresi
+    for(var y2=0;y2<N;y2++)for(var x2=0;x2<N;x2++){
+      var c=cellAt(x2,y2), cx=px(x2), cy=px(y2);
+      if(c.t===WALL) svg.appendChild(el('rect',{x:x2*SZ+8,y:y2*SZ+8,width:SZ-16,height:SZ-16,rx:6,fill:T.frame}));
+      else if(c.t===HOLE){
+        // SOLUCAN DELIGI: cift olanlar AYNI renkte. Boylece hangisi hangisine
+        // bagli tek bakista anlasilir.
+        var ci = c.id ? (parseInt(c.id.slice(1),10)||0) : 0;
+        var dc = DELIK_RENK[ci % DELIK_RENK.length];
+        // dis halka
+        svg.appendChild(el('circle',{cx:cx,cy:cy,r:34,fill:'none',stroke:dc,
+          'stroke-width':6,opacity:.9}));
+        // iceri kivrilan iki kol
+        for(var hk=0;hk<2;hk++){
+          var ha=hk*Math.PI, hp='';
+          for(var ht=0;ht<=12;ht++){
+            var hth=ha+ht*0.24, hr=30-ht*1.7;
+            hp+=(ht?' L':'M')+(cx+hr*Math.cos(hth)).toFixed(1)+','+(cy+hr*Math.sin(hth)).toFixed(1);
+          }
+          svg.appendChild(el('path',{d:hp,fill:'none',stroke:dc,'stroke-width':5,
+            'stroke-linecap':'round','class':'delikKol'}));
+        }
+        svg.appendChild(el('circle',{cx:cx,cy:cy,r:11,fill:dc}));
+      }
+      else if(c.t===SOURCE){
+        svg.appendChild(el('rect',{x:x2*SZ+10,y:y2*SZ+10,width:SZ-20,height:SZ-20,rx:8,fill:T.cell,stroke:T.frame,'stroke-width':5}));
+        svg.appendChild(el('circle',{cx:cx,cy:cy,r:17,fill:INK(),'class':'kaynakIc'}));
+      } else if(c.t===PRISM){
+        svg.appendChild(el('polygon',{points:cx+','+(cy-32)+' '+(cx+32)+','+(cy+28)+' '+(cx-32)+','+(cy+28),
+          fill:T.cell,stroke:INK(),'stroke-width':7,'stroke-linejoin':'round'}));
+        // uc renk noktasi: prizmanin O TAHTADA hangi renkleri urettigini gosterir
+        var pcd=state.prismColors||['R','G','B'];
+        for(var pdi=0;pdi<3;pdi++)
+          svg.appendChild(el('circle',{cx:cx+(pdi-1)*13,cy:cy+15,r:5.5,fill:COLOF(pcd[pdi])}));
+      } else if(c.t===CRYSTAL){
+        var on=!!sim.lit[c.id], col=COLOF(c.c);
+        var ks=kristalSekli(c.c,cx,cy,col,on);
+        if(on){
+          // Zaferde kristaller isin akisi bitince SIRAYLA yanar
+          var sira=state.crystals.map(function(q){return q.id;}).indexOf(c.id);
+          var gec = zafer ? (state._akToplam + sira*(0.30/Math.max(1,state.crystals.length))) : 0;
+          ks.setAttribute('class','yandi');
+          ks.style.animationDelay=gec.toFixed(2)+'s';
+          var hl=el('circle',{cx:cx,cy:cy,r:38,fill:'none',stroke:col,'stroke-width':3,
+            opacity:.45,'class':'halka'});
+          hl.style.animationDelay=gec.toFixed(2)+'s';
+          svg.appendChild(ks); svg.appendChild(hl);
+        } else svg.appendChild(ks);
+      }
+      // dongu patlamasi: isik kendi uzerine kapandiginda
+      if(sim.booms && sim.booms[x2+','+y2]){
+        var bc=COLOF(sim.booms[x2+','+y2]);
+        var bg=el('g',{'class':'boom'});
+        for(var sp=0;sp<8;sp++){
+          var ang=Math.PI/4*sp;
+          bg.appendChild(el('line',{x1:(cx+14*Math.cos(ang)).toFixed(1),y1:(cy+14*Math.sin(ang)).toFixed(1),
+            x2:(cx+42*Math.cos(ang)).toFixed(1),y2:(cy+42*Math.sin(ang)).toFixed(1),
+            stroke:bc,'stroke-width':7,'stroke-linecap':'round','class':'boomRay'}));
+        }
+        bg.appendChild(el('circle',{cx:cx,cy:cy,r:19,fill:bc,'class':'boomCore'}));
+        svg.appendChild(bg);
+      }
+      var m=state.mirrors[x2+','+y2];
+      if(m){
+        var a=(m==='/')?[x2*SZ+18,y2*SZ+SZ-18,x2*SZ+SZ-18,y2*SZ+18]:[x2*SZ+18,y2*SZ+18,x2*SZ+SZ-18,y2*SZ+SZ-18];
+        var ay=el('line',{x1:a[0],y1:a[1],x2:a[2],y2:a[3],stroke:T.frame,'stroke-width':13,'stroke-linecap':'round'});
+        if(state._sonAyna===(x2+','+y2))ay.setAttribute('class','yeniAyna');
+        svg.appendChild(ay);
+      }
+    }
+    var kilit = zafer && state.mode==='yolculuk';
+    for(var y3=0;y3<N;y3++)for(var x3=0;x3<N;x3++){
+      if(kilit)break;                       // cozulmus tahtada dokunma alani yok
+      if(cellAt(x3,y3).t!==EMPTY)continue;
+      var hit=el('rect',{x:x3*SZ,y:y3*SZ,width:SZ,height:SZ,fill:'transparent','class':'cellhit',tabindex:0,role:'button'});
+      hit.setAttribute('aria-label',(x3+1)+'. sütun '+(y3+1)+'. satır');
+      (function(ax,ay){
+        function act(){cycle(ax,ay);}
+        hit.addEventListener('click',act);
+        hit.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();act();}});
+      })(x3,y3);
+      svg.appendChild(hit);
+    }
+    var _kt=document.getElementById('tahtakutu');
+    if(_kt)_kt.classList.toggle('kilitli', !!(zafer && state.mode==='yolculuk'));
+    ['btnSifirla','btnIpucu'].forEach(function(id){
+      var e=document.getElementById(id); if(e)e.disabled=!!(zafer && state.mode==='yolculuk');
+    });
+    updateHud(sim);
+  }
+
+  // Tahta kilitli mi? Tek dogruluk kaynagi.
+  // Sadece bayraga guvenmiyoruz; simulasyonu da soruyoruz ki zamanlama acigi kalmasin.
+  function tahtaKilitli(){
+    if(state.bitti)return true;
+    if(state.mode==='zaman')return false;
+    if(!state.crystals||!state.crystals.length)return false;
+    return simulate(state.mirrors).count===state.crystals.length;
+  }
+
+  function cycle(x,y){
+    if(tahtaKilitli())return;     // bolum bitti, tahta kilitli
+    var k=x+','+y, cur=state.mirrors[k];
+    if(!cur)state.mirrors[k]='/'; else if(cur==='/')state.mirrors[k]='\\'; else delete state.mirrors[k];
+    state._sonAyna=state.mirrors[k]?k:null;
+    draw();
+  }
+
+  // Kademeli gevsetme.
+  // Oncelik sirasi brief'e gore: Cozulebilirlik > Adalet > Zorluk dogrulugu.
+  // Yani once zorluk PUANINDAN, en son cozulebilirlikten odun veririz.
+  function buildRelaxed(cfg){
+    function kopya(ek){
+      var c={n:cfg.n,minBest:cfg.minBest,maxBest:cfg.maxBest,walls:cfg.walls,cry:cfg.cry,
+             milestone:cfg.milestone,minSrcPrism:cfg.minSrcPrism,cryMin:cfg.cryMin,
+             holePairs:cfg.holePairs,minPath:cfg.minPath,tier:cfg.tier,skor:cfg.skor};
+      for(var k in ek)c[k]=ek[k];
+      return c;
+    }
+    // GEVSETME TABANI: Son care bile bir alt sinir korur.
+    // Yoksa 600. bolumde 3 aynalik tahta cikabiliyordu - oyuncu sistemi
+    // bozuk sanir. Taban kademeye gore yukselir.
+    var t=cfg.tier||1;
+    var tabanAyna = (t<=2)?2 : (t<=4)?3 : (t<=6)?4 : Math.min(7, 4+Math.floor(t/12));
+    var tabanYol  = (t<=2)?3 : (t<=6)?6 : Math.min(14, 8+Math.floor(t/15));
+    // Buyuk sinav (her 50. bolum) gevsetmede de dirençli olur.
+    // Kolaya kacarsa "buyuk sinav" olmaktan cikar.
+    if(cfg.buyuk){ tabanAyna=Math.max(tabanAyna, 8); tabanYol=Math.max(tabanYol, 14); }
+
+    var adimlar=[
+      {},                                             // 1) tam sart
+      {_skorGevsek:1},                                // 2) zorluk puanini birak
+      {_skorGevsek:1,_delikGevsek:1},                 // 3) delik sartini birak
+      {_skorGevsek:1,_delikGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-3)},   // 4) yolu kisalt
+      {_skorGevsek:1,_delikGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-6),
+       minBest:Math.max(tabanAyna,cfg.minBest-2),maxBest:cfg.maxBest+1},         // 5) ayna araligini ac
+      {_skorGevsek:1,_delikGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-9),
+       minBest:Math.max(tabanAyna,cfg.minBest-4),maxBest:cfg.maxBest+2,
+       walls:Math.max(4,cfg.walls-4),cryMin:Math.max(2,cfg.cryMin-1),holePairs:0}, // 6) genis
+      {_skorGevsek:1,_delikGevsek:1,minPath:tabanYol,minBest:tabanAyna,
+       maxBest:cfg.maxBest+4,walls:Math.max(2,cfg.walls-8),cryMin:2,holePairs:0}   // 7) son care
+    ];
+    // Uretim saati burada baslar. Butun adimlar ayni butceyi paylasir.
+    state._uretimBaslangic=(window.performance&&performance.now)?performance.now():Date.now();
+    for(var i=0;i<adimlar.length;i++){
+      state.gevsetme=i;
+      if(build(kopya(adimlar[i]))){ state._uretimBaslangic=0; return true; }
+    }
+    // Butce dolduysa SON CARE tekrar denenir, bu kez GENIS butceyle
+    // ve en gevsek sartlarla. Bolum mutlaka uretilmeli, ama sonsuza
+
+    state.gevsetme=adimlar.length-1;
+    state._uretimBaslangic=(window.performance&&performance.now)?performance.now():Date.now();
+    state._genisButce=1;
+    var r=build(kopya({_skorGevsek:1,_delikGevsek:1,minPath:2,minBest:2,
+                       maxBest:cfg.maxBest+6,walls:Math.max(2,cfg.walls-10),
+                       cryMin:2,holePairs:0}));
+    state._genisButce=0; state._uretimBaslangic=0;
+    return r;
+  }
+
+  function loadLevel(){
+    state.cfg=curve(state.level);
+    // TOHUM SECIMI - iki mod, iki farkli kural:
+    //  YOLCULUK: tohum = bolum no. Bolum 4 her zaman ayni tahta.
+    //            Yildiz sistemi bunu sart kosuyor.
+    //  ZAMAN   : tohum = tur sayaci. Her tur FARKLI tahta gelmeli.
+    //            Burada yildiz yok, tekrar oynanabilirlik var.
+    if(state.mode==='zaman'){
+      tohumla(state.tTohum*2654435761 % 2147483647 + state.tScore*7919 + 13);
+    } else {
+      // "Yeni tahta" butonu _karma'yi artirir, bolume donunce sifirlanir.
+      tohumla(state.level*7919 + (state._karma||0)*104729);
+    }
+    state.justWon=false; state.mistakes=0; state.loopSeen=false; state.paid=false;
+    state.bitti=false;
+    if(!buildRelaxed(state.cfg)){
+      document.getElementById('ipucu').textContent='Tahta üretilemedi. "Yeni tahta"ya bas.';
+      return;
+    }
+    state.mirrors={}; state._sonAyna=null; save(); draw();
+  }
+
+
+  // ===================== EKRAN YÖNETİMİ =====================
+  var EKRANLAR={menu:'ek-menu',harita:'ek-harita',oyun:'ek-oyun',magaza:'ek-magaza',
+                ayar:'ek-ayar',dunya:'ek-dunya',basari:'ek-basari',hakkinda:'ek-hakkinda',
+                hesap:'ek-hesap'};
+  var aktifEkran='menu';
+  function git(ad){
+    // Bolumu COZMEDEN birakip cikmak 1 cana mal olur.
+    if(aktifEkran==='oyun' && ad!=='oyun' && state._girdi && !state.bitti && state.mode==='yolculuk'){
+      state._girdi=false; canKaybet(); rozetleriCiz();
+    }
+    if(ad!=='oyun')state._girdi=false;
+    for(var k in EKRANLAR) document.getElementById(EKRANLAR[k]).classList.toggle('acik', k===ad);
+    aktifEkran=ad; window.scrollTo(0,0);
+    if(ad==='harita')haritaCiz();
+    // Oyun ekraninda zemin deseni kisilir
+    document.documentElement.classList.toggle('oyunda', ad==='oyun');
+    if(ad==='menu')devamKartiCiz();
+    if(ad==='magaza')magazaCiz();
+    if(ad==='dunya')dunyaCiz();
+    if(ad==='basari')basariEkraniCiz();
+    if(ad==='ayar')ayarlarCiz();
+    if(ad==='hakkinda')hakkindaCiz();
+    if(ad==='hesap')hesapCiz();
+    if(ad==='menu'&&state.mode==='zaman')zamanDur();
+    rozetleriCiz();
+  }
+  function $(id){return document.getElementById(id);}
+
+  // ===================== ROZETLER (can + para) =====================
+  var _sonCan=null, _sonPara=null;
+  function ziplat(e){
+    if(!e)return; var r=e.parentNode;
+    if(!r||!r.classList.contains('rozet'))return;
+    r.classList.remove('degisti'); void r.offsetWidth; r.classList.add('degisti');
+  }
+  // ==========================================================================
+  //  DEVAM KARTI
+  //  Oyuncu menude "kaldigim yer neresiydi" diye dusunmemeli.
+  //  Kart, oynanacak bolumu ve bulundugu bolgeyi gosterir, tek dokunusla acar.
+  //  Yeni oyuncuda (bolum 1, hic cozulmemis) GIZLENIR. Orada "Oyna" yeterli.
+  // ==========================================================================
+  // Dunyam butonu HER ZAMAN gorunur.
+  // Gizli hedef, hedef degildir. Oyuncu neyi kazanacagini bilmeli ki
+  // oraya oynasin. Kilitliyken kac tahta kaldigini yazar.
+  function dunyaButonCiz(){
+    var b=$('btnDunya'); if(!b)return;
+    b.hidden=false;
+    if(dunyaAcikMi()){
+      b.disabled=false; b.classList.remove('kilitli');
+      b.innerHTML='Dünyam';
+    } else {
+      b.disabled=false;               // tiklanabilir: tanitim ekrani acilir
+      b.classList.add('kilitli');
+      b.innerHTML='Dünyam <span class="kilitsay">'+dunyaKalan()+'</span>';
+    }
+  }
+
+  function devamKartiCiz(){
+    dunyaButonCiz();
+    gorevSeritCiz();
+    var k=$('devamKart'); if(!k)return;
+    // Hangi bolum? En son oynanan, ama acik olandan ileri olamaz.
+    var lv=Math.min(state.level||1, state.enYuksek||1);
+    if(lv<1)lv=1;
+    // Yeni oyuncu: hic bolum cozmemis. Kart gosterilmez.
+    var orta=document.querySelector('.menu-orta');
+    var oyna=$('btnOyna');
+    if(state.enYuksek<=1 && !bolumYildizi(1)){
+      k.hidden=true;
+      if(orta)orta.classList.remove('devamli');
+      if(oyna)oyna.textContent='Oyna';
+      return;
+    }
+    k.hidden=false;
+    if(orta)orta.classList.add('devamli');
+    // Kart ana eylem oldugunda Oyna'nin ne yaptigi acik yazilir.
+    if(oyna)oyna.textContent='Bölüm haritası';
+    var bolge=zoneOfLevel(lv);
+    $('dkBolum').textContent='Bölüm '+lv;
+    $('dkBolge').textContent=bolge.ad;
+    // bolge ilerlemesi: bu bolgede kac bolum bitti
+    var bas=(bolge.tier-1)*10+1, cozulen=0;
+    for(var i=bas;i<bas+10;i++) if(i<state.enYuksek)cozulen++;
+    var h=$('dkHalka');
+    if(h)h.style.setProperty('--oran', Math.round(cozulen/10*100));
+    k.setAttribute('aria-label','Bölüm '+lv+' oyna, '+bolge.ad);
+  }
+
+  function rozetleriCiz(){
+    canYenile();
+    var c=state.lives, p=state.coins, sure=canKalanSure();
+    var canDegisti=(_sonCan!==null&&_sonCan!==c), paraDegisti=(_sonPara!==null&&_sonPara!==p);
+    ['mCan','hCan','oCan','gCan'].forEach(function(id){var e=$(id);if(e){e.textContent=c;if(canDegisti)ziplat(e);}});
+    ['mPara','hPara','oPara','gPara','dPara','bPara'].forEach(function(id){var e=$(id);if(e){e.textContent=p;if(paraDegisti)ziplat(e);}});
+    var s=$('mCanSure'); if(s)s.textContent = (c<MAX_LIVES&&sure)?('+1: '+sure):'';
+    _sonCan=c; _sonPara=p;
+  }
+
+  // ===================== YILDIZ HESABI =====================
+  function yildizSayisi(kullanilan,enIyi){
+    var fazla=kullanilan-enIyi;
+    if(fazla<=0)return 3;
+    if(fazla===1)return 2;
+    return 1;
+  }
+  function yildizSVG(dolu){
+    return '<span class="y'+(dolu?' dolu':'')+'"><svg viewBox="0 0 24 24">'+
+      '<path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.95z" '+
+      'fill="'+(dolu?'#F5C93F':'#D8CFBE')+'" stroke="'+(dolu?'#D6A518':'#C4BBAA')+
+      '" stroke-width="1.6" stroke-linejoin="round"/></svg></span>';
+  }
+
+  // ===================== İLERLEME KAYDI =====================
+  function bolumYildizi(lv){ return (state.stars&&state.stars[lv])||0; }
+  function yildizKaydet(lv,y){
+    if(!state.stars)state.stars={};
+    if(y>(state.stars[lv]||0)){state.stars[lv]=y;save();}
+  }
+
+  // ===================== BÖLÜM HARİTASI =====================
+  var HARITA_ADET=30;
+  // ==========================================================================
+  //  HARITA
+  // --------------------------------------------------------------------------
+  //  Harita artik duz bir liste degil. Bolgelere ayrildi.
+  //  Her 10 bolum bir bolge. Bolge basligi kaydirirken ustte asili kalir.
+  //
+  //  DUGUM DURUMLARI (tek yerden hesaplanir - dugumDurum):
+  //    BITTI    cozuldu, yildizi var
+  //    SIMDI    acik ve henuz cozulmedi. Kirmizi, nabiz atar.
+  //    BURADA   en son oynadigin bolum. Halka ile isaretli.
+  //    KILIT    henuz acilmadi
+  //  BUYUK bolum (her 10'un kati) kare ve daha genis. Farkli oldugu
+  //  bir bakista anlasilmali.
+  //
+  //  PERFORMANS: tum bolumler degil, PENCERE cizilir. Eski telefonda
+  //  100+ dugum birden cizmek takilmaya sebep oluyor.
+  // ==========================================================================
+  var HARITA_ONCE=12;    // acik bolumden kac tane geriye
+  var HARITA_SONRA=14;   // kac tane ileriye
+
+  function dugumDurum(lv){
+    if(lv<state.enYuksek)  return 'bitti';
+    if(lv===state.enYuksek)return 'simdi';
+    return 'kilit';
+  }
+
+  function haritaCiz(){
+    var yol=$('yol'); yol.innerHTML='';
+    var bas=Math.max(1, state.enYuksek-HARITA_ONCE);
+    var son=state.enYuksek+HARITA_SONRA;
+    var sonBolge=null;
+
+    for(var i=bas;i<=son;i++){
+      var bolge=zoneOfLevel(i);
+      // --- bolge basligi: bolge degistiginde ---
+      if(!sonBolge || bolge.id!==sonBolge.id){
+        yol.appendChild(bolgeBasligi(bolge, i));
+        sonBolge=bolge;
+      }
+      yol.appendChild(dugumYap(i));
+    }
+
+    // en son oynanan bolume kaydir
+    var akt=yol.querySelector('.dugum.burada')||yol.querySelector('.dugum.simdi');
+    if(akt)setTimeout(function(){akt.scrollIntoView({block:'center',behavior:'auto'});},20);
+  }
+
+  // Bolge basligi. Kaydirirken ustte asili kalir, oyuncu nerede oldugunu bilir.
+  function bolgeBasligi(bolge, ilkBolum){
+    var e=document.createElement('div');
+    var acik = state.enYuksek>=ilkBolum;
+    e.className='bolge-bas'+(acik?'':' kilit');
+    var araya=(bolge.tier-1)*10+1, bitis=bolge.tier*10;
+    // bu bolgede kac bolum cozuldu
+    var cozulen=0;
+    for(var k=araya;k<=bitis;k++) if(k<state.enYuksek)cozulen++;
+    e.innerHTML='<span class="bolge-ik">'+ikon(bolge.ikon,20)+'</span>'+
+      '<span class="bolge-ad">'+bolge.ad+'</span>'+
+      '<span class="bolge-say tnum">'+cozulen+'/10</span>';
+    return e;
+  }
+
+  function dugumYap(i){
+    var durum=dugumDurum(i);
+    var mile=(i%10===0);
+    var burada=(i===state.level && durum!=='kilit');
+    var d=document.createElement('div');
+    d.className='dugum '+durum+(mile?' buyuk':'')+(burada?' burada':'');
+    var y=bolumYildizi(i);
+    var b=document.createElement('button');
+    b.className='nokta'; b.disabled=(durum==='kilit'); b.type='button';
+    var ic='<span class="no">'+i+'</span>';
+    if(durum==='bitti')      ic+='<span class="yildiz">'+yildizNokta(y)+'</span>';
+    else if(durum==='kilit') ic+='<span class="kilitik">'+ikon('lock',13)+'</span>';
+    b.innerHTML=ic;
+    b.setAttribute('aria-label','Bölüm '+i+(mile?', büyük bölüm':'')+
+      (durum==='kilit'?', kilitli':(durum==='bitti'?', '+y+' yıldız':'')));
+    if(durum!=='kilit') b.addEventListener('click',function(){ bolumBaslat(i); });
+    d.appendChild(b);
+    return d;
+  }
+
+  // Yildizlar harita dugumunde kucuk nokta olarak gosterilir.
+  // Metin yildizi (★) kucuk boyutta lekeye donuyordu.
+  function yildizNokta(n){
+    var h='';
+    for(var k=0;k<3;k++) h+='<i class="yn'+(k<n?' dolu':'')+'"></i>';
+    return h;
+  }
+
+  // ===================== OYUN BAŞLATMA =====================
+  function bolumBaslat(lv){
+    if(state.lives<=0){ canYokKart(); return; }
+    state.mode='yolculuk'; state.level=lv; state._karma=0;
+    state._girdi=true;             // bolume girildi, cozmeden cikarsa can gider
+    $('sayac').hidden=true;
+    git('oyun'); loadLevel();
+  }
+
+  // ===================== HEDEF ROZETLERİ =====================
+  function hedefleriCiz(sim){
+    var h=$('hedefler'); h.innerHTML='';
+    var sayac={},yanan={};
+    state.crystals.forEach(function(c){
+      sayac[c.c]=(sayac[c.c]||0)+1;
+      if(sim.lit[c.id])yanan[c.c]=(yanan[c.c]||0)+1;
+    });
+    Object.keys(sayac).forEach(function(col){
+      var v=yanan[col]||0, t=sayac[col], ok=(v===t);
+      var e=document.createElement('div');
+      e.className='hedef'+(ok?' tamam':'');
+      e.innerHTML='<span style="width:13px;height:13px;border-radius:3px;display:inline-block;'+
+        'background:'+COLOF(col)+'"></span><span class="tnum">'+v+'/'+t+'</span>';
+      h.appendChild(e);
+    });
+  }
+
+  // ===================== ÇİZİM SONRASI ARAYÜZ =====================
+  function updateHud(sim){
+    var kullanilan=Object.keys(state.mirrors).length;
+    var mile=state.cfg&&state.cfg.milestone;
+    $('bolumNo').textContent = (state.mode==='zaman')?'Zamana karşı':('Bölüm '+state.level);
+    $('bolumBas').className='bolumbasI'+(mile?' buyuk':'');
+    $('bolumAlt').textContent = mile ? ('Büyük bölüm · en iyi '+state.best+' ayna')
+                                     : ('Kullandığın '+kullanilan+' · en iyi '+state.best);
+    $('tahtakutu').className='tahtakutu'+(mile?' buyuk':'')+(state.bitti?' kilitli':'');
+    ['btnSifirla','btnIpucu'].forEach(function(id){ var e=$(id); if(e)e.disabled=!!state.bitti; });
+    hedefleriCiz(sim);
+
+    var boom=0; for(var bk in sim.booms)boom++;
+    var ip=$('ipucu');
+    if(boom>0){
+      if(!state.loopSeen){
+        state.loopSeen=true; state.mistakes++;
+        if(state.mistakes>=MISTAKE_LIMIT){ state.mistakes=0; canKaybet(); rozetleriCiz(); }
+      }
+      ip.className='ipucu hata';
+      ip.textContent='Işık kendi üzerine kapandı. Aynayı çevir ya da kaldır.'+
+        (state.mistakes>0?(' ('+state.mistakes+'/'+MISTAKE_LIMIT+')'):'');
+      return;
+    }
+    state.loopSeen=false;
+    ip.className='ipucu';
+
+    if(sim.count===state.crystals.length){ kazandI(kullanilan); return; }
+    var kalan=state.crystals.length-sim.count;
+    ip.textContent=kalan+' kristal daha yanacak.';
+  }
+
+  // ===================== KAZANMA =====================
+  function kazandI(kullanilan){
+    if(state.paid)return;
+    state.paid=true; state.bitti=true; state._girdi=false;   // cozdu, can gitmez
+    var _kk=$('tahtakutu'); if(_kk)_kk.classList.add('kilitli');
+    ['btnSifirla','btnIpucu'].forEach(function(id){ var e=$(id); if(e)e.disabled=true; });
+    var y=yildizSayisi(kullanilan,state.best);
+    yildizKaydet(state.level,y);
+
+    var kazanc=(y===3?12:(y===2?7:4));
+    var mile=state.cfg&&state.cfg.milestone;
+    if(mile)kazanc+=25;
+    state.coins+=kazanc;
+
+    var hediye=null;
+    if(mile){
+      for(var i=0;i<THEMES.length;i++)
+        if(THEMES[i].lv===state.level&&!state.unlocked[THEMES[i].id]){
+          hediye=THEMES[i]; state.unlocked[hediye.id]=1;
+        }
+    }
+    // Ilerleme enYuksek'te tutulur. state.level sadece OYNANAN bolumdur.
+    // Ikisi ayni degiskende oldugunda eski bolumu tekrar oynayinca ilerleme geri gidiyordu.
+    if(state.level+1>state.enYuksek)state.enYuksek=state.level+1;
+    // PROGRESSION katmani: sayaclar, dekorasyon, basari
+    sayacIsle(y, state.mode);
+    // Dunyam kapisi bu tahtayla acildi mi? Acildiysa birikmis odulleri verir.
+    var dunyaYeni=dunyaAcilisKontrol();
+    var yeniDeko=dunyaYeni||decoTara(), yeniBasari=basariTara();
+    state._dunyaAcildiSimdi=!!dunyaYeni;
+    state._sonOdul={deko:yeniDeko, basari:yeniBasari};
+    titret(TITRESIM.bitis);
+    save(); rozetleriCiz();
+    bulutYedekle();          // bulut bagliysa sessizce yedekle
+
+    if(state.mode==='zaman'){
+      state.tScore++;
+      // Zaman modunda zorluk YAVASCA artar. Her 3 cozumde bir basamak.
+      // Boylece 180 saniye boyunca ayni seviyede kalmaz, ama kopmaz da.
+      state.level = state.tBaslangic + Math.floor(state.tScore/3);
+      setTimeout(function(){ if(state.tLeft>0)loadLevel(); },900);
+      return;
+    }
+
+    // Zafer gosterisi bitmeden kart gelmesin.
+    // Isin akisi + kristallerin sirayla yanmasi + 1 sn nefes payi.
+    var goster = (state._akToplam||0) + 0.30 + 0.45;   // akis + kristaller + nefes payi
+    var kutu=$('tahtakutu');
+    kutu.classList.remove('zafer'); void kutu.offsetWidth; kutu.classList.add('zafer');
+    setTimeout(function(){ sonucKart(y,kullanilan,kazanc,hediye,mile); }, goster*1000);
+  }
+
+  // ===================== SONUÇ KARTI =====================
+  function sonucKart(y,kullanilan,kazanc,hediye,mile){
+    $('kBaslik').textContent = mile?'Büyük bölüm bitti':'Çözdün';
+    $('kAlt').textContent = (y===3)?'En iyi çözüm. Bundan azı yok.'
+                          : (y===2)?('Bir ayna fazla. '+state.best+' aynayla da olur.')
+                          : ((kullanilan-state.best)+' ayna fazla. En iyisi '+state.best+'.');
+    $('kYildiz').innerHTML = yildizSVG(y>=1)+yildizSVG(y>=2)+yildizSVG(y>=3);
+    $('kOdulSayi').textContent = kazanc;
+    $('kHediye').innerHTML = hediye ? ('<div class="hediye">🎁 "'+hediye.ad+'" teması açıldı</div>') : '';
+    var b=$('kBtnler'); b.innerHTML='';
+    if(y<3){
+      var t=document.createElement('button');
+      t.className='btn sari tam'; t.textContent='Daha az aynayla dene';
+      t.addEventListener('click',function(){ katmanKapat(); bolumBaslat(state.level); });
+      b.appendChild(t);
+    } else {
+      var t3=document.createElement('button');
+      t3.className='btn sade tam'; t3.textContent='Yeniden dene';
+      t3.addEventListener('click',function(){ katmanKapat(); bolumBaslat(state.level); });
+      b.appendChild(t3);
+    }
+    var n=document.createElement('button');
+    n.className='btn tam'; n.textContent='Sonraki bölüm →';
+    n.addEventListener('click',function(){ katmanKapat(); bolumBaslat(state.level+1); });
+    b.appendChild(n);
+    var h=document.createElement('button');
+    h.className='btn sade tam'; h.textContent='Haritaya dön';
+    h.addEventListener('click',function(){ katmanKapat(); git('harita'); });
+    b.appendChild(h);
+    $('katman').classList.add('acik');
+  }
+  function katmanKapat(){ $('katman').classList.remove('acik'); }
+
+  // ===================== CAN BİTTİ =====================
+  function canYokKart(){
+    $('kBaslik').textContent='Canın bitti';
+    $('kAlt').textContent='Yeni can '+(canKalanSure()||'birazdan')+' sonra geliyor.';
+    $('kYildiz').innerHTML=''; $('kHediye').innerHTML='';
+    $('kOdul').style.display='none';
+    var b=$('kBtnler'); b.innerHTML='';
+    var r=document.createElement('button');
+    r.className='btn sari tam'; r.textContent='Reklam izle · +1 can';
+    r.addEventListener('click',function(){
+      r.disabled=true; r.textContent='Reklam oynatılıyor…';
+      setTimeout(function(){
+        state.lives=Math.min(MAX_LIVES,state.lives+1);
+        if(state.lives>=MAX_LIVES)state.livesAt=0;
+        save(); rozetleriCiz(); $('kOdul').style.display='';
+        katmanKapat();
+      },1200);
+    });
+    b.appendChild(r);
+    var h=document.createElement('button');
+    h.className='btn sade tam'; h.textContent='Mağazaya git';
+    h.addEventListener('click',function(){ $('kOdul').style.display=''; katmanKapat(); magazaAc('can'); });
+    b.appendChild(h);
+    $('katman').classList.add('acik');
+  }
+
+  // ==========================================================================
+  //  MAGAZA
+  // --------------------------------------------------------------------------
+  //  Uc sekme: TEMALAR / ISIK / CAN.
+  //  Isik ve can, reklam izleyerek kazanilir. GERCEK PARA YOK.
+  //  Neden: ekonomi henuz gercek oyuncuyla test edilmedi. Dogrulanmamis bir
+  //  para birimine fiyat koymak, dengeyi kalici bozar. Once oyuncu davranisi
+  //  olculecek, sonra fiyat konacak. (Bkz. DECISIONS)
+  //
+  //  Urunler VERIDIR. Yeni urun eklemek icin bu tabloya satir eklenir.
+  //    tip     : 'reklam' | 'bedava'
+  //    bekleme : iki alim arasi bekleme suresi (ms), 0 = sinirsiz
+  // ==========================================================================
+  var URUNLER=[
+    { id:'isik_reklam', sekme:'isik', tip:'reklam', simge:'▶', odul:{isik:15},
+      bas:'Reklam izle', ack:'Kısa bir reklam karşılığı 15 ışık.', bekleme:0 },
+    { id:'isik_gunluk', sekme:'isik', tip:'bedava', simge:'◆', odul:{isik:10},
+      bas:'Günlük ışık', ack:'Her gün bir kez, bedava 10 ışık.', bekleme:24*60*60*1000 },
+    { id:'can_reklam',  sekme:'can',  tip:'reklam', simge:'▶', odul:{can:1},
+      bas:'Reklam izle', ack:'Kısa bir reklam karşılığı 1 can.', bekleme:0 },
+    { id:'can_dolu',    sekme:'can',  tip:'reklam', simge:'❤', odul:{can:MAX_LIVES},
+      bas:'Canları doldur', ack:'Reklam izle, canın tamamen dolsun.',
+      bekleme:2*60*60*1000 }
+  ];
+  function urunHazirMi(u){
+    if(!u.bekleme)return true;
+    var son=(state.magaza&&state.magaza[u.id])||0;
+    return (Date.now()-son)>=u.bekleme;
+  }
+  function urunKalanSure(u){
+    var son=(state.magaza&&state.magaza[u.id])||0;
+    var kalan=u.bekleme-(Date.now()-son);
+    if(kalan<=0)return '';
+    var dk=Math.ceil(kalan/60000), sa=Math.floor(dk/60);
+    return sa>0?(sa+' saat'):(dk+' dakika');
+  }
+  // Odul verilir. Tek yerden, boylece kural dagilmaz.
+  function urunOdulVer(u){
+    var o=u.odul||{};
+    if(o.isik) state.coins+=o.isik;
+    if(o.can){
+      state.lives=Math.min(MAX_LIVES, state.lives+o.can);
+      if(state.lives>=MAX_LIVES)state.livesAt=0;
+      else if(!state.livesAt)state.livesAt=Date.now();
+    }
+    if(!state.magaza)state.magaza={};
+    state.magaza[u.id]=Date.now();
+    save(); rozetleriCiz();
+  }
+  function urunAl(u,btn){
+    if(!urunHazirMi(u))return;
+    if(u.odul.can && state.lives>=MAX_LIVES){ magazaNotYaz('Canın zaten dolu.','uyari'); return; }
+    if(u.tip==='reklam'){
+      btn.disabled=true;
+      var eski=btn.querySelector('.sag').textContent;
+      btn.querySelector('.sag').textContent='...';
+
+      setTimeout(function(){
+        urunOdulVer(u); magazaCiz(); titret('basari');
+        magazaNotYaz(urunOdulMetni(u)+' kazandın.','iyi');
+      },1200);
+    } else {
+      urunOdulVer(u); magazaCiz(); titret('basari');
+      magazaNotYaz(urunOdulMetni(u)+' kazandın.','iyi');
+    }
+  }
+  function urunOdulMetni(u){
+    var o=u.odul||{};
+    if(o.isik)return o.isik+' ışık';
+    if(o.can===MAX_LIVES)return 'Tüm canlar';
+    if(o.can)return o.can+' can';
+    return 'Ödül';
+  }
+  function magazaNotYaz(metin,sinif){
+    var n=$('magazaNot'); if(!n)return;
+    n.textContent=metin; n.className='magaza-not '+(sinif||'');
+  }
+
+  // Sekme icerigini cizer. Tema sekmesi ayri fonksiyonda (temaListeCiz).
+  function urunListeCiz(sekme,kutuId){
+    var box=$(kutuId); if(!box)return;
+    box.innerHTML='';
+    URUNLER.filter(function(u){return u.sekme===sekme;}).forEach(function(u){
+      var hazir=urunHazirMi(u);
+      var canDolu=!!(u.odul.can && state.lives>=MAX_LIVES);
+      var b=document.createElement('button');
+      b.className='urun'; b.type='button';
+      b.disabled=(!hazir||canDolu);
+      var sag = canDolu ? '<span class="sag kapali">Dolu</span>'
+              : hazir   ? '<span class="sag">+'+urunOdulMetni(u)+'</span>'
+                        : '<span class="sag kapali">'+urunKalanSure(u)+'</span>';
+      b.innerHTML='<span class="simge '+(u.tip==='reklam'?'reklam':'dolu')+'">'+u.simge+'</span>'+
+        '<span class="govde"><span class="basI">'+u.bas+'</span>'+
+        '<span class="aciklama">'+u.ack+'</span></span>'+sag;
+      b.addEventListener('click',function(){ urunAl(u,b); });
+      box.appendChild(b);
+    });
+    if(sekme==='isik'){
+      var bilgi=document.createElement('div');
+      bilgi.className='magaza-bilgi';
+      bilgi.innerHTML='Işığın büyük kısmı <b>oynayarak</b> kazanılır. '+
+        'Bölüm bitirmek ışık verir. <b>Zarif çözüm</b> daha çoğunu verir. '+
+        'Üç yıldız 12 ışık, büyük bölüm 25 ışık ekler.';
+      box.appendChild(bilgi);
+    }
+    if(sekme==='can'){
+      var b2=document.createElement('div');
+      b2.className='magaza-bilgi';
+      b2.innerHTML='Can, <b>çözemeden çıkınca</b> gider. Çözersen asla gitmez. '+
+        'Kendiliğinden de dolar: her <b>4 saatte</b> bir can gelir.';
+      box.appendChild(b2);
+    }
+  }
+
+  // ==========================================================================
+  //  DUNYAM
+  // --------------------------------------------------------------------------
+  //  100 tahta cozunce acilir. Oyuncunun ilerlemesi bir manzaraya donusur.
+  //  Dekorasyonlar OYNANISI ETKILEMEZ. Sadece gorsel odul.
+  //
+  //  Cizimler saf SVG geometridir. Dis dosya yok, resim yok. Boylece:
+  //    - dosya boyutu artmaz
+  //    - tema renklerini otomatik alir
+  //    - eski telefonda takilmaz
+  // ==========================================================================
+  //  Her cizim 0..100 kutuda tanimlanir, manzaraya olceklenerek konur.
+  var DEKO_CIZIM={
+    fidan: function(c){ return '<path d="M50 100 L50 62" stroke="'+c.frame+'" stroke-width="7" stroke-linecap="round"/>'+
+      '<path d="M50 64 C30 60 22 42 30 26 C48 30 54 48 50 64 Z" fill="'+c.G+'"/>'+
+      '<path d="M50 70 C70 66 78 50 72 36 C56 40 48 56 50 70 Z" fill="'+c.G+'" opacity=".75"/>'; },
+    tas: function(c){ return '<path d="M14 100 L26 62 L52 54 L70 72 L64 100 Z" fill="'+c.frame+'"/>'+
+      '<path d="M56 100 L66 74 L84 80 L88 100 Z" fill="'+c.frame+'" opacity=".7"/>'+
+      '<path d="M26 62 L52 54 L48 72 Z" fill="'+c.cell+'" opacity=".35"/>'; },
+    cali: function(c){ return '<ellipse cx="38" cy="82" rx="26" ry="19" fill="'+c.G+'"/>'+
+      '<ellipse cx="64" cy="88" rx="20" ry="14" fill="'+c.G+'" opacity=".72"/>'+
+      '<circle cx="30" cy="72" r="4" fill="'+c.R+'"/><circle cx="52" cy="78" r="4" fill="'+c.R+'"/>'; },
+    sutun: function(c){ return '<rect x="36" y="24" width="28" height="66" fill="'+c.cell+'" stroke="'+c.frame+'" stroke-width="4"/>'+
+      '<rect x="28" y="88" width="44" height="12" rx="3" fill="'+c.frame+'"/>'+
+      '<rect x="28" y="14" width="44" height="12" rx="3" fill="'+c.frame+'"/>'+
+      '<path d="M44 30 V84 M56 30 V84" stroke="'+c.grid+'" stroke-width="3"/>'; },
+    kemer: function(c){ return '<path d="M16 100 V50 A34 34 0 0 1 84 50 V100" fill="none" stroke="'+c.frame+'" stroke-width="11"/>'+
+      '<path d="M28 100 V52 A22 22 0 0 1 72 52 V100" fill="'+c.cell+'" opacity=".5"/>'; },
+    heykel: function(c){ return '<rect x="30" y="84" width="40" height="16" rx="3" fill="'+c.frame+'"/>'+
+      '<path d="M50 20 L66 56 L50 84 L34 56 Z" fill="'+c.cell+'" stroke="'+c.ink+'" stroke-width="4" stroke-linejoin="round"/>'+
+      '<path d="M50 20 L50 84" stroke="'+c.ink+'" stroke-width="2.5" opacity=".4"/>'; },
+    kume: function(c){ return '<path d="M32 100 L24 56 L40 40 L52 60 Z" fill="'+c.C+'" opacity=".9"/>'+
+      '<path d="M52 100 L46 44 L62 30 L74 58 L66 100 Z" fill="'+c.B+'" opacity=".85"/>'+
+      '<path d="M66 100 L70 66 L84 74 L82 100 Z" fill="'+c.M+'" opacity=".8"/>'; },
+    devprizma: function(c){ return '<path d="M50 16 L86 92 H14 Z" fill="'+c.cell+'" stroke="'+c.ink+'" stroke-width="5" stroke-linejoin="round"/>'+
+      '<circle cx="38" cy="74" r="5" fill="'+c.R+'"/><circle cx="50" cy="74" r="5" fill="'+c.G+'"/>'+
+      '<circle cx="62" cy="74" r="5" fill="'+c.B+'"/>'; },
+    fener: function(c){ return '<rect x="44" y="46" width="12" height="54" fill="'+c.frame+'"/>'+
+      '<path d="M36 44 L50 20 L64 44 Z" fill="'+c.frame+'"/>'+
+      '<rect x="38" y="44" width="24" height="24" rx="3" fill="'+c.Y+'"/>'+
+      '<rect x="32" y="94" width="36" height="6" rx="3" fill="'+c.frame+'"/>'; },
+    lamba: function(c){ return '<path d="M50 0 V30" stroke="'+c.frame+'" stroke-width="4"/>'+
+      '<path d="M28 62 L50 30 L72 62 Z" fill="'+c.frame+'"/>'+
+      '<ellipse cx="50" cy="64" rx="22" ry="6" fill="'+c.Y+'"/>'+
+      '<path d="M40 70 L50 92 L60 70 Z" fill="'+c.Y+'" opacity=".28"/>'; },
+    yildizd: function(c){ var pts=[];
+      for(var k=0;k<10;k++){ var r=(k%2?16:36), a=Math.PI/180*(36*k-90);
+        pts.push((50+r*Math.cos(a)).toFixed(1)+','+(50+r*Math.sin(a)).toFixed(1)); }
+      return '<polygon points="'+pts.join(' ')+'" fill="'+c.Y+'" stroke="'+c.frame+'" stroke-width="3" stroke-linejoin="round"/>'; },
+    bulut: function(c){ return '<g fill="'+c.cell+'" stroke="'+c.grid+'" stroke-width="3">'+
+      '<circle cx="34" cy="60" r="18"/><circle cx="56" cy="52" r="22"/><circle cx="74" cy="62" r="15"/>'+
+      '<rect x="30" y="60" width="48" height="18" rx="9"/></g>'; },
+    cesme: function(c){ return '<ellipse cx="50" cy="86" rx="34" ry="12" fill="'+c.C+'" opacity=".55"/>'+
+      '<path d="M16 86 A34 12 0 0 0 84 86" fill="none" stroke="'+c.frame+'" stroke-width="5"/>'+
+      '<rect x="45" y="40" width="10" height="42" fill="'+c.frame+'"/>'+
+      '<path d="M50 40 C34 44 30 58 34 70" fill="none" stroke="'+c.C+'" stroke-width="4" stroke-linecap="round"/>'+
+      '<path d="M50 40 C66 44 70 58 66 70" fill="none" stroke="'+c.C+'" stroke-width="4" stroke-linecap="round"/>'; },
+    kapi: function(c){ return '<path d="M22 100 V44 A28 28 0 0 1 78 44 V100" fill="none" stroke="'+c.frame+'" stroke-width="9"/>'+
+      '<path d="M32 100 V46 A18 18 0 0 1 68 46 V100" fill="'+c.Y+'" opacity=".3"/>'+
+      '<path d="M50 30 V100" stroke="'+c.Y+'" stroke-width="3" opacity=".7"/>'+
+      '<circle cx="50" cy="24" r="7" fill="'+c.Y+'"/>'; }
+  };
+  function dekoSVG(d,boy){
+    var c=theme(), f=DEKO_CIZIM[d.cizim];
+    if(!f)return '';
+    return '<svg viewBox="0 0 100 100" width="'+(boy||64)+'" height="'+(boy||64)+'">'+f(c)+'</svg>';
+  }
+
+  // Manzara: acilan dekorasyonlar bir zemin uzerine dizilir.
+  // Yerlesim SABIT (id sirasina gore), boylece her acisda ayni yerde durur.
+  // Manzara yerlesimi. 340x180 kutu, zemin y=150.
+  //  x   : soldan konum
+  //  boy : parcanin boyu (piksel). Cizim 100x100 kutuda, olcek = boy/100.
+  //  kat : 0 = zeminde durur, 1 = havada (bulut, yildiz)
+  //  y   : sadece kat 1 icin, ustten konum
+  // Yerlesim SABIT. Ayni dekorasyon her acisda ayni yerde durur.
+  // Manzara yerlesimi. 340x180 kutu, zemin y=150.
+  //  x   : parcanin SOL kenari
+  //  boy : parcanin boyu (piksel). Cizim 100x100 kutuda, olcek = boy/100.
+  //  kat : 0 = zeminde durur / 1 = gokyuzu / 2 = tavandan sarkar
+  //  y   : kat 1 ve 2 icin ustten konum
+  // Yerlesim SABIT. Ayni dekorasyon her acisda ayni yerde durur.
+  // x degerleri sagdan sola SERPISTIRILDI, tek tarafa yigilmasin.
+  var MANZARA_YER=[
+    {x:18,  boy:60, kat:0},   // 1. fidan
+    {x:252, boy:46, kat:0},   // 2. tas
+    {x:150, boy:38, kat:0},   // 3. cali
+    {x:196, boy:72, kat:0},   // 4. sutun
+    {x:60,  boy:78, kat:0},   // 5. kemer
+    {x:280, boy:58, kat:0},   // 6. heykel
+    {x:126, boy:50, kat:0},   // 7. kristal kume
+    {x:222, boy:74, kat:0},   // 8. dev prizma
+    {x:98,  boy:54, kat:0},   // 9. fener
+    {x:170, boy:46, kat:2, y:0},  // 10. asma lamba - TAVANDAN sarkar
+    {x:30,  boy:32, kat:1, y:12}, // 11. yildiz
+    {x:236, boy:42, kat:1, y:16}, // 12. bulut
+    {x:8,   boy:52, kat:0},   // 13. cesme
+    {x:300, boy:56, kat:0}    // 14. isik kapisi
+  ];
+  function manzaraCiz(){
+    var kutu=$('manzara'); if(!kutu)return;
+    var c=theme();
+    var acik=DECORATIONS.filter(function(d){ return state.decos[d.id] && state.decoAktif[d.id]; });
+    if(!acik.length){
+      kutu.innerHTML='<div class="manzara-bos">Burası henüz boş.<br>'+
+        'Parçaları buraya dizebilirsin.</div>';
+      return;
+    }
+    var ZEMIN=150, g='';
+    // zemin serigi
+    g+='<rect x="0" y="'+ZEMIN+'" width="340" height="30" fill="'+c.frame+'" opacity=".3"/>';
+    g+='<rect x="0" y="'+ZEMIN+'" width="340" height="3" fill="'+c.frame+'"/>';
+
+    // Once havadakiler cizilir (arkada kalsin), sonra zemindekiler.
+    var sirali=acik.map(function(d,i){ return {d:d, y:MANZARA_YER[i%MANZARA_YER.length], i:i}; });
+    sirali.sort(function(a,b){ return (b.y.kat||0)-(a.y.kat||0); });
+
+    sirali.forEach(function(o,n){
+      var d=o.d, y=o.y, f=DEKO_CIZIM[d.cizim];
+      if(!f||!y.boy)return;
+      var ol=y.boy/100;
+      // kat 0: cizimin ALTI zemine oturur.  kat 1: ustten y kadar asagida.
+      var ty;
+      if(y.kat===2)      ty=(y.y||0);            // tavandan sarkar
+      else if(y.kat===1) ty=(y.y||10);           // gokyuzunde durur
+      else               ty=ZEMIN-y.boy;         // zemine oturur
+      // DIS g: konum (SVG transform oznitelig1).
+      // IC g: animasyon (CSS transform). Ayri dugumler, cakisma yok.
+      g+='<g transform="translate('+y.x+','+ty+') scale('+ol.toFixed(3)+')">'+
+         '<g class="mz-parca" style="animation-delay:'+(n*0.07).toFixed(2)+'s">'+
+         f(c)+'</g></g>';
+    });
+    kutu.innerHTML='<svg viewBox="0 0 340 180" class="manzara-svg">'+g+'</svg>';
+  }
+
+  function dunyaCiz(){
+    // KAPI KAPALI: tanitim ekrani. Oyuncu ne kazanacagini gorsun,
+    // hedef edinsin. Bos bir "kilitli" yazisi motive etmez.
+    if(!dunyaAcikMi()){ dunyaTanitimCiz(); return; }
+    var t=$('dunyaTanitim'); if(t)t.hidden=true;
+    var mz=$('manzara'); if(mz)mz.hidden=false;
+    var ub0=$('dunyaUst'); if(ub0)ub0.hidden=false;
+    manzaraCiz();
+    var box=$('dekoListe'); if(!box)return;
+    box.hidden=false;
+    box.innerHTML='';
+    var acikSayi=0;
+    DECORATIONS.forEach(function(d){ if(state.decos[d.id])acikSayi++; });
+    var ub=$('dunyaUst');
+    if(ub) ub.innerHTML='<span>Koleksiyon</span><span class="tnum">'+acikSayi+' / '+DECORATIONS.length+' parça</span>';
+
+    DECO_KATEGORI.forEach(function(kat){
+      var liste=DECORATIONS.filter(function(d){return d.kat===kat;});
+      if(!liste.length)return;
+      var bas=document.createElement('div');
+      bas.className='deko-kat'; bas.textContent=DEKO_KAT_AD[kat]||kat;
+      box.appendChild(bas);
+      var izgara=document.createElement('div');
+      izgara.className='deko-izgara';
+      liste.forEach(function(d){
+        var acik=!!state.decos[d.id];
+        var aktif=!!state.decoAktif[d.id];
+        var b=document.createElement('button');
+        b.className='deko'+(acik?'':' kilitli')+(aktif?' aktif':'');
+        b.type='button'; b.disabled=!acik;
+        b.innerHTML='<span class="dk-gorsel">'+(acik?dekoSVG(d,54):ikon('lock',24))+'</span>'+
+          '<span class="dk-ad">'+(acik?d.ad:'?')+'</span>'+
+          '<span class="dk-kosul">'+(acik?(aktif?'Dünyanda':'Gizli'):dekoKosulMetni(d))+'</span>';
+        if(acik) b.addEventListener('click',function(){
+          state.decoAktif[d.id]=aktif?0:1;
+          if(!state.decoAktif[d.id])delete state.decoAktif[d.id];
+          save(); dunyaCiz(); titret('hafif');
+        });
+        izgara.appendChild(b);
+      });
+      box.appendChild(izgara);
+    });
+  }
+  // Kapali haldeki tanitim. Uc sey yapar:
+  //  1. Ne oldugunu anlatir
+  //  2. Ilerlemeyi gosterir (cubuk)
+  //  3. Kazanilacak parcalardan ornek gosterir - merak uyandirir
+  function dunyaTanitimCiz(){
+    var mz=$('manzara'); if(mz)mz.hidden=true;
+    var ub=$('dunyaUst'); if(ub)ub.hidden=true;
+    var box=$('dekoListe'); if(box)box.hidden=true;
+    var t=$('dunyaTanitim'); if(!t)return;
+    t.hidden=false;
+    var cozulen=(state.sayac&&state.sayac.cozulen)||0;
+    var oran=Math.min(100, Math.round(cozulen/DUNYA_ESIK*100));
+    // ornek parcalar: ilk uc dekorasyonun cizimi
+    var ornek='';
+    DECORATIONS.slice(0,3).forEach(function(d){
+      ornek+='<span class="dt-ornek">'+dekoSVG(d,52)+'</span>';
+    });
+    t.innerHTML=
+      '<div class="dt-gorsel">'+ornek+'</div>'+
+      '<h3 class="dt-bas">Kendi dünyanı kur</h3>'+
+      '<p class="dt-metin">100 tahta çözünce burası açılır.<br>'+
+      'Bölüm bitirdikçe ağaç, sütun, kristal ve fener kazanırsın.<br>'+
+      'Hepsini kendi manzarana dizersin.</p>'+
+      '<div class="dt-cubuk"><span style="width:'+oran+'%"></span></div>'+
+      '<div class="dt-sayi"><b class="tnum">'+cozulen+'</b> / '+DUNYA_ESIK+' tahta</div>'+
+      '<p class="dt-alt">'+(dunyaKalan()===0?'Açılıyor…':dunyaKalan()+' tahta kaldı')+'</p>';
+  }
+
+  var DEKO_KAT_AD={Nature:'Doğa',Architecture:'Yapı',Crystal:'Kristal',
+                   Light:'Işık',Sky:'Gökyüzü',Special:'Özel'};
+  function dekoKosulMetni(d){
+    var k=d.kosul;
+    if(k.tip==='level') return 'Bölüm '+k.deger;
+    if(k.tip==='stars') return k.deger+' yıldız';
+    if(k.tip==='themes')return k.deger+' tema';
+    return '';
+  }
+
+  // ==========================================================================
+  //  GÖREVLER + BAŞARILAR
+  // --------------------------------------------------------------------------
+  //  YENI EKRAN ACILDI ama menu kalabalikllasmadi: menude sadece ince bir
+  //  serit var. Serit "bugun ne yapmali" sorusunu tek satirda cevaplar.
+  //  Ayrinti isteyen serite dokunur.
+  //
+
+  //  Burada sadece ARAYUZ var. Mantik degismedi.
+  // ==========================================================================
+
+  // Menudeki serit: en oncelikli gorevi gosterir.
+  //  1) Odulu alinmayi bekleyen varsa ONU goster (en degerli bilgi)
+  //  2) Yoksa en cok ilerlemis tamamlanmamis gorevi goster
+  //  3) Hepsi alindiysa "tamam" de
+  function gorevSeritCiz(){
+    var e=$('gorevSerit'); if(!e)return;
+    var liste=gorevListesi();
+    e.hidden=false;
+    var bekleyen=liste.filter(function(g){ return g.tamam&&!g.alindi; });
+    if(bekleyen.length){
+      $('gsMetin').textContent=bekleyen[0].ad;
+      $('gsSag').textContent='Ödülü al';
+      $('gsSag').className='gs-sag';
+      e.setAttribute('aria-label','Günlük görev tamam, ödülü al');
+      return;
+    }
+    var acik=liste.filter(function(g){ return !g.alindi; });
+    if(!acik.length){
+      $('gsMetin').textContent='Bugünkü görevler bitti';
+      $('gsSag').textContent='✓';
+      $('gsSag').className='gs-sag';
+      return;
+    }
+    acik.sort(function(a,b){ return (b.ilerleme/b.hedef)-(a.ilerleme/a.hedef); });
+    var g=acik[0];
+    $('gsMetin').textContent=g.ad;
+    $('gsSag').textContent=g.ilerleme+'/'+g.hedef;
+    $('gsSag').className='gs-sag bekle';
+    e.setAttribute('aria-label','Günlük görev: '+g.ad+', '+g.ilerleme+' bölü '+g.hedef);
+  }
+
+  function gorevlerCiz(){
+    var box=$('gorevListe'); if(!box)return;
+    box.innerHTML='';
+    gorevListesi().forEach(function(g){
+      var el=document.createElement(g.tamam&&!g.alindi?'button':'div');
+      el.className='gorev'+(g.tamam&&!g.alindi?' alinabilir':'')+(g.alindi?' alindi':'');
+      if(el.tagName==='BUTTON')el.type='button';
+      var oran=Math.round(g.ilerleme/g.hedef*100);
+      var durum=g.alindi?'Alındı':(g.tamam?'Ödülü al':'Devam ediyor');
+      el.innerHTML='<span class="gv-govde"><span class="gv-ad">'+g.ad+'</span>'+
+        '<span class="gv-cubuk"><span style="width:'+oran+'%"></span></span>'+
+        '<span class="gv-sayi">'+g.ilerleme+' / '+g.hedef+'</span></span>'+
+        '<span class="gv-odul"><span><b class="pul">◆</b> '+g.odul+'</span>'+
+        '<span class="gv-durum">'+durum+'</span></span>';
+      if(g.tamam&&!g.alindi) el.addEventListener('click',function(){
+        var kazanc=gorevOdulAl(g.id);
+        if(kazanc){ rozetleriCiz(); gorevlerCiz(); titret('basari'); }
+      });
+      box.appendChild(el);
+    });
+    var b=$('gorevBilgi');
+    if(b) b.innerHTML='Görevler <b>her gün</b> yenilenir. Bölüm çözdükçe '+
+      'kendiliğinden ilerler. Ödülü almayı unutma.';
+  }
+
+  function basarilarCiz(){
+    var box=$('basariListe'); if(!box)return;
+    box.innerHTML='';
+    ACHIEVEMENTS.forEach(function(a){
+      var d=basariDurum(a);
+      var el=document.createElement('div');
+      el.className='basaris'+(d.acik?' acik':'');
+      var oran=Math.round(d.ilerleme/d.hedef*100);
+      el.innerHTML='<span class="bs-simge">'+ikon(d.acik?'trophy':'lock',24)+'</span>'+
+        '<span class="gv-govde"><span class="gv-ad">'+d.ad+'</span>'+
+        '<span class="bs-ack">'+d.aciklama+'</span>'+
+        (d.acik?'':'<span class="gv-cubuk"><span style="width:'+oran+'%"></span></span>'+
+                   '<span class="gv-sayi">'+d.ilerleme+' / '+d.hedef+'</span>')+
+        '</span>'+
+        (d.acik?'<span class="gv-odul"><span class="gv-durum">Açık</span></span>':'');
+      box.appendChild(el);
+    });
+  }
+  function basariEkraniCiz(){ gorevlerCiz(); basarilarCiz(); }
+
+  // ==========================================================================
+  //  AYARLAR
+  //  Ekran SETTINGS_DEF tablosundan uretilir. Yeni ayar eklemek icin
+  //  sadece tabloya satir eklenir, bu kod degismez.
+  // ==========================================================================
+  function ayarlarCiz(){
+    var box=$('ayarListe'); if(!box)return;
+    box.innerHTML='';
+    var sonGrup=null;
+    SETTINGS_DEF.forEach(function(d){
+      if(d.grup!==sonGrup){
+        var g=document.createElement('div');
+        g.className='ayar-grup'; g.textContent=d.grup;
+        box.appendChild(g); sonGrup=d.grup;
+      }
+      var sat=document.createElement('div');
+      sat.className='ayar';
+      var sol='<div><div class="ad">'+d.ad+'</div>'+
+        (d.aciklama?'<div style="font-size:.8rem;font-weight:700;color:var(--metin-soft)">'+d.aciklama+'</div>':'')+
+        (d.not?'<div class="not">'+d.not+'</div>':'')+'</div>';
+      if(d.tip==='secim'){
+        var sec='<div class="ayar-secim">';
+        d.secenek.forEach(function(o){
+          sec+='<button type="button" data-deger="'+o[0]+'"'+
+               (ayar(d.id)===o[0]?' class="acik"':'')+'>'+o[1]+'</button>';
+        });
+        sec+='</div>';
+        sat.innerHTML=sol+sec;
+        [].forEach.call(sat.querySelectorAll('.ayar-secim button'),function(b){
+          b.addEventListener('click',function(){
+            ayarKur(d.id, b.getAttribute('data-deger'));
+            ayarUygula(); ayarlarCiz(); titret('hafif');
+          });
+        });
+      } else {
+        sat.innerHTML=sol+'<button class="anahtar" type="button" aria-pressed="'+
+          (ayar(d.id)?'true':'false')+'" aria-label="'+d.ad+'"></button>';
+        var sw=sat.querySelector('.anahtar');
+        sw.addEventListener('click',function(){
+          var yeni=!ayar(d.id);
+          ayarKur(d.id, yeni);
+          sw.setAttribute('aria-pressed', yeni?'true':'false');
+          ayarUygula(); titret('hafif');
+          if(d.id==='shapes' && state.cells && state.cells.length) draw();
+        });
+      }
+      box.appendChild(sat);
+    });
+  }
+
+  // ==========================================================================
+  //  HAKKINDA
+  //  Google Play icin gerekli: surum, yapimci, gizlilik politikasi.
+  //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
+  // ==========================================================================
+  var YAPIM={
+    surum:'0.9.0',
+    yapim:'test yapımı',
+    studyo:'Osmaniyeli Abdullah',
+    yil:'2026',
+    gizlilik:'',        // yayindan once doldurulacak
+    destek:''           // yayindan once doldurulacak
+  };
+  function hakkindaCiz(){
+    var k=$('hakkindaIcerik'); if(!k)return;
+    var toplamYildiz=0; for(var i in (state.stars||{})) toplamYildiz+=state.stars[i];
+    var temaSayi=0;  for(var t in (state.unlocked||{})) temaSayi++;
+    var basariSayi=0;for(var b in (state.basari||{}))  basariSayi++;
+    var dekoSayi=0;  for(var d in (state.decos||{}))   dekoSayi++;
+
+    k.innerHTML=
+      '<div class="hk-logo">'+
+        '<svg viewBox="0 0 100 100" aria-hidden="true">'+
+          '<rect width="100" height="100" rx="22" fill="#26221E"/>'+
+          '<path d="M50 24 L74 70 H26 Z" fill="none" stroke="#F5F1E8" stroke-width="7" stroke-linejoin="round"/>'+
+          '<rect x="8" y="52" width="20" height="6" rx="3" fill="#FFFFFF"/>'+
+          '<rect x="74" y="40" width="20" height="6" rx="3" fill="#E0483C" transform="rotate(-12 84 43)"/>'+
+          '<rect x="74" y="52" width="20" height="6" rx="3" fill="#2E9E6B"/>'+
+          '<rect x="74" y="64" width="20" height="6" rx="3" fill="#3B72C4" transform="rotate(12 84 67)"/>'+
+        '</svg>'+
+        '<div class="hk-ad">Prismio</div>'+
+        '<div class="hk-slogan">Çöz. Sonra daha iyi çöz.</div>'+
+      '</div>'+
+
+      '<div class="hk-blok"><h4>Sürüm</h4>'+
+        '<div class="hk-satir"><span class="et">Sürüm</span><span class="dg tnum">'+YAPIM.surum+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Yapım</span><span class="dg">'+YAPIM.yapim+'</span></div>'+
+      '</div>'+
+
+      '<div class="hk-blok"><h4>Yapımcı</h4>'+
+        '<div class="hk-satir"><span class="et">Tasarım ve yapım</span><span class="dg">'+YAPIM.studyo+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Bulmaca tasarımı</span><span class="dg">'+YAPIM.studyo+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Görsel kimlik</span><span class="dg">'+YAPIM.studyo+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Yıl</span><span class="dg tnum">'+YAPIM.yil+'</span></div>'+
+      '</div>'+
+
+      '<div class="hk-blok"><h4>İlerlemen</h4>'+
+        '<div class="hk-satir"><span class="et">Açılan bölüm</span><span class="dg tnum">'+(state.enYuksek||1)+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Çözülen tahta</span><span class="dg tnum">'+((state.sayac&&state.sayac.cozulen)||0)+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Toplam yıldız</span><span class="dg tnum">'+toplamYildiz+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Açılan tema</span><span class="dg tnum">'+temaSayi+' / '+THEMES.length+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Başarı</span><span class="dg tnum">'+basariSayi+' / '+ACHIEVEMENTS.length+'</span></div>'+
+        '<div class="hk-satir"><span class="et">Dünya parçası</span><span class="dg tnum">'+dekoSayi+' / '+DECORATIONS.length+'</span></div>'+
+      '</div>'+
+
+      '<div class="hk-blok"><h4>Yasal</h4>'+
+        '<button class="hk-bag" type="button" data-bag="gizlilik">Gizlilik politikası<span class="ok">›</span></button>'+
+        '<button class="hk-bag" type="button" data-bag="destek">Destek ve iletişim<span class="ok">›</span></button>'+
+      '</div>'+
+
+      '<p class="hk-tesekkur">Oynadığın için teşekkürler.<br>'+
+        'Prismio tek kişilik bir yapım.</p>';
+
+    [].forEach.call(k.querySelectorAll('.hk-bag'),function(b){
+      b.addEventListener('click',function(){
+        var tur=b.getAttribute('data-bag'), adres=YAPIM[tur];
+        if(adres){ try{ window.open(adres,'_blank'); }catch(e){} }
+        else {
+          // Yayindan once adres yok. Sessiz kalmak yerine durumu soyle.
+          b.insertAdjacentHTML('afterend',
+            '<div class="hk-metin" style="padding:6px 0 2px">Bu bağlantı yayın öncesi eklenecek.</div>');
+          b.disabled=true;
+        }
+      });
+    });
+  }
+
+  // ==========================================================================
+  //  HESAP VE YEDEKLEME
+  // --------------------------------------------------------------------------
+  //  BULUT saglayicisi TEK NOKTADIR. Su an "yok" durumda.
+  //  APK asamasinda Google Play Games buraya baglanir:
+  //    BULUT.destek = true
+  //    BULUT.girisYap / BULUT.cikis / BULUT.yukle / BULUT.indir doldurulur
+  //  Arayuz kodu DEGISMEZ. Ayni ekran calismaya devam eder.
+  // ==========================================================================
+  // ==========================================================================
+  //  BULUT KAYIT
+  // --------------------------------------------------------------------------
+  //  UC KATMANLI YEDEKLEME. Ucu de ayri is yapar, biri digerinin yerini tutmaz:
+  //
+  //   1. ANDROID OTOMATIK YEDEK  (manifest: allowBackup=true)
+  //      Telefon degisince/sifirlaninca ilerleme geri gelir.
+  //      Oyuncu hicbir sey yapmaz, kendiliginden olur.
+  //      ZATEN CALISIYOR - kod gerekmiyor, Android halleder.
+  //
+  //   2. GOOGLE PLAY GAMES  (bu nesne)
+  //      Hesaba bagli kayit. Ayni hesapla giren her cihazda ayni ilerleme.
+  //      APK asamasinda baglanir. Arayuz hazir.
+  //
+  //   3. ELLE KOD  (kayitDisaAktar / kayitIceAktar)
+  //      Oyuncunun kendi kontrolu. Hesapsiz tasima.
+  //      ZATEN CALISIYOR.
+  //
+  //  APK'da Google Play Games baglamak icin YAPILACAK TEK SEY:
+  //    BULUT.destek=true  ve  dort fonksiyonu doldur.
+  //  Arayuz kodu DEGISMEZ.
+  // ==========================================================================
+  var BULUT={
+    destek:false,                 // APK'da Play Games baglaninca true
+    ad:'Google Play Games',
+    kullanici:null,               // giris yapilinca {ad:'...'} olur
+    sonYedek:0,                   // son basarili yedek zamani
+
+    durum:function(){
+      if(!this.destek)return 'yok';
+      return this.kullanici ? 'bagli' : 'hazir';
+    },
+
+    // --- Asagidakiler APK'da doldurulur. Su an hepsi bos. ---
+    girisYap:null,   // function(geriBildirim)
+    cikis:null,      // function()
+    yukle:null,      // function(veri, geriBildirim)  buluta yaz
+    indir:null       // function(geriBildirim)        buluttan oku
+  };
+
+  // ==========================================================================
+  //  ANDROID KOPRUSU
+  // --------------------------------------------------------------------------
+  //  Android kabugu "PrismioNative" adinda bir kopru veriyor.
+  //  Tarayicida bu kopru YOKTUR - oyun yine calisir, sadece Play Games
+  //  bolumu kapali gorunur. Tek kod, iki ortam.
+  //
+  //  Kopru dort is yapar: durumSor, girisYap, yedekle, indir.
+  //  Java tarafi isi bitirince window.__pgXxx fonksiyonlarini cagirir.
+  // ==========================================================================
+  function kopruVar(){
+    try{ return !!(window.PrismioNative && window.PrismioNative.destekVar()); }
+    catch(e){ return false; }
+  }
+
+  // Java'dan gelen cevaplari bekleyen geri cagirmalar
+  var _pgBekleyen={ giris:null, yedek:null, indir:null, durum:null };
+
+  window.__pgHazir=function(){
+    if(!kopruVar())return;
+    BULUT.destek=true;
+    // Zaten girisli mi diye sor
+    try{ window.PrismioNative.durumSor(); }catch(e){}
+  };
+  window.__pgDurum=function(girisli){
+    BULUT.kullanici = girisli ? {ad:''} : null;
+    if(_pgBekleyen.durum){ var f=_pgBekleyen.durum; _pgBekleyen.durum=null; f(girisli); }
+    // Girisliyse sessizce buluttan kontrol et
+    if(girisli) bulutIlkKontrol();
+    if(aktifEkran==='hesap') hesapCiz();
+  };
+  window.__pgGiris=function(ok){
+    BULUT.kullanici = ok ? {ad:''} : null;
+    if(_pgBekleyen.giris){ var f=_pgBekleyen.giris; _pgBekleyen.giris=null; f(ok, ok?null:'Giriş yapılamadı.'); }
+  };
+  window.__pgYedek=function(ok){
+    if(ok) BULUT.sonYedek=Date.now();
+    if(_pgBekleyen.yedek){ var f=_pgBekleyen.yedek; _pgBekleyen.yedek=null; f(ok); }
+  };
+  window.__pgIndir=function(metin){
+    var veri=null;
+    if(metin){ try{ veri=JSON.parse(metin); }catch(e){} }
+    if(_pgBekleyen.indir){ var f=_pgBekleyen.indir; _pgBekleyen.indir=null; f(veri); }
+  };
+
+  // Giris varken acilista bir kez calisir: buluttaki kayit daha ileriyse alir.
+  var _ilkKontrolYapildi=false;
+  function bulutIlkKontrol(){
+    if(_ilkKontrolYapildi || !BULUT.indir)return;
+    _ilkKontrolYapildi=true;
+    BULUT.indir(function(veri){
+      if(veri && bulutCakismaCoz(veri)==='bulut'){
+        if(bulutVeriYukle(veri)){
+          temaUygula(); ayarUygula(); rozetleriCiz(); devamKartiCiz();
+          if(aktifEkran==='hesap')hesapCiz();
+        }
+      } else {
+        bulutYedekle();     // yerel daha ileri, buluta yaz
+      }
+    });
+  }
+
+  // Kopru varsa BULUT'un dort fonksiyonunu Java'ya baglar.
+  function kopruyuBagla(){
+    if(!kopruVar())return;
+    BULUT.destek=true;
+    BULUT.girisYap=function(cb){
+      _pgBekleyen.giris=cb || function(){};
+      try{ window.PrismioNative.girisYap(); }
+      catch(e){ _pgBekleyen.giris=null; cb && cb(false,'Bağlantı kurulamadı.'); }
+    };
+    BULUT.cikis=function(){
+      // Play Games'te uygulama icinden cikis YOKTUR.
+      // Google bunu bilerek kaldirdi: oyuncu hesabini telefon
+      // ayarlarindan yonetir. Bu yuzden burada sadece not veriyoruz.
+      BULUT.kullanici=null;
+    };
+    BULUT.yukle=function(veri,cb){
+      _pgBekleyen.yedek=cb || function(){};
+      try{
+        // Kalite Kontrol 6.1: aciklama ve oynama suresi ZORUNLU
+        window.PrismioNative.yedekle(
+          JSON.stringify(veri), bulutAciklama(), state.oynamaSn||0);
+      }
+      catch(e){ _pgBekleyen.yedek=null; cb && cb(false); }
+    };
+    BULUT.indir=function(cb){
+      _pgBekleyen.indir=cb || function(){};
+      try{ window.PrismioNative.indir(); }
+      catch(e){ _pgBekleyen.indir=null; cb && cb(null); }
+    };
+  }
+
+  // Kayit aciklamasi. Play Games kayit listesinde bu yazar.
+  // Oyuncu hangi kaydin hangisi oldugunu buradan anlar (Kalite Kontrol 6.1).
+  function bulutAciklama(){
+    var y=0; for(var k in (state.stars||{})) y+=state.stars[k];
+    return 'Bölüm '+(state.enYuksek||1)+' · '+y+' yıldız';
+  }
+
+  // Buluta yazilacak paket. Oyunun TUM ilerlemesi.
+  // kayitDisaAktar ile ayni alanlari kullanir - tek dogruluk kaynagi.
+  function bulutPaketi(){
+    var d={_v:SAVE_SURUM, _t:Date.now(), _oyun:'prismio'};
+    SAVE_ALANLAR.forEach(function(k){ d[k]=state[k]; });
+    return d;
+  }
+
+  // Bolum bitince cagrilir. Bulut bagliysa sessizce yedekler.
+  // Basarisiz olursa OYUN DURMAZ - yedek en fazla gecikir.
+  function bulutYedekle(){
+    if(!BULUT.destek || !BULUT.kullanici || !BULUT.yukle) return;
+    try{
+      BULUT.yukle(bulutPaketi(), function(ok){
+        if(ok) BULUT.sonYedek=Date.now();
+      });
+    }catch(e){}
+  }
+
+  // Bulut verisini state'e yazar. kayitIceAktar ile ayni korumalari kullanir:
+  // once mevcut kayit yedeklenir, sonra alanlar tek tek yazilir.
+  function bulutVeriYukle(veri){
+    if(!veri || veri._oyun!=='prismio') return false;
+    try{ localStorage.setItem(SAVE_KEY+'_yedek', localStorage.getItem(SAVE_KEY)||''); }catch(e){}
+    SAVE_ALANLAR.forEach(function(k){ if(veri[k]!==undefined) state[k]=veri[k]; });
+    var va=varsayilanAyarlar();
+    if(!state.ayar || typeof state.ayar!=='object') state.ayar={};
+    for(var k in va) if(!(k in state.ayar)) state.ayar[k]=va[k];
+    state.shapes=!!state.ayar.shapes;
+    if(state.level>state.enYuksek) state.level=state.enYuksek;
+    save();
+    return true;
+  }
+
+  // Buluttaki kayit ile telefondaki kayit CAKISIRSA hangisi kazanir?
+  // KURAL: Daha ILERI olan kazanir. En yuksek bolum olculur.
+  // Sebep: Oyuncunun emegi kaybolmamali. Eski kaydi yazmak, oynanan
+  // bolumleri silmek demektir - bu affedilmez bir hatadir.
+  function bulutCakismaCoz(bulutVeri){
+    if(!bulutVeri || bulutVeri._oyun!=='prismio') return 'yerel';
+    var bulutIlerleme = (bulutVeri.enYuksek||1);
+    var yerelIlerleme = (state.enYuksek||1);
+    if(bulutIlerleme > yerelIlerleme) return 'bulut';
+    if(bulutIlerleme < yerelIlerleme) return 'yerel';
+    // Esitse: daha cok yildizi olan kazanir
+    function yildizTopla(o){ var n=0; for(var k in (o.stars||{})) n+=o.stars[k]; return n; }
+    return yildizTopla(bulutVeri) > yildizTopla(state) ? 'bulut' : 'yerel';
+  }
+
+  // --- Kayit disa aktarma: metin olarak. Her cihazda calisir. ---
+  function kayitDisaAktar(){
+    var d={_v:SAVE_SURUM, _t:Date.now(), _oyun:'prismio'};
+    SAVE_ALANLAR.forEach(function(k){ d[k]=state[k]; });
+    // Base64: kullanici yanlislikla icini kurcalamasin, kopyalamasi kolay olsun
+    try{ return btoa(unescape(encodeURIComponent(JSON.stringify(d)))); }
+    catch(e){ return ''; }
+  }
+  // --- Kayit ice aktarma. Bozuk veri kabul edilmez. ---
+  function kayitIceAktar(metin){
+    if(!metin)return {ok:false, hata:'Kod boş.'};
+    var d=null;
+    try{ d=JSON.parse(decodeURIComponent(escape(atob(metin.trim())))); }
+    catch(e){ return {ok:false, hata:'Kod okunamadı. Eksik veya bozuk.'}; }
+    if(!d||d._oyun!=='prismio') return {ok:false, hata:'Bu kod Prismio kaydı değil.'};
+    if(!d.level && !d.enYuksek) return {ok:false, hata:'Kodda ilerleme yok.'};
+    // GUVENLIK: once mevcut kaydi yedekle. Ice aktarma bozarsa geri donulur.
+    try{ localStorage.setItem(SAVE_KEY+'_yedek', localStorage.getItem(SAVE_KEY)||''); }catch(e){}
+    SAVE_ALANLAR.forEach(function(k){ if(d[k]!==undefined) state[k]=d[k]; });
+    // ayarlar eksikse tamamla
+    var va=varsayilanAyarlar();
+    if(!state.ayar)state.ayar={};
+    for(var k in va) if(!(k in state.ayar)) state.ayar[k]=va[k];
+    state.shapes=!!state.ayar.shapes;
+    save();
+    return {ok:true, bolum:state.enYuksek||1};
+  }
+  function kayitGeriAl(){
+    try{
+      var y=localStorage.getItem(SAVE_KEY+'_yedek');
+      if(!y)return false;
+      localStorage.setItem(SAVE_KEY, y);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  // ---- HESAP EKRANI ----
+  function hesapNot(metin,sinif){
+    var n=$('hsNot'); if(!n)return;
+    n.textContent=metin; n.className='hs-not '+(sinif||'');
+  }
+  function hesapCiz(){
+    var k=$('hesapIcerik'); if(!k)return;
+    var bulutVar=BULUT.destek;
+    var bagli = BULUT.durum()==='bagli';
+    k.innerHTML=
+      // 1) OTOMATIK YEDEK - her zaman calisir, oyuncu bunu bilmeli
+      '<div class="hs-durum">'+
+        '<span class="hs-ik" style="background:var(--yesil);color:#fff">'+ikon('check',24,'#fff')+'</span>'+
+        '<span class="hs-govde"><span class="hs-bas">Otomatik yedek</span>'+
+        '<span class="hs-ack">İlerlemen telefonunun Google hesabına '+
+        'yedekleniyor. Telefon değiştirirsen geri gelir.</span></span>'+
+      '</div>'+
+
+      // 2) Google Play Games
+      '<div class="hs-durum">'+
+        '<span class="hs-ik"'+(bagli?' style="background:var(--yesil);color:#fff"':'')+'>'+
+        ikon(bagli?'check':(bulutVar?'world':'lock'),24,bagli?'#fff':null)+'</span>'+
+        '<span class="hs-govde"><span class="hs-bas">'+BULUT.ad+'</span>'+
+        '<span class="hs-ack">'+(bagli
+          ? ('Bağlı'+(BULUT.kullanici&&BULUT.kullanici.ad?' — '+BULUT.kullanici.ad:'')+
+             '. Her bölüm sonunda yedekleniyor.')
+          : bulutVar
+            ? 'Giriş yaparsan ilerlemen hesabına bağlanır. Başka telefonda da açılır.'
+            : 'Bu sürümde yok. Telefon uygulamasında gelecek.')+
+        '</span></span>'+
+      '</div>'+
+      (bulutVar && !bagli
+        ? '<div class="hs-btnler"><button class="btn yesil tam" id="hsGiris">Giriş yap</button></div>'
+        : '')+
+      (bagli
+        ? '<p class="hk-metin" style="margin:-2px 0 10px;padding:0 4px">'+
+          'Hesabı değiştirmek için telefonun <b>Play Oyunlar</b> uygulamasını kullan.</p>'
+        : '')+
+
+      // 2) Elle yedekleme - HER ZAMAN calisir
+      '<div class="hk-blok" style="margin-top:12px"><h4>Kaydını taşı</h4>'+
+        '<p class="hk-metin" style="margin-bottom:12px">Aşağıdaki kodu kopyala ve sakla. '+
+        'Yeni telefonda bu kodu yapıştırırsan ilerlemen geri gelir.</p>'+
+        '<textarea class="hs-kutu" id="hsKod" readonly aria-label="Yedek kodu"></textarea>'+
+        '<div class="hs-btnler">'+
+          '<button class="btn sade tam" id="hsKopyala">Kodu kopyala</button>'+
+        '</div>'+
+      '</div>'+
+
+      '<div class="hk-blok"><h4>Kaydı geri yükle</h4>'+
+        '<p class="hk-metin" style="margin-bottom:12px">Daha önce aldığın kodu buraya yapıştır. '+
+        '<b>Şu anki ilerlemen silinir.</b></p>'+
+        '<textarea class="hs-kutu" id="hsGiriKod" placeholder="Kodu buraya yapıştır" aria-label="Geri yükleme kodu"></textarea>'+
+        '<div class="hs-btnler">'+
+          '<button class="btn sade tam" id="hsYukle">Geri yükle</button>'+
+        '</div>'+
+        '<div class="hs-not" id="hsNot"></div>'+
+      '</div>'+
+
+      '<p class="hk-tesekkur">Kaydın telefonunda saklanıyor ve '+
+        'Google hesabına yedekleniyor.<br>'+
+        'Yine de kodu bir yere kaydetmen en garantisi.</p>';
+
+    // kodu doldur
+    var kutu=$('hsKod'); if(kutu)kutu.value=kayitDisaAktar();
+
+    var kp=$('hsKopyala');
+    if(kp)kp.addEventListener('click',function(){
+      var t=$('hsKod'); if(!t)return;
+      t.removeAttribute('readonly'); t.select(); t.setSelectionRange(0,99999);
+      var oldu=false;
+      try{ oldu=document.execCommand('copy'); }catch(e){}
+      if(!oldu && navigator.clipboard){
+        try{ navigator.clipboard.writeText(t.value); oldu=true; }catch(e){}
+      }
+      t.setAttribute('readonly','readonly');
+      kp.textContent = oldu?'Kopyalandı ✓':'Kodu elle seç ve kopyala';
+      setTimeout(function(){ kp.textContent='Kodu kopyala'; },2200);
+      if(oldu)titret('hafif');
+    });
+
+    var yk=$('hsYukle');
+    if(yk)yk.addEventListener('click',function(){
+      var g=$('hsGiriKod'); if(!g)return;
+      var r=kayitIceAktar(g.value);
+      if(!r.ok){ hesapNot(r.hata,'uyari'); titret('hata'); return; }
+      g.value='';
+      temaUygula(); ayarUygula(); rozetleriCiz();
+      hesapCiz();                       // once ciz
+      hesapNot('Yüklendi. Bölüm '+r.bolum+' açık. İlerlemen geri geldi.','iyi');
+      titret('basari');
+    });
+
+    var gr=$('hsGiris');
+    if(gr)gr.addEventListener('click',function(){
+      if(!BULUT.girisYap)return;
+      gr.disabled=true; gr.textContent='Bağlanıyor…';
+      BULUT.girisYap(function(ok,hata){
+        if(!ok){ hesapCiz(); hesapNot(hata||'Giriş yapılamadı.','uyari'); return; }
+        // Girince buluttaki kayda bak. Daha ileriyse onu al.
+        if(BULUT.indir){
+          BULUT.indir(function(veri){
+            if(veri && bulutCakismaCoz(veri)==='bulut'){
+              var r=bulutVeriYukle(veri);
+              hesapCiz();
+              hesapNot(r?('Buluttaki kayıt daha ileriydi. Bölüm '+state.enYuksek+' açık.'):'Bulut kaydı okunamadı.', r?'iyi':'uyari');
+              temaUygula(); ayarUygula(); rozetleriCiz();
+            } else {
+              bulutYedekle();
+              hesapCiz();
+              hesapNot('Bağlandı. İlerlemen yedekleniyor.','iyi');
+            }
+          });
+        } else { hesapCiz(); hesapNot('Bağlandı.','iyi'); }
+      });
+    });
+  }
+
+  // ===================== TEMA KOLEKSIYONU =====================
+  //  Uc ayri onizleme cizeri var. Hepsi SVG, hepsi temanin renklerini alir.
+  //  Oyuncu 420 isik odemeden once ne aldigini gormeli.
+
+  // --- 1) tahta onizlemesi (kart uzerinde) ---
+  function onizTahta(t,w){
+    w=w||80; var c=t.c, k=w/80, g='';
+    for(var y=0;y<4;y++)for(var x=0;x<4;x++)
+      g+='<rect x="'+(x*20*k)+'" y="'+(y*20*k)+'" width="'+(20*k)+'" height="'+(20*k)+'" fill="'+
+         (((x+y)%2)?c.alt:c.cell)+'"/>';
+    g+='<rect x="0" y="0" width="'+w+'" height="'+w+'" fill="none" stroke="'+c.frame+'" stroke-width="'+(5*k)+'"/>';
+    g+='<line x1="'+(4*k)+'" y1="'+(26*k)+'" x2="'+(52*k)+'" y2="'+(26*k)+'" stroke="'+c.R+'" stroke-width="'+(5*k)+'" stroke-linecap="round"/>';
+    g+='<line x1="'+(52*k)+'" y1="'+(26*k)+'" x2="'+(52*k)+'" y2="'+(70*k)+'" stroke="'+c.R+'" stroke-width="'+(5*k)+'" stroke-linecap="round"/>';
+    g+='<line x1="'+(26*k)+'" y1="'+(4*k)+'" x2="'+(26*k)+'" y2="'+(52*k)+'" stroke="'+c.G+'" stroke-width="'+(5*k)+'" stroke-linecap="round"/>';
+    g+='<line x1="'+(26*k)+'" y1="'+(52*k)+'" x2="'+(72*k)+'" y2="'+(52*k)+'" stroke="'+c.G+'" stroke-width="'+(5*k)+'" stroke-linecap="round"/>';
+    g+='<path d="M'+(34*k)+' '+(34*k)+' L'+(46*k)+' '+(34*k)+' L'+(40*k)+' '+(46*k)+' Z" fill="'+c.cell+'" stroke="'+c.ink+'" stroke-width="'+(3*k)+'"/>';
+    return '<svg viewBox="0 0 '+w+' '+w+'">'+g+'</svg>';
+  }
+
+  // tahtanin 120x90 kutuda ortalanmis hali (onizleme gridinde oran tutsun)
+  function onizTahtaGenis(t){
+    var c=t.c, g='<rect width="120" height="90" fill="'+c.alt+'"/>';
+    g+='<g transform="translate(20,5)">';
+    for(var y=0;y<4;y++)for(var x=0;x<4;x++)
+      g+='<rect x="'+(x*20)+'" y="'+(y*20)+'" width="20" height="20" fill="'+(((x+y)%2)?c.alt:c.cell)+'"/>';
+    g+='<rect x="0" y="0" width="80" height="80" fill="none" stroke="'+c.frame+'" stroke-width="5"/>';
+    g+='<line x1="4" y1="26" x2="52" y2="26" stroke="'+c.R+'" stroke-width="5" stroke-linecap="round"/>';
+    g+='<line x1="52" y1="26" x2="52" y2="70" stroke="'+c.R+'" stroke-width="5" stroke-linecap="round"/>';
+    g+='<line x1="26" y1="4" x2="26" y2="52" stroke="'+c.G+'" stroke-width="5" stroke-linecap="round"/>';
+    g+='<line x1="26" y1="52" x2="72" y2="52" stroke="'+c.G+'" stroke-width="5" stroke-linecap="round"/>';
+    g+='<path d="M34 34 L46 34 L40 46 Z" fill="'+c.cell+'" stroke="'+c.ink+'" stroke-width="3"/>';
+    g+='</g>';
+    return '<svg viewBox="0 0 120 90">'+g+'</svg>';
+  }
+
+  // --- 2) menu onizlemesi ---
+  function onizMenu(t){
+    var u=t.ui||{}, k=t.dok||{}, r=(k.kose||18)/2;
+    var g='<rect width="120" height="90" fill="'+(u.zemin||'#F2EDE4')+'"/>';
+    g+='<rect x="10" y="8" width="100" height="16" rx="'+r+'" fill="'+(u.yuzey||'#fff')+'" stroke="'+(u.cizgi||'#ddd')+'"/>';
+    g+='<rect x="16" y="13" width="34" height="6" rx="3" fill="'+(u.metin||'#222')+'"/>';
+    g+='<rect x="86" y="13" width="18" height="6" rx="3" fill="'+(u.ikinci||'#f5c93f')+'"/>';
+    g+='<rect x="10" y="30" width="100" height="24" rx="'+r+'" fill="'+(u.vurgu||'#EF4B57')+'"/>';
+    g+='<rect x="10" y="52" width="100" height="4" rx="2" fill="'+(u.vurguAlt||'#C6303B')+'"/>';
+    g+='<rect x="34" y="39" width="52" height="7" rx="3.5" fill="#fff" opacity=".92"/>';
+    g+='<rect x="10" y="62" width="47" height="18" rx="'+r+'" fill="'+(u.yuzey||'#fff')+'" stroke="'+(u.cizgi||'#ddd')+'"/>';
+    g+='<rect x="63" y="62" width="47" height="18" rx="'+r+'" fill="'+(u.yuzey||'#fff')+'" stroke="'+(u.cizgi||'#ddd')+'"/>';
+    g+='<rect x="20" y="69" width="27" height="5" rx="2.5" fill="'+(u.metinSoft||'#888')+'"/>';
+    g+='<rect x="73" y="69" width="27" height="5" rx="2.5" fill="'+(u.metinSoft||'#888')+'"/>';
+    return '<svg viewBox="0 0 120 90">'+g+'</svg>';
+  }
+
+  // --- 3) harita onizlemesi ---
+  function onizHarita(t){
+    var u=t.ui||{}, c=t.c;
+    var g='<rect width="120" height="90" fill="'+(u.zeminAlt||'#E7DFD1')+'"/>';
+    var noktalar=[[24,72],[46,60],[34,44],[58,34],[82,42],[70,20],[96,16]];
+    var yol='';
+    for(var i=0;i<noktalar.length;i++) yol+=(i?' L':'M')+noktalar[i][0]+' '+noktalar[i][1];
+    g+='<path d="'+yol+'" fill="none" stroke="'+(u.cizgi||'#ccc')+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>';
+    for(var j=0;j<noktalar.length;j++){
+      var acik=j<4, secili=(j===3);
+      var f=acik?(u.onay||'#2E9E6B'):(u.yuzey||'#fff');
+      g+='<circle cx="'+noktalar[j][0]+'" cy="'+noktalar[j][1]+'" r="'+(secili?8:6)+'" fill="'+f+
+         '" stroke="'+(secili?(u.vurgu||'#EF4B57'):(u.cizgi||'#ccc'))+'" stroke-width="'+(secili?3:2)+'"/>';
+    }
+    // bolge rozeti: haritada bolge basligini temsil eder
+    g+='<rect x="8" y="6" width="46" height="13" rx="6.5" fill="'+(u.yuzey||'#fff')+
+       '" stroke="'+(u.cizgi||'#ccc')+'" stroke-width="1.5"/>';
+    g+='<rect x="14" y="10.5" width="30" height="4.5" rx="2.25" fill="'+(u.metinSoft||'#888')+'"/>';
+    return '<svg viewBox="0 0 120 90">'+g+'</svg>';
+  }
+
+  // --- 4) parca onizlemesi: kristal + ayna + buton ---
+  function onizParca(t){
+    var u=t.ui||{}, c=t.c, k=t.dok||{};
+    var g='<rect width="120" height="90" fill="'+c.cell+'"/>';
+    g+='<rect x="0" y="0" width="120" height="90" fill="none" stroke="'+c.grid+'" stroke-width="2"/>';
+    // kristal: daire, ucgen, kare
+    g+='<circle cx="22" cy="24" r="11" fill="'+c.cell+'" stroke="'+c.R+'" stroke-width="4"/>';
+    g+='<path d="M60 13 L71 33 L49 33 Z" fill="'+c.cell+'" stroke="'+c.G+'" stroke-width="4" stroke-linejoin="round"/>';
+    g+='<rect x="87" y="14" width="20" height="20" fill="'+c.cell+'" stroke="'+c.B+'" stroke-width="4"/>';
+    // ayna
+    g+='<line x1="14" y1="62" x2="34" y2="46" stroke="'+c.frame+'" stroke-width="7" stroke-linecap="round"/>';
+    // prizma
+    g+='<path d="M60 44 L72 64 L48 64 Z" fill="'+c.cell+'" stroke="'+c.ink+'" stroke-width="4" stroke-linejoin="round"/>';
+    // buton ornegi
+    g+='<rect x="82" y="46" width="30" height="14" rx="'+((k.kose||18)/3)+'" fill="'+(u.vurgu||'#EF4B57')+'"/>';
+    g+='<rect x="82" y="58" width="30" height="3" rx="1.5" fill="'+(u.vurguAlt||'#C6303B')+'"/>';
+    // isin
+    g+='<line x1="10" y1="78" x2="52" y2="78" stroke="'+c.Y+'" stroke-width="5" stroke-linecap="round"/>';
+    g+='<line x1="62" y1="78" x2="110" y2="78" stroke="'+c.M+'" stroke-width="5" stroke-linecap="round"/>';
+    return '<svg viewBox="0 0 120 90">'+g+'</svg>';
+  }
+
+  // Turkce bulunma eki. "Bolum 30'te" yanlistir, "30'da" dogrudur.
+  // Ek, sayinin OKUNUSUNA gore secilir. Tema seviyeleri onluk oldugu icin
+  // kucuk bir tablo yeter. Tabloda olmayan sayilar icin son rakama bakilir.
+  var EK_ONLUK={10:"'da",20:"'de",30:"'da",40:"'ta",50:"'de",
+                60:"'ta",70:"'de",80:"'de",90:"'da",100:"'de"};
+  var EK_BIRLIK={0:"'da",1:"'de",2:"'de",3:"'te",4:"'te",5:"'te",
+                 6:"'da",7:"'de",8:"'de",9:"'da"};
+  function bolumEk(n){
+    if(EK_ONLUK[n]) return EK_ONLUK[n];
+    if(n%10===0 && EK_ONLUK[n%100]) return EK_ONLUK[n%100];
+    return EK_BIRLIK[n%10];
+  }
+
+  // --- tema durumu: tek yerden hesaplanir ---
+  //  KILITLI    -> seviye yetmiyor
+  //  ALINABILIR -> seviye yetiyor, para yetiyor
+  //  PAHALI     -> seviye yetiyor, para yetmiyor
+
+
+  function temaDurum(t){
+    if(state.unlocked[t.id]) return (state.theme===t.id)?'secili':'acik';
+    if(state.enYuksek < t.lv) return 'kilitli';
+    return (state.coins>=t.fiyat)?'alinabilir':'pahali';
+  }
+
+  function magazaCiz(){
+    urunListeCiz('isik','isikListe');
+    urunListeCiz('can','canListe');
+    var box=$('temalar'); if(!box)return;
+    box.innerHTML='';
+    var acikSayi=0;
+    THEMES.forEach(function(t){ if(state.unlocked[t.id])acikSayi++; });
+    var ub=$('temaUst');
+    if(ub) ub.innerHTML='<span>Koleksiyon</span><span class="tnum">'+acikSayi+' / '+THEMES.length+' tema</span>';
+
+    THEMES.forEach(function(t){
+      var d=temaDurum(t);
+      var b=document.createElement('button');
+      b.className='tema'+(d==='pahali'?' yetersiz':'')+(d==='kilitli'?' kilitli':'');
+      b.setAttribute('aria-pressed', d==='secili'?'true':'false');
+      b.setAttribute('type','button');
+
+      var rozet='';
+      if(d==='secili') rozet='<span class="tik">'+ikon('check',15,'#fff',3)+'</span>';
+      else if(d==='kilitli') rozet='<span class="kilitrozet">Bölüm '+t.lv+'</span>';
+
+      var durumHtml='';
+      if(d==='secili')          durumHtml='<div class="durum secili">'+ikon('check',15)+'Kullanılıyor</div>';
+      else if(d==='acik')       durumHtml='<div class="durum acik">'+ikon('themes',15)+'Seçmek için dokun</div>';
+      else if(d==='kilitli')    durumHtml='<div class="durum kilit">'+ikon('lock',15)+'Bölüm '+t.lv+bolumEk(t.lv)+' açılır</div>';
+      else if(d==='alinabilir') durumHtml='<div class="durum alinabilir"><b class="pul">◆</b> '+t.fiyat+' · Al</div>';
+      else                      durumHtml='<div class="durum pahali"><b class="pul">◆</b> '+t.fiyat+
+                                          ' <small>('+(t.fiyat-state.coins)+' eksik)</small></div>';
+
+      b.innerHTML='<div class="onizle">'+onizTahta(t)+'</div>'+rozet+
+        '<div class="ad">'+t.ad+'</div>'+
+        '<div class="ozet">'+t.ozet+'</div>'+durumHtml;
+
+      b.addEventListener('click',function(){ temaKartTikla(t); });
+      box.appendChild(b);
+    });
+  }
+
+  // Karta dokununca: acik temayi dogrudan sec, digerlerinde ONIZLEME ac.
+  // Boylece oyuncu parayi gormeden harcamaz.
+  function temaKartTikla(t){
+    if(state.unlocked[t.id]){
+      if(state.theme===t.id){ temaOnizAc(t); return; }
+      state.theme=t.id; save(); temaUygula(); magazaCiz(); titret('hafif');
+      var n=$('magazaNot');
+      if(n){ n.textContent='"'+t.ad+'" seçildi.'; n.className='magaza-not iyi'; }
+      return;
+    }
+    temaOnizAc(t);
+  }
+
+  // ---- ONIZLEME PENCERESI ----
+  var _onizTema=null;
+  function temaOnizAc(t){
+    _onizTema=t;
+    var d=temaDurum(t);
+    $('onizAd').textContent=t.ad;
+    $('onizAlt').textContent=t.karakter;
+    $('onizGrid').innerHTML=
+      '<div class="oniz-kutu"><div class="oniz-etiket">Ana menü</div>'+onizMenu(t)+'</div>'+
+      '<div class="oniz-kutu"><div class="oniz-etiket">Harita</div>'+onizHarita(t)+'</div>'+
+      '<div class="oniz-kutu"><div class="oniz-etiket">Tahta</div>'+onizTahtaGenis(t)+'</div>'+
+      '<div class="oniz-kutu"><div class="oniz-etiket">Parçalar</div>'+onizParca(t)+'</div>';
+
+    var b=$('onizBtnler'); b.innerHTML='';
+    function btn(sinif,yazi,fn,pasif){
+      var e=document.createElement('button');
+      e.className='btn '+sinif+' tam'; e.innerHTML=yazi;
+      if(pasif)e.disabled=true; else e.addEventListener('click',fn);
+      b.appendChild(e); return e;
+    }
+    if(d==='secili'){
+      btn('sade','Zaten kullanılıyor',null,true);
+    } else if(d==='acik'){
+      btn('yesil','Bu temayı kullan',function(){
+        state.theme=t.id; save(); temaUygula(); magazaCiz(); temaOnizKapat(); titret('hafif');
+      });
+    } else if(d==='kilitli'){
+      btn('sade','Bölüm '+t.lv+bolumEk(t.lv)+' açılır',null,true);
+    } else if(d==='alinabilir'){
+      btn('yesil',ikon('coin',18,'#fff')+' '+t.fiyat+' ışık ver, al',function(){
+        state.coins-=t.fiyat; state.unlocked[t.id]=1; state.theme=t.id;
+        save(); temaUygula(); rozetleriCiz(); magazaCiz(); temaOnizKapat(); titret('basari');
+        var n=$('magazaNot');
+        if(n){ n.textContent='"'+t.ad+'" açıldı ve seçildi.'; n.className='magaza-not iyi'; }
+      });
+    } else {
+      btn('sade',(t.fiyat-state.coins)+' ışık daha lazım',null,true);
+    }
+    btn('sade','Kapat',temaOnizKapat);
+    $('onizPencere').classList.add('acik');
+  }
+  function temaOnizKapat(){ var e=$('onizPencere'); if(e)e.classList.remove('acik'); _onizTema=null; }
+
+  // ===================== ZAMANA KARŞI =====================
+  function zamanCiz(){
+    var m=Math.floor(state.tLeft/60), sn=state.tLeft%60;
+    $('sayacSure').textContent=m+':'+(sn<10?'0':'')+sn;
+    $('sayacSkor').textContent=state.tScore+' bölüm';
+    $('sayac').className='sayac'+(state.tLeft<=20?' az':'');
+  }
+  function zamanDur(){
+    if(state.tTimer){clearInterval(state.tTimer);state.tTimer=null;}
+    state.mode='yolculuk'; $('sayac').hidden=true;
+  }
+  function zamanBitir(){
+    zamanDur();
+    var kazanc=state.tScore*8; state.coins+=kazanc; save(); rozetleriCiz();
+    $('kBaslik').textContent='Süre bitti';
+    $('kAlt').textContent=state.tScore+' bölüm çözdün.';
+    $('kYildiz').innerHTML=''; $('kHediye').innerHTML='';
+    $('kOdulSayi').textContent=kazanc;
+    var b=$('kBtnler'); b.innerHTML='';
+    var t=document.createElement('button');
+    t.className='btn tam'; t.textContent='Tekrar dene';
+    t.addEventListener('click',function(){ katmanKapat(); zamanBaslat(); });
+    b.appendChild(t);
+    var h=document.createElement('button');
+    h.className='btn sade tam'; h.textContent='Ana menü';
+    h.addEventListener('click',function(){ katmanKapat(); git('menu'); });
+    b.appendChild(h);
+    $('katman').classList.add('acik');
+  }
+  function zamanBaslat(){
+    if(state.lives<=0){ canYokKart(); return; }
+    canKaybet(); rozetleriCiz();
+    state.mode='zaman'; state.tLeft=TIME_SEC; state.tScore=0;
+    // Her yaris kendi tohumunu alir. Ayni yaris iki kez ayni gelmez.
+    state.tTohum = (Date.now() ^ (Math.random()*4294967296)) >>> 0;
+    state.tBaslangic = Math.max(1, Math.floor(state.enYuksek*0.6));
+    state.level = state.tBaslangic;
+    git('oyun'); $('sayac').hidden=false; zamanCiz();
+    if(state.tTimer)clearInterval(state.tTimer);
+    state.tTimer=setInterval(function(){
+      state.tLeft--; zamanCiz();
+      if(state.tLeft<=0)zamanBitir();
+    },1000);
+    loadLevel();
+  }
+
+  // onizleme penceresi: disina dokunmak kapatir
+  (function(){
+    var e=document.getElementById('onizPencere');
+    if(!e)return;
+    e.addEventListener('click',function(ev){ if(ev.target===e) temaOnizKapat(); });
+    document.addEventListener('keydown',function(ev){
+      if(ev.key==='Escape'&&e.classList.contains('acik')) temaOnizKapat();
+    });
+  })();
+
+  // ---- magaza sekmeleri ----
+  function sekmeAc(ad){
+    ['tema','isik','can'].forEach(function(k){
+      var b=document.querySelector('.sekme[data-sekme="'+k+'"]');
+      var i=$('sk-'+k);
+      if(b){ b.classList.toggle('acik',k===ad); b.setAttribute('aria-selected',k===ad?'true':'false'); }
+      if(i) i.classList.toggle('acik',k===ad);
+    });
+    var kd=document.querySelector('.magaza-kaydir'); if(kd)kd.scrollTop=0;
+  }
+  [].forEach.call(document.querySelectorAll('.sekme'),function(b){
+    b.addEventListener('click',function(){ sekmeAc(b.getAttribute('data-sekme')); titret('hafif'); });
+  });
+
+  // ---- rozetler tiklanabilir (H-03, H-04) ----
+  //  Can  -> magazanin CAN sekmesi
+  //  Isik -> magazanin TEMA sekmesi (oyuncu isigi orada harciyor)
+  function magazaAc(sekme){ git('magaza'); sekmeAc(sekme||'tema'); }
+  // devam karti -> dogrudan bolume gir
+  (function(){
+    var k=$('devamKart'); if(!k)return;
+    k.addEventListener('click',function(){
+      var lv=Math.min(state.level||1, state.enYuksek||1);
+      bolumBaslat(Math.max(1,lv));
+    });
+  })();
+
+  (function(){ var b=$('btnDunya');
+    if(b)b.addEventListener('click',function(){ git('dunya'); });
+  })();
+  (function(){ var e=$('rozParaDunya');
+    if(e)e.addEventListener('click',function(){ magazaAc('tema'); });
+  })();
+
+  // gorev seridi -> gorev ekrani
+  (function(){ var e=$('gorevSerit');
+    if(e)e.addEventListener('click',function(){ git('basari'); });
+  })();
+  // basari ekrani sekmeleri
+  [].forEach.call(document.querySelectorAll('.sekme[data-bsekme]'),function(b){
+    b.addEventListener('click',function(){
+      var ad=b.getAttribute('data-bsekme');
+      [].forEach.call(document.querySelectorAll('.sekme[data-bsekme]'),function(x){
+        var a=(x===b); x.classList.toggle('acik',a); x.setAttribute('aria-selected',a?'true':'false');
+      });
+      ['gunluk','basari'].forEach(function(k){
+        var i=$('bsk-'+k); if(i)i.classList.toggle('acik',k===ad);
+      });
+      var kd=document.querySelector('.basari-kaydir'); if(kd)kd.scrollTop=0;
+      titret('hafif');
+    });
+  });
+  (function(){ var e=$('rozParaBasari');
+    if(e)e.addEventListener('click',function(){ magazaAc('tema'); });
+  })();
+  (function(){ var e=$('btnHesap');
+    if(e)e.addEventListener('click',function(){ git('hesap'); });
+  })();
+  (function(){ var e=$('btnHakkinda');
+    if(e)e.addEventListener('click',function(){ git('hakkinda'); });
+  })();
+
+  ['rozCanMenu','rozCanHarita','rozCanMagaza'].forEach(function(id){
+    var e=$(id); if(e)e.addEventListener('click',function(){ magazaAc('can'); });
+  });
+  ['rozParaMenu','rozParaHarita'].forEach(function(id){
+    var e=$(id); if(e)e.addEventListener('click',function(){ magazaAc('tema'); });
+  });
+
+  // ===================== OLAY BAĞLARI =====================
+  $('btnOyna').addEventListener('click',function(){ git('harita'); });
+  $('btnZaman').addEventListener('click',zamanBaslat);
+  $('btnMagaza').addEventListener('click',function(){ git('magaza'); });
+  $('btnAyar').addEventListener('click',function(){ git('ayar'); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-git]'),function(b){
+    b.addEventListener('click',function(){ git(b.getAttribute('data-git')); });
+  });
+  $('btnSifirla').addEventListener('click',function(){
+    if(state.bitti)return;
+    state.mirrors={}; state.paid=false; state._sonAyna=null; draw();
+  });
+  $('btnYeni').addEventListener('click',function(){
+    state._karma=(state._karma||0)+1;   // ayni bolumun baska bir varyanti
+    state.mirrors={}; state.paid=false; loadLevel();
+  });
+  $('btnIpucu').addEventListener('click',function(){
+    if(state.bitti)return;
+    // Cozumden henuz konulmamis TEK aynayi acar. Tamamini vermez.
+    var eksik=[];
+    for(var k in state.solution) if(!state.mirrors[k]) eksik.push(k);
+    if(!eksik.length){ $('ipucu').textContent='Bu tahtada ipucu kalmadı.'; return; }
+    var sec=eksik[rnd(eksik.length)];
+    state.mirrors[sec]=state.solution[sec];
+    draw();
+  });
+
+
+  // ==========================================================================
+  //  KATMAN 2 : ILERLEME MANTIGI
+  //  Dekorasyon acma, basari kontrolu, gunluk gorev. Hepsi veri tablolarindan
+  //  okur. Yeni kayit eklemek icin bu fonksiyonlar degistirilmez.
+  // ==========================================================================
+
+  function toplamYildiz(){ var n=0; for(var k in state.stars)n+=state.stars[k]; return n; }
+  function acikTemaSayisi(){ var n=0; for(var k in state.unlocked)n++; return n; }
+
+  // --- Dekorasyon: kosul saglandi mi ---
+  function decoAcikMi(d){
+    if(state.decos[d.id])return true;
+    var k=d.kosul;
+    if(k.tip==='level')  return (state.enYuksek-1)>=k.deger;
+    if(k.tip==='stars')  return toplamYildiz()>=k.deger;
+    if(k.tip==='themes') return acikTemaSayisi()>=k.deger;
+    return false;
+  }
+  // Yeni acilanlari isaretle, listesini dondur (bildirim icin)
+  // Dekorasyon taramasi. Dunyam kapisi kapaliyken hicbir sey ACILMAZ.
+  // Kosulu saglayanlar bekler. Kapi acilinca hepsi birden gelir.
+  // Bu bilincli bir tercih: 100. tahtada oyuncu bir yigin odul alir,
+  // damla damla degil. Guclu bir an olur.
+  function decoTara(){
+    if(!dunyaAcikMi())return [];
+    var yeni=[];
+    DECORATIONS.forEach(function(d){
+      if(!state.decos[d.id] && decoAcikMi(d)){
+        state.decos[d.id]=1;
+        state.decoAktif[d.id]=1;      // acilinca otomatik dunyaya konur
+        yeni.push(d);
+      }
+    });
+    if(yeni.length)save();
+    return yeni;
+  }
+  // Kapi acildigi AN cagrilir. Birikmis tum dekorasyonlari verir.
+  function dunyaAcilisKontrol(){
+    if(!dunyaAcikMi())return null;
+    if(state.dunyaAcildi)return null;        // zaten acildi, tekrar kutlama yok
+    state.dunyaAcildi=1;
+    var gelen=decoTara();
+    save();
+    return gelen;
+  }
+
+  // --- Basari ---
+  function basariDurum(a){
+    var v=a.kontrol(state);
+    return {id:a.id, ad:a.ad, aciklama:a.aciklama, hedef:a.hedef,
+            ilerleme:Math.min(v,a.hedef), acik:v>=a.hedef};
+  }
+  function basariTara(){
+    var yeni=[];
+    ACHIEVEMENTS.forEach(function(a){
+      var d=basariDurum(a);
+      if(d.acik && !state.basari[a.id]){ state.basari[a.id]=Date.now(); yeni.push(a); }
+    });
+    if(yeni.length)save();
+    return yeni;
+  }
+
+  // --- Gunluk gorev ---
+  function bugununAnahtari(){
+    var t=new Date();
+    return t.getFullYear()+'-'+(t.getMonth()+1)+'-'+t.getDate();
+  }
+  function gorevKontrol(){
+    var g=bugununAnahtari();
+    if(state.gorev.gun!==g){
+      state.gorev={gun:g, ilerleme:{}, alinan:{}};
+      state.sayac={cozulen:0,ucYildiz:0,zamanBolum:0};
+      save();
+    }
+  }
+  function gorevListesi(){
+    gorevKontrol();
+    return DAILY_TASKS.map(function(t){
+      var v=state.sayac[t.sayac]||0;
+      return {id:t.id, ad:t.ad, hedef:t.hedef, odul:t.odul,
+              ilerleme:Math.min(v,t.hedef), tamam:v>=t.hedef,
+              alindi:!!state.gorev.alinan[t.id]};
+    });
+  }
+  function gorevOdulAl(id){
+    var t=null; DAILY_TASKS.forEach(function(x){ if(x.id===id)t=x; });
+    if(!t)return false;
+    var v=state.sayac[t.sayac]||0;
+    if(v<t.hedef || state.gorev.alinan[t.id])return false;
+    state.gorev.alinan[t.id]=1; state.coins+=t.odul; save();
+    return t.odul;
+  }
+  // Bolum bitince cagrilir, sayaclari isler
+  function sayacIsle(yildiz,mod){
+    gorevKontrol();
+    state.sayac.cozulen=(state.sayac.cozulen||0)+1;
+    if(yildiz===3)state.sayac.ucYildiz=(state.sayac.ucYildiz||0)+1;
+    if(mod==='zaman')state.sayac.zamanBolum=(state.sayac.zamanBolum||0)+1;
+  }
+
+  // --- Ayar okuma: tek kapi ---
+  function ayar(id){
+    if(!state.ayar)state.ayar=varsayilanAyarlar();
+    return state.ayar[id];
+  }
+  function ayarKur(id,deger){
+    if(!state.ayar)state.ayar=varsayilanAyarlar();
+    state.ayar[id]=deger;
+    if(id==='shapes')state.shapes=!!deger;      // eski alanla senkron
+    ayarUygula();
+    save();
+  }
+  // Ayarlarin gorsel etkisini <html> uzerinde toplar. CSS bunlara bakar.
+  function ayarUygula(){
+    var r=document.documentElement;
+    r.classList.toggle('az-hareket', !ayar('animasyon') || !!ayar('azHareket'));
+    r.classList.toggle('parcacik-yok', !ayar('parcacik'));
+    r.classList.toggle('yuksek-kontrast', !!ayar('kontrast'));
+    r.setAttribute('data-kalite', ayar('kalite')||'HIGH');
+  }
+
+  // --- Titresim (haptic). Cihaz desteklemiyorsa sessizce gecer. ---
+  // Titresim desenleri. Isimle cagrilir: titret('ayna')
+  var TITRESIM={
+    dokun:8, ayna:12, cevir:[6,20,6], kristal:18,
+    bitis:[14,40,14,40,26], acilis:[10,30,10],
+    hafif:10, basari:[12,35,20], hata:[30,60,30], uyari:[18,50,18]
+  };
+  // Hem isim hem dogrudan desen kabul eder.
+  //  titret('ayna')  -> TITRESIM.ayna
+  //  titret(25)      -> dogrudan
+  // Bilinmeyen isim sessizce gecer, hata vermez.
+  function titret(d){
+    if(!ayar('haptic'))return;
+    var desen = (typeof d==='string') ? TITRESIM[d] : d;
+    if(desen===undefined||desen===null)return;
+    if(navigator && navigator.vibrate){ try{ navigator.vibrate(desen); }catch(e){} }
+  }
+
+  // ==========================================================================
+  //  GELISTIRICI / TEST ARACLARI
+
+  // ==========================================================================
+
+  // ---------- DEBUG API (uretimde PR_DEBUG=false ile kapanir) ----------
+  var PR_DEBUG=false;
+  function debugKur(){}
+
+  // ===================== AÇILIŞ =====================
+  load();
+  if(!state.stars)state.stars={};
+  if(!state.ayar)state.ayar=varsayilanAyarlar();
+  temaUygula(); ayarUygula(); gorevKontrol(); decoTara(); basariTara(); debugKur();
+  kopruyuBagla();          // Android kabugu varsa Play Games baglanir
+  dunyaAcilisKontrol();   // eski kayitta kapi zaten acik olabilir
+  canYenile();
+  rozetleriCiz();
+  git('menu');
+  setInterval(function(){ if(state.lives<MAX_LIVES)rozetleriCiz(); },30000);
+  // Oynama suresi sayaci. Play Games kayitlarinda gosterilir (Kalite Kontrol 6.1).
+  // Sadece oyun ekranindayken sayar - menude bekleyen sure sayilmaz.
+  setInterval(function(){
+    if(aktifEkran==='oyun'){ state.oynamaSn=(state.oynamaSn||0)+10; }
+  },10000);
+
+})();
+</script>
+</body></html>

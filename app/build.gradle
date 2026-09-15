@@ -1,0 +1,86 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.osmaniyeliabdullah.prismio'
+    compileSdk 36
+    // AGP 8.11 en az 35.0.0 ister. 36.0.0 API 36 ile eslesir.
+    buildToolsVersion "36.0.0"
+
+    defaultConfig {
+        applicationId "com.osmaniyeliabdullah.prismio"
+        minSdk 23                 // Android 6.0 - eski telefonlari da kapsar
+        // ZORUNLU: Google Play 31 Agustos 2026'dan beri YENI uygulamalar icin
+        // API 36 (Android 16) istiyor. Daha dusugu REDDEDILIR.
+        // Kaynak: developer.android.com/google/play/requirements/target-sdk
+        targetSdk 36
+        versionCode 1
+        versionName "0.9.0"
+    }
+
+    // --- IMZA ---
+    // Google Play AAB icin imza SART. Anahtar yoksa asagidaki komutla uretilir:
+    //   keytool -genkeypair -v -keystore prismio.jks -alias prismio \
+    //     -keyalg RSA -keysize 2048 -validity 10000
+    signingConfigs {
+        release {
+            def f = file("../prismio.jks")
+            if (f.exists()) {
+                storeFile f
+                // Sifreler ortam degiskeninden gelir (GitHub Actions gizli kasasi).
+                // Yerelde denerken de ayni degiskenler kullanilir.
+                storePassword System.getenv("PRISMIO_STORE_PASS") ?: "prismio123"
+                keyAlias      System.getenv("PRISMIO_KEY_ALIAS") ?: "prismio"
+                keyPassword   System.getenv("PRISMIO_KEY_PASS")  ?: "prismio123"
+            }
+        }
+    }
+
+    // Imza dosyasi yoksa SESSIZCE IMZASIZ paket uretilmesin.
+    // Imzasiz AAB Play'de anlasilmaz bir hatayla reddedilir - sebebi
+    // bulmak zordur. Burada acikca durdurmak daha iyi.
+    gradle.taskGraph.whenReady { graph ->
+        def yayinGorevi = graph.allTasks.any {
+            it.name.toLowerCase().contains('release') &&
+            (it.name.contains('bundle') || it.name.contains('assemble'))
+        }
+        if (yayinGorevi && !file("../prismio.jks").exists()) {
+            throw new GradleException(
+                "\n\n  IMZA ANAHTARI BULUNAMADI: prismio.jks\n" +
+                "  Yayin paketi imzasiz uretilemez.\n\n" +
+                "  GitHub Actions kullaniyorsan: gizli degerleri ekledin mi?\n" +
+                "    IMZA_ANAHTARI / MAGAZA_SIFRE / ANAHTAR_SIFRE\n" +
+                "  Kendi bilgisayarindaysan: yap.sh calistir, anahtari uretir.\n")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false          // oyun tek HTML, kucultmeye gerek yok
+            shrinkResources false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // AAB dil/ekran bolmesi. Oyun tek dil, bolmeye gerek yok.
+    bundle {
+        language { enableSplit = false }
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.webkit:webkit:1.11.0'
+
+    // Google Play Games Services v2
+    //  - Giris (oyuncu kimligi)
+    //  - Kayitli oyun (bulut yedek)
+    // Surum sabitlenmis. "+" kullanmak yapiyi ongorulemez yapar.
+    implementation 'com.google.android.gms:play-services-games-v2:20.1.2'
+    implementation 'com.google.android.gms:play-services-tasks:18.2.0'
+}

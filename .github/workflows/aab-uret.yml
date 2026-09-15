@@ -1,0 +1,160 @@
+# ============================================================================
+#  ADIM 2 — AAB VE APK URET
+#
+#  Iki sekilde calisir:
+#   1. Elle: Actions sekmesi -> bu is akisi -> "Run workflow"
+#   2. Surum etiketi: git tag v1.0 atip yukleyince otomatik calisir
+#      ve GitHub Releases'e koyar
+#
+#  URETTIKLERI:
+#   app-release.aab  -> Google Play'e yuklenecek dosya
+#   app-release.apk  -> kendi telefonuna kurup test edeceksin
+#
+#  GEREKLI GIZLI DEGERLER (Settings -> Secrets -> Actions):
+#   IMZA_ANAHTARI, MAGAZA_SIFRE, ANAHTAR_SIFRE
+#   Bunlar yoksa is akisi durur ve ne yapman gerektigini soyler.
+# ============================================================================
+name: 2 - AAB ve APK uret
+
+on:
+  workflow_dispatch:
+    inputs:
+      surum_adi:
+        description: 'Surum adi (ornek 0.9.0)'
+        required: false
+        default: '0.9.0'
+      surum_kodu:
+        description: 'Surum kodu - her yuklemede ARTMALI (ornek 1, 2, 3)'
+        required: false
+        default: '1'
+  push:
+    tags:
+      - 'v*'            # v1.0, v0.9.1 gibi etiketler
+
+jobs:
+  derle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu al
+        uses: actions/checkout@v4
+
+      - name: Gizli degerleri kontrol et
+        run: |
+          eksik=""
+          [ -z "${{ secrets.IMZA_ANAHTARI }}" ] && eksik="$eksik IMZA_ANAHTARI"
+          [ -z "${{ secrets.MAGAZA_SIFRE }}" ]  && eksik="$eksik MAGAZA_SIFRE"
+          [ -z "${{ secrets.ANAHTAR_SIFRE }}" ] && eksik="$eksik ANAHTAR_SIFRE"
+          if [ -n "$eksik" ]; then
+            echo "::error::Eksik gizli deger:$eksik"
+            echo ""
+            echo "YAPMAN GEREKEN:"
+            echo "  1. Once '1 - Imza anahtari uret' is akisini calistir"
+            echo "  2. Cikan dosyayi indir, icindeki OKU-ONEMLI.txt'yi oku"
+            echo "  3. Settings -> Secrets and variables -> Actions bolumune"
+            echo "     uc gizli degeri ekle"
+            exit 1
+          fi
+          echo "Gizli degerler tamam."
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle kur
+        # Bu projede gradle-wrapper.jar YOK (kapali ortamda uretilemedi).
+        # Bu yuzden gradle surumu ACIKCA kurulur. Boylece her derleme
+        # ayni surumle yapilir - ongorulebilir olur.
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'      # AGP 8.11 en az 8.13 ister
+
+      - name: Gradle calisiyor mu
+        run: |
+          gradle --version
+          echo "--- proje yapisi ---"
+          ls -la
+          test -f settings.gradle || { echo "::error::settings.gradle yok. Dosyalar deponun KOKUNDE mi?"; exit 1; }
+          test -f app/build.gradle || { echo "::error::app/build.gradle yok. Dosyalar deponun KOKUNDE mi?"; exit 1; }
+          test -f app/src/main/assets/index.html || { echo "::error::Oyun dosyasi yok (app/src/main/assets/index.html)"; exit 1; }
+
+      - name: Imza anahtarini ac
+        run: |
+          echo "${{ secrets.IMZA_ANAHTARI }}" | base64 -d > prismio.jks
+          if [ ! -s prismio.jks ]; then
+            echo "::error::Imza anahtari cozulemedi. IMZA_ANAHTARI degerini kontrol et."
+            exit 1
+          fi
+          echo "Anahtar hazir ($(stat -c%s prismio.jks) bayt)"
+
+      - name: Surum numarasini ayarla
+        run: |
+          # Etiketle geldiyse etiketten al, elle baslatildiysa girilen degeri kullan
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            SURUM_ADI="${GITHUB_REF_NAME#v}"
+            SURUM_KODU="${{ github.run_number }}"
+          else
+            SURUM_ADI="${{ github.event.inputs.surum_adi }}"
+            SURUM_KODU="${{ github.event.inputs.surum_kodu }}"
+          fi
+          echo "Surum: $SURUM_ADI (kod $SURUM_KODU)"
+          sed -i "s/versionCode 1/versionCode $SURUM_KODU/" app/build.gradle
+          sed -i "s/versionName \"0.9.0\"/versionName \"$SURUM_ADI\"/" app/build.gradle
+          grep -n "versionCode\|versionName" app/build.gradle
+
+      - name: AAB uret
+        env:
+          PRISMIO_STORE_PASS: ${{ secrets.MAGAZA_SIFRE }}
+          PRISMIO_KEY_ALIAS: prismio
+          PRISMIO_KEY_PASS: ${{ secrets.ANAHTAR_SIFRE }}
+        run: gradle --no-daemon bundleRelease
+
+      - name: APK uret (telefonda test icin)
+        env:
+          PRISMIO_STORE_PASS: ${{ secrets.MAGAZA_SIFRE }}
+          PRISMIO_KEY_ALIAS: prismio
+          PRISMIO_KEY_PASS: ${{ secrets.ANAHTAR_SIFRE }}
+        run: gradle --no-daemon assembleRelease
+
+      - name: Sonucu topla
+        run: |
+          mkdir -p cikti
+          cp app/build/outputs/bundle/release/*.aab cikti/ 2>/dev/null || true
+          cp app/build/outputs/apk/release/*.apk    cikti/ 2>/dev/null || true
+
+          # Parmak izini de ver - Play Console'a gerekiyor
+          keytool -list -v -keystore prismio.jks -alias prismio \
+            -storepass "${{ secrets.MAGAZA_SIFRE }}" \
+            | grep -E "SHA1|SHA256" > cikti/parmak-izi.txt || true
+
+          echo "--- URETILENLER ---"
+          ls -lh cikti/
+
+          if [ ! -f cikti/*.aab ]; then
+            echo "::error::AAB uretilemedi"
+            exit 1
+          fi
+
+      - name: Dosyalari indirilebilir yap
+        uses: actions/upload-artifact@v4
+        with:
+          name: Prismio-AAB-APK
+          path: cikti/
+          retention-days: 30
+
+      - name: Surum etiketiyse Releases'e koy
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: cikti/*
+          body: |
+            Prismio ${{ github.ref_name }}
+
+            - `app-release.aab` — Google Play'e yuklenecek dosya
+            - `app-release.apk` — telefona kurup test etmek icin
+            - `parmak-izi.txt` — Play Console'a girilecek SHA-1

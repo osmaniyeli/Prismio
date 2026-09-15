@@ -1,0 +1,17 @@
+# İmza anahtarı ASLA depoya girmemeli
+*.jks
+*.keystore
+key.properties
+local.properties
+
+# Derleme çıktıları
+.gradle/
+build/
+app/build/
+*.aab
+*.apk
+
+# IDE
+.idea/
+*.iml
+.DS_Store

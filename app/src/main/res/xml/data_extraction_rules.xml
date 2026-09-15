@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  VERI AKTARIM KURALLARI (Android 12 ve sonrasi)
+
+  IKI AYRI DURUM VAR, IKISI DE ACIK:
+
+  cloud-backup   : Google hesabina yedek. Telefon kaybolursa
+                   veya sifirlanirsa ilerleme geri gelir.
+  device-transfer: Yeni telefona dogrudan aktarim.
+
+  Yedeklenen sey OYUN ILERLEMESIDIR:
+    bolum, yildiz, isik, can, temalar, dekorasyon,
+    basari, gorev, ayarlar
+  Kisisel veri YOK. Uygulama zaten veri toplamiyor.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="database" path="." />
+        <include domain="file" path="." />
+        <include domain="sharedpref" path="." />
+        <exclude domain="file" path="cache" />
+        <exclude domain="external" path="." />
+    </cloud-backup>
+
+    <device-transfer>
+        <include domain="database" path="." />
+        <include domain="file" path="." />
+        <include domain="sharedpref" path="." />
+        <exclude domain="file" path="cache" />
+        <exclude domain="external" path="." />
+    </device-transfer>
+</data-extraction-rules>

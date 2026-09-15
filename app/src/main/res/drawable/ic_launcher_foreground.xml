@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Prismio logosu: prizma + uc renkli isin. Vektor, her ekranda net. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- prizma (ucgen) -->
+    <path android:pathData="M54,34 L78,80 L30,80 Z"
+        android:strokeColor="#F5F1E8" android:strokeWidth="7"
+        android:strokeLineJoin="round" />
+    <!-- giren beyaz isin -->
+    <path android:pathData="M18,60 L30,60" android:strokeColor="#FFFFFF"
+        android:strokeWidth="6" android:strokeLineCap="round" />
+    <!-- cikan uc renk -->
+    <path android:pathData="M78,52 L92,50" android:strokeColor="#E0483C"
+        android:strokeWidth="6" android:strokeLineCap="round" />
+    <path android:pathData="M78,60 L92,60" android:strokeColor="#2E9E6B"
+        android:strokeWidth="6" android:strokeLineCap="round" />
+    <path android:pathData="M78,68 L92,70" android:strokeColor="#3B72C4"
+        android:strokeWidth="6" android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,113 @@
+# ============================================================================
+#  ADIM 1 — IMZA ANAHTARI URET
+#  Bunu SADECE BIR KEZ calistir. Sonra bir daha dokunma.
+#
+#  Ne yapar:
+#   1. Imza anahtari (prismio.jks) uretir
+#   2. Base64'e cevirip indirilebilir dosya olarak verir
+#   3. Sen indirip GitHub'in gizli kasasina yaparsin
+#
+#  NEDEN BOYLE: Anahtar dogrudan depoda duramaz - herkes gorur.
+#  Gizli kasa (Secrets) sifreli tutar, sadece derleme sirasinda acilir.
+# ============================================================================
+name: 1 - Imza anahtari uret
+
+on:
+  workflow_dispatch:          # sadece elle baslatilir
+
+jobs:
+  anahtar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Anahtar uret
+        run: |
+          # Sifreler rastgele uretilir - tahmin edilemez
+          MAGAZA_SIFRE=$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)
+          ANAHTAR_SIFRE=$MAGAZA_SIFRE
+
+          keytool -genkeypair -v \
+            -keystore prismio.jks \
+            -alias prismio \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$MAGAZA_SIFRE" \
+            -keypass "$ANAHTAR_SIFRE" \
+            -dname "CN=Prismio, OU=Oyun, O=Osmaniyeli Abdullah, L=Istanbul, C=TR"
+
+          # Base64: metin haline getir, kopyalanabilsin
+          base64 -w 0 prismio.jks > prismio.jks.base64
+
+          # Parmak izini al - Play Console'a bu girilecek
+          keytool -list -v -keystore prismio.jks -alias prismio \
+            -storepass "$MAGAZA_SIFRE" > parmak-izi.txt
+
+          # Talimat dosyasi
+          cat > OKU-ONEMLI.txt <<EOF
+          ============================================================
+            PRISMIO IMZA ANAHTARI - BUNU KAYBETME
+          ============================================================
+
+          Bu klasorde uc dosya var:
+            prismio.jks          -> imza anahtarinin kendisi
+            prismio.jks.base64   -> GitHub'a yapistirilacak metin hali
+            parmak-izi.txt       -> Play Console'a girilecek SHA-1
+
+          ------------------------------------------------------------
+          YAPACAKLARIN - SIRAYLA
+          ------------------------------------------------------------
+
+          1) prismio.jks dosyasini GUVENLI BIR YERE KAYDET.
+             Bulut depolama, harici disk, ne olursa.
+             KAYBEDERSEN ayni uygulamayi bir daha guncelleyemezsin.
+             Yeni anahtarla yuklemek = yeni uygulama demek.
+
+          2) GitHub'da: Settings -> Secrets and variables -> Actions
+             "New repository secret" ile UC tane gizli deger ekle:
+
+             Ad: IMZA_ANAHTARI
+             Deger: prismio.jks.base64 dosyasinin ICINDEKI metnin TAMAMI
+                    (tek satirdir, hepsini kopyala)
+
+             Ad: MAGAZA_SIFRE
+             Deger: $MAGAZA_SIFRE
+
+             Ad: ANAHTAR_SIFRE
+             Deger: $ANAHTAR_SIFRE
+
+          3) Sifreleri de bir yere not et. Yukaridakiler:
+             Magaza sifresi : $MAGAZA_SIFRE
+             Anahtar sifresi: $ANAHTAR_SIFRE
+
+          4) Bu isi bitirince "2 - AAB uret" is akisini calistir.
+
+          ------------------------------------------------------------
+          PLAY CONSOLE ICIN SHA-1
+          ------------------------------------------------------------
+          parmak-izi.txt dosyasinda "SHA1:" diye baslayan satiri bul.
+          Play Console -> Oyun hizmetleri -> Kimlik bilgileri
+          bolumune o degeri gir.
+
+          DIKKAT: Google Play uygulamayi KENDI anahtariyla yeniden
+          imzalar. Bu yuzden IKI parmak izi gerekir:
+            - Yukaridaki SHA-1 (senin yukleme anahtarin)
+            - Play Console -> Uygulama butunlugu bolumundeki SHA-1
+              (Google'in imzalama anahtari)
+          Ikisini de ekle. Yoksa Play'den indirilen surumde giris
+          calismaz ama kendi telefonunda calisir.
+          ============================================================
+          EOF
+
+          mkdir -p cikti
+          mv prismio.jks prismio.jks.base64 parmak-izi.txt OKU-ONEMLI.txt cikti/
+
+      - name: Anahtari indirilebilir yap
+        uses: actions/upload-artifact@v4
+        with:
+          name: PRISMIO-IMZA-ANAHTARI
+          path: cikti/
+          retention-days: 7        # 7 gun sonra silinir, indirmeyi unutma

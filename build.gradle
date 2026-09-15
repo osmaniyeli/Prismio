@@ -1,0 +1,6 @@
+plugins {
+    // AGP 8.9+ ZORUNLU: compileSdk 36 (Android 16) daha eskisiyle derlenmez.
+    // Kaynak: developer.android.com/about/versions/16/setup-sdk
+    // 8.11.x kararli surum, 8.9'un uzerinde, Gradle 8.9 ile uyumlu.
+    id 'com.android.application' version '8.11.1' apply false
+}

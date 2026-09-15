@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Prismio</string>
+
+    <!--
+      GOOGLE PLAY GAMES PROJE KIMLIGI
+      Kaynak: Play Console -> Oyun hizmetleri -> Yapilandirma -> Proje kimligi
+      Bu GERCEK deger. Degistirme.
+    -->
+    <string name="game_services_project_id" translatable="false">853778504598</string>
+
+    <!-- Kayitli oyun dosyasinin adi. Bulutta bu isimle durur. -->
+    <string name="kayit_dosya_adi" translatable="false">prismio_ilerleme</string>
+</resources>
