@@ -73,6 +73,23 @@ android {
     }
 }
 
+configurations.configureEach {
+    resolutionStrategy {
+        eachDependency { details ->
+            if (details.requested.group == 'org.jetbrains.kotlin') {
+                if (details.requested.name == 'kotlin-stdlib-jdk7' ||
+                    details.requested.name == 'kotlin-stdlib-jdk8') {
+                    details.useTarget("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
+                    details.because("KOTLIN CAKISMASI cozumu")
+                } else if (details.requested.name == 'kotlin-stdlib' ||
+                           details.requested.name == 'kotlin-stdlib-common') {
+                    details.useVersion("1.8.22")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.webkit:webkit:1.11.0'
