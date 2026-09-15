@@ -22,5 +22,4 @@
 
     <!-- Onbellek yedeklenmez -->
     <exclude domain="file" path="cache" />
-    <exclude domain="external" path="." />
 </full-backup-content>
