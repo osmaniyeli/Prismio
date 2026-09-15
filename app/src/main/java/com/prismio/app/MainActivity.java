@@ -1,4 +1,4 @@
-package com.osmaniyeliabdullah.prismio;
+package com.prismio.app;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;

@@ -1,13 +1,13 @@
 plugins { id 'com.android.application' }
 
 android {
-    namespace 'com.osmaniyeliabdullah.prismio'
+    namespace 'com.prismio.app'
     compileSdk 36
     // AGP 8.11 en az 35.0.0 ister. 36.0.0 API 36 ile eslesir.
     buildToolsVersion "36.0.0"
 
     defaultConfig {
-        applicationId "com.osmaniyeliabdullah.prismio"
+        applicationId "com.prismio.app"
         minSdk 23                 // Android 6.0 - eski telefonlari da kapsar
         // ZORUNLU: Google Play 31 Agustos 2026'dan beri YENI uygulamalar icin
         // API 36 (Android 16) istiyor. Daha dusugu REDDEDILIR.

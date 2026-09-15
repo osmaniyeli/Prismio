@@ -1,4 +1,4 @@
-package com.osmaniyeliabdullah.prismio;
+package com.prismio.app;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
