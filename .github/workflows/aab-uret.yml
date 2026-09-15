@@ -63,8 +63,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Android SDK kur
-        uses: android-actions/setup-android@v3
+      - name: Android SDK hazirla
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          test -d "$SDK" || { echo "::error::Android SDK bulunamadi"; exit 1; }
+          echo "ANDROID_HOME=$SDK" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$SDK" >> $GITHUB_ENV
+          SDKMAN=$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -1)
+          test -n "$SDKMAN" || { echo "::error::sdkmanager yok"; exit 1; }
+          echo "sdkmanager: $SDKMAN"
+          yes | "$SDKMAN" --licenses > /dev/null 2>&1 || true
+          "$SDKMAN" "platforms;android-36" "build-tools;36.0.0" "platform-tools" || true
+          ls "$SDK/platforms" 2>/dev/null || true
 
       - name: Gradle kur
         # Bu projede gradle-wrapper.jar YOK (kapali ortamda uretilemedi).
@@ -135,7 +145,7 @@ jobs:
           echo "--- URETILENLER ---"
           ls -lh cikti/
 
-          if [ ! -f cikti/*.aab ]; then
+          if ! ls cikti/*.aab >/dev/null 2>&1; then
             echo "::error::AAB uretilemedi"
             exit 1
           fi
