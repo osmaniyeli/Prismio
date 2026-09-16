@@ -73,6 +73,12 @@ android {
     }
 }
 
+// --- KOTLIN CAKISMASI COZUMU ---
+// Play Games SDK icinde Kotlin 1.8.22 geliyor. Ama bazi alt bagimliliklar
+// eski kotlin-stdlib-jdk7 / jdk8 (1.6.21) getiriyor. Kotlin 1.8'den itibaren
+// jdk7/jdk8 paketlerinin icerigi ana kotlin-stdlib'in ICINE tasindi.
+// Ikisi birden gelince ayni sinif iki kere bulunuyor -> derleme durur.
+// Cozum: eski jdk7/jdk8 paketlerini ana kotlin-stdlib'e yonlendir.
 configurations.configureEach {
     resolutionStrategy {
         eachDependency { details ->
@@ -80,7 +86,7 @@ configurations.configureEach {
                 if (details.requested.name == 'kotlin-stdlib-jdk7' ||
                     details.requested.name == 'kotlin-stdlib-jdk8') {
                     details.useTarget("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
-                    details.because("KOTLIN CAKISMASI cozumu")
+                    details.because("jdk7/jdk8 icerigi Kotlin 1.8'de ana stdlib'e tasindi")
                 } else if (details.requested.name == 'kotlin-stdlib' ||
                            details.requested.name == 'kotlin-stdlib-common') {
                     details.useVersion("1.8.22")
@@ -100,4 +106,8 @@ dependencies {
     // Surum sabitlenmis. "+" kullanmak yapiyi ongorulemez yapar.
     implementation 'com.google.android.gms:play-services-games-v2:20.1.2'
     implementation 'com.google.android.gms:play-services-tasks:18.2.0'
+
+    // D-107: Google Play Faturalandirma (tek seferlik satin alma)
+    // Surum sabit. Play Billing 7+ eski API'leri kaldirdi, 6.x kararli.
+    implementation 'com.android.billingclient:billing:7.1.1'
 }

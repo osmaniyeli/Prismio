@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         // Sadece bizim kendi sayfamiz yuklendigi icin guvenli.
         // Bkz. shouldInterceptRequest: her dis istek engelleniyor.
         kopru = new OyunKopru(this, web, getString(R.string.kayit_dosya_adi));
+        kopru.odemeyiBagla();     // D-107: Prismio Plus satin alma
         web.addJavascriptInterface(kopru, "PrismioNative");
 
         web.setWebViewClient(new WebViewClient() {
@@ -139,10 +140,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override protected void onPause()  { super.onPause();  web.onPause();  }
-    @Override protected void onResume() { super.onResume(); web.onResume(); }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        web.onResume();
+        // D-107: Her one gelisinde satin alma durumu tazelenir.
+        // Oyuncu Play'den iade aldiysa veya baska cihazda satin aldiysa
+        // burada yakalanir. Play Billing bunu SART kosuyor.
+        if (kopru != null) kopru.plusDurum();
+    }
 
     @Override
     protected void onDestroy() {
+        if (kopru != null) kopru.odemeyiKapat();   // D-107: baglantiyi sizdirma
         if (web != null) { web.destroy(); web = null; }
         super.onDestroy();
     }

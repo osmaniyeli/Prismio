@@ -9,6 +9,8 @@
          ACCESS_NETWORK_STATE: Play Games baglanti durumunu kontrol eder. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- D-107: Google Play Faturalandirma. Tek seferlik satin alma icin. -->
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:name=".PrismioApp"

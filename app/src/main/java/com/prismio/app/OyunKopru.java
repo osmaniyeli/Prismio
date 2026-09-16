@@ -46,10 +46,36 @@ public class OyunKopru {
     private final WebView web;
     private final String kayitAdi;
 
+    /** D-107: Prismio Plus satin alma. Null olabilir - o zaman Plus sekmesi
+     *  "yakinda" der ve satin alma butonu GOSTERILMEZ. */
+    private Odeme odeme;
+
     public OyunKopru(Activity etkinlik, WebView web, String kayitAdi) {
         this.etkinlik = etkinlik;
         this.web = web;
         this.kayitAdi = kayitAdi;
+    }
+
+    /** MainActivity satin alma sistemini burada baglar. */
+    public void odemeyiBagla() {
+        if (odeme != null) return;
+        odeme = new Odeme(etkinlik, new Odeme.Geri() {
+            @Override
+            public void durum(boolean sahip, String fiyat, boolean hazir) {
+                jsCagir("window.__plusDurum && window.__plusDurum("
+                        + sahip + "," + metinKacir(fiyat) + "," + hazir + ")");
+            }
+            @Override
+            public void sonuc(boolean basarili, String mesaj) {
+                jsCagir("window.__plusSonuc && window.__plusSonuc("
+                        + basarili + "," + metinKacir(mesaj) + ")");
+            }
+        });
+        odeme.basla();
+    }
+
+    public void odemeyiKapat() {
+        if (odeme != null) { odeme.kapat(); odeme = null; }
     }
 
     // --- JavaScript'e geri haber verme ---
@@ -205,5 +231,48 @@ public class OyunKopru {
     @JavascriptInterface
     public boolean destekVar() {
         return true;
+    }
+
+    /**
+     * PLUS DURUMU SOR  (D-107)
+     * Oyun acilista ve "geri yukle" basilinca cagirir.
+     * Cevap __plusDurum ile doner.
+     */
+    @JavascriptInterface
+    public void plusDurum() {
+        if (odeme == null) {
+            jsCagir("window.__plusDurum && window.__plusDurum(false,null,false)");
+            return;
+        }
+        etkinlik.runOnUiThread(() -> odeme.satinAlmalariSorgula());
+    }
+
+    /**
+     * PLUS SATIN AL  (D-107)
+     * Google Play satin alma ekranini acar.
+     * Sonuc __plusSonuc ile doner.
+     */
+    @JavascriptInterface
+    public void plusSatinAl() {
+        if (odeme == null) {
+            jsCagir("window.__plusSonuc && window.__plusSonuc(false,\"Satın alma kullanılamıyor.\")");
+            return;
+        }
+        etkinlik.runOnUiThread(() -> odeme.satinAl());
+    }
+
+    /**
+     * UYGULAMADAN CIK  (D-092)
+     *
+     * Android geri tusu ana menude iki kez basilinca buraya gelir.
+     * finish() cagrilir - uygulama kapanir, sistem geri doner.
+     *
+     * NEDEN JAVA TARAFI: Tarayicidan bir sayfayi kapatmak
+     * (window.close) WebView'da calismaz. Activity'yi kapatmak
+     * gerekir.
+     */
+    @JavascriptInterface
+    public void cikis() {
+        etkinlik.runOnUiThread(etkinlik::finish);
     }
 }

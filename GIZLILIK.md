@@ -1,8 +1,8 @@
 # PRISMIO — GİZLİLİK POLİTİKASI
 
-**Son güncelleme:** 14 Eylül 2026 (3. sürüm)
+**Son güncelleme:** 15 Eylül 2026 (4. sürüm)
 **Uygulama:** Prismio
-**Geliştirici:** Osmaniyeli Abdullah
+**Geliştirici:** Abdullah Yeşildemir
 **İletişim:** osmaniyeliabdullah@gmail.com
 
 ---
@@ -92,9 +92,29 @@ alabilirsin. Bu kod senin elinde kalır, biz görmeyiz.
 
 ---
 
+## SATIN ALMA (PRISMIO PLUS)
+
+Prismio'da tek bir isteğe bağlı satın alma vardır: **Prismio Plus**.
+Tek seferlik ödemedir, abonelik değildir.
+
+Satın alma **Google Play Faturalandırma** ile yapılır. Ödeme bilgilerin
+doğrudan Google'a gider. **Biz senin kart bilgilerini görmeyiz, saklamayız
+ve bunlara hiçbir şekilde erişemeyiz.**
+
+Uygulama Google'dan yalnızca şu bilgiyi alır: bu satın alma yapıldı mı,
+evet ya da hayır. Bu bilgi telefonunda saklanır.
+
+Google Play Faturalandırma, Google'ın kendi gizlilik koşullarına tabidir:
+https://policies.google.com/privacy
+
+---
+
 ## ÜÇÜNCÜ TARAF SERVİSLER
 
-Tek servis **Google Play Games'tir** ve o da isteğe bağlıdır.
+İki servis vardır, ikisi de Google'ındır:
+
+1. **Google Play Games** — isteğe bağlı giriş ve bulut kayıt
+2. **Google Play Faturalandırma** — yalnızca Prismio Plus satın alınırsa
 
 Prismio'da bulunmayanlar:
 - Reklam ağı yok
@@ -137,8 +157,21 @@ Oyun ilerlemesi kullanıcının kendi Google hesabına yedekleniyor.
 **3. sürümde değişen:** Google Play Games girişi eklendi. İsteğe bağlıdır.
 İnternet izni bunun için istenmektedir.
 
+**4. sürümde değişen:** Prismio Plus satın alma eklendi. Google Play
+Faturalandırma kullanılıyor. Ödeme bilgileri bize gelmiyor.
+
 ---
 
 ## İLETİŞİM
 
 Sorularınız için: osmaniyeliabdullah@gmail.com
+
+---
+
+## GELİŞTİRİCİ NOTU — REKLAMLAR
+
+Bu sürümde reklam ağı **yoktur**. Oyun içindeki reklam alanları şu an
+boştur ve hiçbir reklam servisine bağlı değildir.
+
+İleride reklam eklenirse bu politika **önceden** güncellenecek ve
+Google Play Veri Güvenliği formu da buna göre değiştirilecektir.

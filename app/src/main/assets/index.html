@@ -19,6 +19,9 @@
     --kabart:4px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  /*: Butonlarda cift dokunma yakinlastirmasi kapali.
+     Hem tepki hizlanir hem kaydirma karisikligi biter. */
+  button{touch-action:manipulation}
   html,body{margin:0;padding:0}
   body{
     background:var(--zemin); color:var(--metin);
@@ -53,7 +56,11 @@
   .btn[hidden]{display:none!important}
 
   /* ---------- EKRAN YAPISI ---------- */
-  .ekran{display:none;height:100dvh;flex-direction:column;overflow:hidden}
+  /*: Ust cubuk (saat, pil, bildirim) oyunun ustune biniyordu.
+     viewport-fit=cover ekrani centigin altina uzatiyor ama boslugu
+     biz birakmak zorundayiz. Tum ekranlarin ustune guvenli bosluk. */
+  .ekran{display:none;height:100dvh;flex-direction:column;overflow:hidden;
+    padding-top:max(env(safe-area-inset-top), 8px)}
   /* Kayan ekranlarda ic kutu kayar, sayfa kaymaz. Ust cubuk boylece durur. */
   .ekran > .ust{flex:0 0 auto;position:relative;z-index:5}
   .ekran.acik{display:flex}
@@ -132,6 +139,18 @@
   .menu-orta.devamli #btnOyna{background:var(--yuzey);color:var(--metin);
     box-shadow:0 4px 0 var(--cizgi);font-size:1.05rem;padding:14px 22px}
   .menu-orta.devamli #btnOyna:active{box-shadow:0 0 0 var(--cizgi)}
+  /*: Alt sira ikili izgara. Dort dugme duzenli durur.
+     Tek sayida dugme kalirsa sonuncusu tam genislik alir. */
+  .menu-alt.izgara{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}
+  .menu-alt.izgara .btn{width:100%;margin:0}
+  .menu-alt.izgara .btn:last-child:nth-child(odd){grid-column:1 / -1}
+  /* Gizli dugme izgarada yer kaplamasin */
+  .menu-alt.izgara .btn[hidden]{display:none}
+
+  /*: Zamana karsi ikincil. Sadece kucuk saat ikonu ile ayrisir. */
+  .zaman-btn{gap:7px}
+  .zb-ik{font-size:1.05rem;line-height:1;opacity:.75}
+
   .menu-alt{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
   .menu-alt .btn{font-size:.9rem;padding:13px 16px;--kabart:3px;min-height:44px}
   .tezgah{width:100%;max-width:520px;margin:22px auto 0}
@@ -231,6 +250,22 @@
   .bolumbasI .no{font-size:1.5rem;font-weight:900;line-height:1.1}
   .bolumbasI .alt{font-size:.82rem;font-weight:700;color:var(--metin-soft)}
   .bolumbasI.buyuk .no{color:var(--sari-alt)}
+  /*: DURUM SERIDI — hedefler solda, ipucu piperi sagda.
+     Oyuncunun kaynaklari her an gorunur olmali. */
+  .durum-serit{display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin:10px 0 2px}
+  .durum-serit .hedefler{margin:0;flex:1 1 auto;justify-content:flex-start}
+  .hud-ipucu{display:flex;align-items:center;gap:5px;flex:0 0 auto;
+    padding:5px 9px;background:var(--yuzey);border-radius:999px;
+    box-shadow:0 2px 0 var(--cizgi)}
+  .hud-pipler{display:flex;align-items:center;gap:4px}
+  /* Pip = tek bir ipucu hakki. Dolu daire kullanilabilir, bos harcanmis. */
+  .pip{width:9px;height:9px;border-radius:50%;background:transparent;
+    border:2px solid var(--cizgi);display:inline-block;transition:background .18s}
+  .pip.dolu{background:var(--sari,#E5A93C);border-color:var(--sari,#E5A93C)}
+  .pip-bedel{font-style:normal;font-size:.68rem;font-weight:800;
+    color:var(--kirmizi);letter-spacing:-.02em;margin-left:2px}
+
   .hedefler{display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
   .hedef{display:flex;align-items:center;gap:5px;background:var(--yuzey);border-radius:999px;
     padding:5px 11px;box-shadow:0 2px 0 var(--cizgi);font-size:.86rem;font-weight:900}
@@ -249,6 +284,71 @@
     margin-top:10px;min-height:20px}
   .ipucu.hata{color:var(--kirmizi)}
 
+  /*: Cikis uyarisi gibi kisa mesajlar. Ekranin altinda belirir,
+     1.8 saniye sonra kaybolur. Oyuna engel olmaz. */
+  .kisa-bildirim{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));
+    transform:translate(-50%,14px);background:var(--metin);color:var(--zemin);
+    padding:10px 18px;border-radius:999px;font-size:.88rem;font-weight:700;
+    z-index:90;opacity:0;pointer-events:none;
+    transition:opacity .18s ease,transform .18s ease;
+    box-shadow:0 6px 18px rgba(0,0,0,.22)}
+  .kisa-bildirim.gor{opacity:1;transform:translate(-50%,0)}
+
+  /*: Ipucu bedelli hale gelince buton bunu gosterir.
+     Oyuncu basmadan once ne odeyecegini bilmeli. */
+  #btnIpucu.bedelli::after{content:"1♥";font-size:.66rem;font-weight:800;
+    margin-left:5px;opacity:.85;letter-spacing:-.02em}
+
+  /*: Gelismis bolum katlanir. Normal oyuncu gormez.
+     Kod ile yedekleme nadiren kullanilir ama Play Games girisi
+     calismayan telefonlarda TEK kurtarma yolu. Silinmedi, gizlendi. */
+  .hs-katla{display:flex;align-items:center;justify-content:space-between;width:100%;
+    background:none;border:0;padding:12px 4px;margin-top:10px;cursor:pointer;
+    font:inherit;font-size:.86rem;font-weight:700;color:var(--metin-soft);
+    min-height:44px;text-align:left}
+  .hs-katla .ok{transition:transform .18s ease;font-size:1.1rem;opacity:.7}
+  .hs-katla.acik .ok{transform:rotate(90deg)}
+  .hs-gizli{display:none}
+
+  /* ============ AÇILIŞ PERDESİ ============
+     Sure toplam 1.3 sn. Kisa tutuldu: acilis ekranI oyunun onune
+     gecmemeli. Dokununca hemen kapanir. */
+  .acilis{position:fixed;inset:0;z-index:200;background:var(--zemin);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;transition:opacity .34s ease;cursor:pointer}
+  .acilis.kapat{opacity:0;pointer-events:none}
+  .acilis svg{overflow:visible}
+
+  /* Gelen beyaz isin: soldan uzar */
+  .ac-isin{stroke:var(--metin);stroke-width:3;stroke-linecap:round;
+    stroke-dasharray:90;stroke-dashoffset:90;
+    animation:acIsin .38s ease-out forwards}
+  @keyframes acIsin{to{stroke-dashoffset:0}}
+
+  /* Prizma: isin varinca belirir */
+  .ac-prizma{fill:none;stroke:var(--metin);stroke-width:3;stroke-linejoin:round;
+    opacity:0;transform-origin:104px 64px;
+    animation:acPrizma .3s ease-out .3s forwards}
+  @keyframes acPrizma{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+
+  /* Ayrilan uc renk: prizmadan sonra */
+  .ac-r{stroke-width:3;stroke-linecap:round;stroke-dasharray:96;stroke-dashoffset:96;
+    animation:acIsin .4s ease-out forwards}
+  .ac-r1{stroke:#E0554B;animation-delay:.56s}
+  .ac-r2{stroke:#E5A93C;animation-delay:.62s}
+  .ac-r3{stroke:#3F8FD0;animation-delay:.68s}
+
+  /* Ad: en son, yumusak */
+  .ac-ad{font-size:1.5rem;font-weight:800;letter-spacing:.24em;
+    color:var(--metin);opacity:0;margin-left:.24em;
+    animation:acAd .4s ease-out .8s forwards}
+  @keyframes acAd{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Hareket azalt ayari acikken animasyon yok - sadece ad gorunur */
+  html.az-hareket .ac-isin,html.az-hareket .ac-prizma,
+  html.az-hareket .ac-r,html.az-hareket .ac-ad{animation:none;opacity:1;
+    stroke-dashoffset:0;transform:none}
+
   .sayac{display:flex;justify-content:space-between;align-items:center;
     background:var(--kirmizi);color:#fff;border-radius:14px;padding:10px 16px;
     margin-bottom:10px;box-shadow:0 3px 0 var(--kirmizi-alt)}
@@ -259,13 +359,30 @@
   .sayac[hidden]{display:none!important}
 
   /* ---------- ÖDÜL / SONUÇ KATMANI ---------- */
-  .katman{position:fixed;inset:0;background:rgba(38,34,30,.55);z-index:60;
-    display:none;align-items:center;justify-content:center;padding:20px}
+  /* ===== SONUC PANELI: ALT SAYFA =====
+     ESKIDEN: ekranin ortasinda kutu. Tahtayi tamamen kapatiyordu.
+     Oyuncu "ne yaptim da kazandim" baglamini kaybediyordu.
+
+     SIMDI: asagidan kayan alt sayfa. Tahtanin ust kismi gorunur kalir.
+     Bu Android'in kendi kalibi - oyuncuya tanidik gelir.
+
+     Tutamak cizgisi (.kart::before) "bu asagidan geldi" isaretidir. */
+  .katman{position:fixed;inset:0;background:rgba(38,34,30,.5);z-index:60;
+    display:none;align-items:flex-end;justify-content:center;padding:0}
   .katman.acik{display:flex}
-  .kart{background:var(--yuzey);border-radius:24px;padding:26px 22px 22px;
-    width:100%;max-width:360px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.15);
-    animation:zipla .28s cubic-bezier(.34,1.56,.64,1)}
-  @keyframes zipla{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+  .kart{background:var(--yuzey);
+    border-radius:26px 26px 0 0;
+    padding:20px 22px calc(22px + env(safe-area-inset-bottom));
+    width:100%;max-width:440px;text-align:center;
+    box-shadow:0 -6px 24px rgba(0,0,0,.18);
+    max-height:88vh;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    animation:altKay .3s cubic-bezier(.22,.9,.3,1)}
+  /* Tutamak: bu panelin asagidan geldigini soyler */
+  .kart::before{content:"";display:block;width:38px;height:4px;border-radius:2px;
+    background:var(--cizgi);margin:0 auto 16px;flex:0 0 auto}
+  @keyframes altKay{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  /* Hareket azaltilmissa kayma yok, dogrudan belirir */
+  html.az-hareket .kart{animation:none}
   .kart h2{font-size:1.7rem;font-weight:900;margin:0 0 4px}
   .kart .altyazi{font-size:.95rem;font-weight:700;color:var(--metin-soft);margin:0 0 16px}
   .yildizlar{display:flex;justify-content:center;gap:10px;margin:6px 0 14px}
@@ -429,6 +546,66 @@
   .dt-alt{margin:4px 0 0;font-size:.82rem;font-weight:800;color:var(--metin-soft)}
 
   /* ================= GÖREV / BAŞARI ================= */
+  /* ===== SERI SERIDI =====
+     Gunluk gorevin ustunde durur. Seri 0 iken de gorunur:
+     bos bir hedef gostermek, hic gostermemekten iyidir. */
+  .seri-serit{display:flex;align-items:center;gap:11px;width:100%;max-width:300px;
+    background:var(--yuzey);border:none;border-radius:16px;padding:11px 14px;
+    margin-bottom:10px;cursor:pointer;font:inherit;text-align:left;
+    box-shadow:0 3px 0 var(--cizgi);min-height:44px;touch-action:manipulation}
+  .sr-alev{display:flex;align-items:center;color:var(--cizgi);
+    transition:color .2s,transform .2s;flex:0 0 auto}
+  .sr-alev svg{display:block}
+  .seri-serit.canli .sr-alev{color:var(--kirmizi)}
+  .seri-serit.bugun .sr-alev{transform:scale(1.15)}
+  .sr-govde{display:flex;flex-direction:column;gap:1px;flex:1 1 auto;min-width:0}
+  .sr-sayi{font-size:.98rem;font-weight:900;color:var(--metin)}
+  .sr-sayi b{font-size:1.15rem}
+  .sr-ack{font-size:.72rem;font-weight:700;color:var(--metin-soft);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sr-gunler{display:flex;gap:3px;flex:0 0 auto}
+  /* Son 7 gun. Dolu = o gun oynandi. Bugun kalin cerceveli. */
+  .sg{width:7px;height:7px;border-radius:50%;background:var(--cizgi);
+    display:inline-block;opacity:.45}
+  .sg.dolu{background:var(--kirmizi);opacity:1}
+  .sg.bugun{outline:2px solid var(--metin);outline-offset:1px}
+
+  /* ===== METIN BAGI =====
+     Ikincil gezinme. Buton gibi gorunmez ki birincil eylemle yarismasin.
+     Yine de 44px dokunma alani korunur. */
+  /* ===== PRISMIO PLUS =====
+     Sade tutuldu. Abartili "ozel teklif" gorseli kullanmadik -
+     oyuncuya bagirmadan ne aldigini anlatiyoruz. */
+  .plus-bas{text-align:center;padding:16px 8px 12px}
+  .pb-ad{font-size:1.5rem;font-weight:900;letter-spacing:-.01em}
+  .pb-ack{font-size:.9rem;font-weight:700;color:var(--metin-soft);margin-top:3px}
+  .plus-liste{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+  .pf{display:flex;align-items:flex-start;gap:11px;background:var(--yuzey);
+    border-radius:14px;padding:12px 14px;box-shadow:0 3px 0 var(--cizgi)}
+  .pf-ik{flex:0 0 auto;color:var(--metin-soft);display:flex;margin-top:1px}
+  .pf.acik .pf-ik{color:var(--yesil)}
+  .pf-govde{display:flex;flex-direction:column;gap:2px;flex:1 1 auto;min-width:0}
+  .pf-govde b{font-size:.95rem;font-weight:800}
+  .pf-govde small{font-size:.78rem;font-weight:700;color:var(--metin-soft)}
+  .pf-tik{flex:0 0 auto;color:var(--yesil);display:flex;margin-top:2px}
+  .plus-not{font-size:.76rem;font-weight:700;color:var(--metin-soft);
+    text-align:center;margin:12px 4px 0;line-height:1.5}
+  .plus-yakinda{padding:16px;background:var(--yuzey);border-radius:14px;
+    box-shadow:0 3px 0 var(--cizgi);margin-top:4px}
+  .metin-bag.tam{display:block;width:100%;text-align:center;margin-top:8px}
+  /* Satin alinmis durum */
+  .plus-sahip{text-align:center;background:var(--yesil);color:#fff;
+    border-radius:18px;padding:20px 18px;margin:12px 0 16px;
+    box-shadow:0 4px 0 rgba(0,0,0,.14)}
+  .ps-ik{display:flex;justify-content:center;margin-bottom:8px}
+  .ps-bas{font-size:1.15rem;font-weight:900}
+  .ps-ack{font-size:.84rem;font-weight:700;opacity:.92;margin-top:5px;line-height:1.45}
+
+  .metin-bag{background:none;border:0;font:inherit;font-size:.9rem;font-weight:800;
+    color:var(--metin-soft);cursor:pointer;padding:12px 8px;min-height:44px;
+    text-decoration:none;touch-action:manipulation}
+  .metin-bag:active{color:var(--metin)}
+
   .gorev-serit{display:flex;align-items:center;gap:10px;width:100%;max-width:300px;
     background:var(--zemin-alt);border:none;border-radius:14px;padding:10px 13px;
     margin-bottom:12px;cursor:pointer;text-align:left;font:inherit;color:inherit;
@@ -444,8 +621,27 @@
   .gs-sag{flex:0 0 auto;font-size:.8rem;font-weight:900;color:var(--yesil)}
   .gs-sag.bekle{color:var(--metin-soft)}
 
+  /*: touch-action ZORUNLU.
+     Yoksa parmak bir butonun uzerindeyken kaydirma calismiyor,
+     ekran kilitlenmis gibi gorunuyor. pan-y = dikey kaydirma serbest. */
   .basari-kaydir,.hakkinda-kaydir,.ayar-kaydir{flex:1;min-height:0;overflow-y:auto;
-    -webkit-overflow-scrolling:touch;padding:0 0 26px}
+    -webkit-overflow-scrolling:touch;padding:0 0 26px;
+    touch-action:pan-y;overscroll-behavior:contain}
+
+  /* ===== ODUL ODASI GRUPLARI =====
+     Her grubun kendi basligi, sayaci ve ilerleme cubugu var.
+     Oyuncu bir bakista nerede iyi, nerede eksik gorur. */
+  .bg-baslik{display:flex;align-items:center;gap:9px;margin:20px 0 7px;padding:0 2px}
+  .bg-baslik:first-child{margin-top:4px}
+  .bg-ik{display:flex;align-items:center;color:var(--metin-soft);flex:0 0 auto}
+  .bg-ad{font-size:.82rem;font-weight:900;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--metin-soft);flex:1 1 auto}
+  .bg-sayi{font-size:.85rem;font-weight:900;color:var(--metin);flex:0 0 auto}
+  .bg-cubuk{display:block;height:5px;border-radius:3px;background:var(--cizgi);
+    overflow:hidden;margin:0 2px 12px}
+  .bg-cubuk>span{display:block;height:100%;border-radius:3px;
+    background:var(--yesil);transition:width .35s ease}
+  .bg-liste{display:flex;flex-direction:column;gap:10px}
 
   .gorev-liste,.basari-liste{display:flex;flex-direction:column;gap:10px}
   .gorev,.basaris{display:flex;align-items:center;gap:12px;background:var(--yuzey);
@@ -558,10 +754,14 @@
   /* ---------- AYARLAR ---------- */
   .ayarlar{display:flex;flex-direction:column;gap:10px;margin-top:8px}
   .ayar{display:flex;align-items:center;justify-content:space-between;gap:12px;
-    background:var(--yuzey);border-radius:14px;padding:13px 16px;box-shadow:0 3px 0 var(--cizgi)}
+    background:var(--yuzey);border-radius:14px;padding:13px 16px;box-shadow:0 3px 0 var(--cizgi);
+    touch-action:pan-y}   /*: satirin uzerinden kaydirmaya izin ver */
   .ayar .ad{font-weight:800;font-size:.95rem}
+  /*: Anahtar bir BUTON. Uzerinde kaydirma degil dokunma beklenir.
+     manipulation = cift dokunma yakinlastirmasini da kapatir, tepki hizlanir. */
   .anahtar{width:56px;height:32px;border-radius:999px;border:none;cursor:pointer;
-    background:var(--cizgi);position:relative;transition:background .15s}
+    background:var(--cizgi);position:relative;transition:background .15s;
+    touch-action:manipulation;flex:0 0 auto}
   .anahtar::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;
     border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
   .anahtar[aria-pressed="true"]{background:var(--yesil)}
@@ -586,10 +786,20 @@
   /* Parcacik kapali */
   html.parcacik-yok .parcacik{display:none!important}
 
-  /* Yuksek kontrast: kenarlari keskinlestir */
+  /* ---- YUKSEK KONTRAST ----
+     Kenarlari keskinlestirir. Erisilebilirlik ayari. NOTU: Bu blok eskiden BOZUKTU. Secici listesi
+     "html.yuksek-kontrast .ayar," diye virgulle bitiyor, govdesi
+     yoktu. CSS bir sonraki seciciyi (body::before) listeye katiyordu.
+     Sonuc: kontrast acikken rozet ve ayar satirlarina position:fixed
+     inset:0 katmani biniyor, ekranin ortasinda dev seffaf sekil
+     cikiyor ve duzen kayiyordu.
+     Artik kuralin kendi govdesi var, yorum ayri. */
   html.yuksek-kontrast{--cizgi:#8A8172}
   html.yuksek-kontrast .rozet,
-  html.yuksek-kontrast .ayar,
+  html.yuksek-kontrast .ayar{
+    box-shadow:0 3px 0 var(--cizgi), inset 0 0 0 2px var(--metin);
+  }
+
   /* ---- TEMA DOKUSU: zemin deseni ---- */
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     opacity:.5;background-repeat:repeat}
@@ -615,10 +825,16 @@
      Cekirdek dongu her zaman en gorunur sey olmali. Zemin deseni menude
      karakter katar, tahtanin yaninda dikkat calar. */
   html.oyunda body::before{opacity:.18}
-  html.yuksek-kontrast body::before{display:none}
+  /*: Yuksek kontrast acikken zemin deseni kapaniyor ama
+     body::before hala yer kapliyor ve bazi temalarda buyuk soluk
+     bir daire birakiyordu. visibility yerine tamamen kaldiriyoruz. */
+  html.yuksek-kontrast body::before{content:none!important;display:none!important;
+    background:none!important;opacity:0!important}
 
   html.yuksek-kontrast .tema{box-shadow:0 3px 0 var(--cizgi),0 0 0 2px var(--metin)}
-  html.yuksek-kontrast .btn{outline:2px solid var(--metin);outline-offset:-2px}
+  /*: outline-offset bazi Android WebView surumlerinde kutu
+     olcusunu degistirip duzeni kaydiriyordu. box-shadow kaydirmaz. */
+  html.yuksek-kontrast .btn{box-shadow:inset 0 0 0 2px var(--metin)}
 
   /* Gorsel kalite: dusukte agir efektler kapanir */
   html[data-kalite="LOW"] .parcacik{display:none!important}
@@ -708,6 +924,27 @@
 </style>
 </head><body>
 
+<!-- ================= AÇILIŞ PERDESİ =================
+  NEDEN: Oyun bir anda aciliyordu, marka anI yoktu.
+  NE: 1.3 saniye. Isik prizmadan gecer, uce ayrilir, ad belirir.
+  Oyunun kendi mekanigi tanitim olur - ayri bir logo animasyonu degil.
+  ATLANIR: ekrana dokununca hemen gecer.
+  TEKRAR: ayni oturumda bir daha gosterilmez.
+============================================================ -->
+<div id="acilis" class="acilis">
+  <svg viewBox="0 0 220 120" width="230" height="126" aria-hidden="true">
+    <!-- gelen beyaz isin -->
+    <line class="ac-isin" x1="6" y1="60" x2="92" y2="60"/>
+    <!-- prizma -->
+    <path class="ac-prizma" d="M104 36 L128 78 L80 78 Z"/>
+    <!-- ayrilan uc renk -->
+    <line class="ac-r ac-r1" x1="118" y1="60" x2="206" y2="34"/>
+    <line class="ac-r ac-r2" x1="118" y1="60" x2="210" y2="60"/>
+    <line class="ac-r ac-r3" x1="118" y1="60" x2="206" y2="86"/>
+  </svg>
+  <div class="ac-ad">PRISMIO</div>
+</div>
+
 <!-- ================= ANA MENÜ ================= -->
 <div class="ekran acik" id="ek-menu">
   <div class="ust">
@@ -730,6 +967,26 @@
     </div>
     <h1 class="oyunadi">Prismio</h1>
     <p class="slogan">Çöz. Sonra daha iyi çöz.</p>
+
+    <!-- SERI SERIDI: kac gundur ust uste oynuyorsun.
+         Gunluk gorevin USTUNDE durur - gorev "bugun ne yapayim",
+         seri "neden yarin da geleyim" sorusunu cevaplar.
+         Seri 0 iken de GORUNUR: hedef gosterir, merak uyandirir. -->
+    <button class="seri-serit" id="seriSerit" type="button">
+      <span class="sr-alev" id="srAlev" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="19" height="19">
+          <path d="M12 2.5c.4 3.6-2.6 4.6-2.6 7.6a2.7 2.7 0 005.3 0c0-1-.4-1.9-.4-1.9
+                   s2.8 1.6 2.8 5.2a7.1 7.1 0 01-14.2 0c0-4.3 3-5.6 4.6-7.8
+                   1.3-1.8 1.5-2.6 1.5-3.1z"
+                fill="currentColor"/>
+        </svg>
+      </span>
+      <span class="sr-govde">
+        <span class="sr-sayi"><b class="tnum" id="srSayi">0</b> <span id="srBirim">gün</span></span>
+        <span class="sr-ack" id="srAck">Bugün bir tahta çöz, seri başlasın</span>
+      </span>
+      <span class="sr-gunler" id="srGunler" aria-hidden="true"></span>
+    </button>
 
     <!-- DEVAM KARTI: kaldigin bolume tek dokunusla don.
          Yeni oyuncuda gizlenir, "Oyna" tek basina kalir. -->
@@ -755,11 +1012,27 @@
       <span class="gs-sag" id="gsSag"></span>
     </button>
 
+    <!-- MENU HIYERARSISI
+         SORUN: Alti sey ayni anda dikkat cekiyordu. Oyuncu "nereye
+         basayim" diye dusunuyordu. Bir menude AYNI ANDA iki birincil
+         eylem olamaz.
+         COZUM: Devam karti tek birincil eylem. Bolum haritasi metin
+         bagi oldu - lazim olana kadar one cikmaz. Zamana karsi ikincil.
+         Yeni oyuncuda kart gizli, o zaman "Oyna" birincil olur. -->
     <div class="menu-btnler">
       <button class="btn buyuk tam" id="btnOyna">Oyna</button>
-      <button class="btn sari tam" id="btnZaman">Zamana karşı</button>
-      <div class="menu-alt">
+      <button class="metin-bag" id="bagHarita" type="button" hidden>Tüm bölümler ›</button>
+      <!--: Sari degil SADE. Sari buton ekranin en gurultulu ogesiydi
+           ve Devam kartini bastiriyordu - duzeltmek istedigimiz seyin ta kendisi.
+           Zamana karsi ikincil bir mod, birincil eylem degil. -->
+      <button class="btn sade tam zaman-btn" id="btnZaman">
+        <span class="zb-ik">◷</span>Zamana karşı</button>
+      <!--: Ikili izgara. Dort dugme 2+2 dagilmis duruyordu,
+           simdi hep duzenli iki sutun. Dunyam gizliyken uc kalir,
+           sonuncusu tam genislik alir (CSS :last-child:nth-child(odd)). -->
+      <div class="menu-alt izgara">
         <button class="btn sade" id="btnMagaza">Temalar</button>
+        <button class="btn sade" id="btnOdul">Ödüller</button>
         <!-- Dünyam: 100 tahta çözülmeden GÖRÜNMEZ -->
         <button class="btn sade" id="btnDunya" hidden>Dünyam</button>
         <button class="btn sade" id="btnAyar">Ayarlar</button>
@@ -821,7 +1094,16 @@
       <div class="alt" id="bolumAlt">En iyi: 3 ayna</div>
     </div>
 
-    <div class="hedefler" id="hedefler"></div>
+    <!--: DURUM SERIDI
+         Oyuncu her an neyi ne kadar harcadigini GORMELI.
+         Solda hedef kristaller, sagda kalan ucretsiz ipucu.
+         Ipucunun bedelini bastiktan SONRA ogrenmek kotu tasarimdi. -->
+    <div class="durum-serit">
+      <div class="hedefler" id="hedefler"></div>
+      <div class="hud-ipucu" id="hudIpucu" aria-live="polite">
+        <span class="hud-pipler" id="hudPipler" aria-hidden="true"></span>
+      </div>
+    </div>
 
     <div class="tahtakutu" id="tahtakutu">
       <svg class="tahta" id="svg" viewBox="0 0 600 600" role="application"
@@ -852,6 +1134,7 @@
       <button class="sekme acik" data-sekme="tema" role="tab" aria-selected="true">Temalar</button>
       <button class="sekme" data-sekme="isik" role="tab" aria-selected="false">Işık</button>
       <button class="sekme" data-sekme="can" role="tab" aria-selected="false">Can</button>
+      <button class="sekme" data-sekme="plus" role="tab" aria-selected="false">Plus</button>
     </div>
   </div>
   <div class="magaza-kaydir">
@@ -865,6 +1148,8 @@
       </div>
       <!-- SEKME: IŞIK -->
       <div class="sekme-icerik" id="sk-isik"><div class="urunler" id="isikListe"></div></div>
+      <!-- SEKME: PLUS — tek seferlik satin alma -->
+      <div class="sekme-icerik" id="sk-plus"><div id="plusIcerik"></div></div>
       <!-- SEKME: CAN -->
       <div class="sekme-icerik" id="sk-can"><div class="urunler" id="canListe"></div></div>
     </div>
@@ -914,9 +1199,12 @@
     <button class="rozet" id="rozParaBasari" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="bPara">0</span></button>
   </div>
   <div class="kap">
-    <div class="bolumbaslik">Görevler</div>
+    <!--: Baslik "Gorevler" idi ama menudeki dugme "Oduller" diyor.
+         Iki ad ayni ekrani isaret edemez - oyuncu kafasi karisir.
+         Ekranin adi ODUL ODASI, iki sekmesi var. -->
+    <div class="bolumbaslik">Ödül Odası</div>
     <div class="sekmeler" role="tablist">
-      <button class="sekme acik" data-bsekme="gunluk" role="tab" aria-selected="true">Günlük</button>
+      <button class="sekme acik" data-bsekme="gunluk" role="tab" aria-selected="true">Günlük görev</button>
       <button class="sekme" data-bsekme="basari" role="tab" aria-selected="false">Başarılar</button>
     </div>
   </div>
@@ -1095,6 +1383,85 @@
           ikinci:'#C99A22',ikinciAlt:'#8F6405',
           onay:'#1F6E39',onayAlt:'#155028'},
       dok:{desen:'kat', kose:14, cerceve:1}
+    },
+
+    // ======================================================================
+    //  GEC OYUN TEMALARI
+    //
+    //  SORUN: Tema odulu bolum 40'ta bitiyordu. 1000 bolumluk oyunda
+    //  960 bolum boyunca koleksiyon sistemi oluydu.
+    //
+    //  KURAL: Her tema bir MALZEME veya YER. Rastgele renk paleti degil.
+    //  Once karakter yazilir, renkler ondan turer. Boylece hepsi ayni
+    //  oyuna ait hisseder - tutarli gorsel dil (proje kurali 7).
+    //
+    //  ARALIK: 55, 75, 110, 150, 210. Ustel degil - oyuncu her seferinde
+    //  "bir sonrakine ne kadar var" sorusunu cevaplayabilmeli.
+    // ======================================================================
+    {
+      id:'bakir', ad:'Bakır', lv:55, fiyat:600,
+      ozet:'Yaşlanmış metal ve yeşil pas.',
+      karakter:'Eski çatı, oksitlenmiş bakır, patina lekesi.',
+      c:{ink:'#24302C',cell:'#E8EDE6',alt:'#DAE2D9',grid:'#A9BCAE',frame:'#5E7A68',
+         R:'#B3431F',G:'#2B7150',B:'#26597F',Y:'#93650D',C:'#0E6C6E',M:'#6A3474'},
+      ui:{zemin:'#E4EBE3',zeminAlt:'#D5DED3',yuzey:'#F4F8F2',cizgi:'#B4C5B7',
+          metin:'#24302C',metinSoft:'#5E7A68',
+          vurgu:'#B3431F',vurguAlt:'#8A3214',
+          ikinci:'#4E9C79',ikinciAlt:'#2B7150',
+          onay:'#2B7150',onayAlt:'#1D5339'},
+      dok:{desen:'nokta', kose:13, cerceve:2}
+    },
+    {
+      id:'deniz', ad:'Derin Su', lv:75, fiyat:820,
+      ozet:'Sessiz derinlik. Işık yukarıdan süzülür.',
+      karakter:'Lacivert su, kum zemin, uzaktan gelen aydınlık.',
+      c:{ink:'#E6EEF3',cell:'#16313F',alt:'#112834',grid:'#2C4C5D',frame:'#5C8299',
+         R:'#F2705C',G:'#48C48E',B:'#5AA9E6',Y:'#F0BE55',C:'#3FC2C9',M:'#B080DC'},
+      ui:{zemin:'#0E222C',zeminAlt:'#0A1B23',yuzey:'#17333F',cizgi:'#2C4C5D',
+          metin:'#E6EEF3',metinSoft:'#93AFBE',
+          vurgu:'#3FA6C9',vurguAlt:'#2A7F9C',
+          ikinci:'#F0BE55',ikinciAlt:'#C3932F',
+          onay:'#48C48E',onayAlt:'#2F9468'},
+      dok:{desen:'cizgi', kose:16, cerceve:1}
+    },
+    {
+      id:'orman', ad:'Orman', lv:110, fiyat:1100,
+      ozet:'Yaprak gölgesi ve ıslak ahşap.',
+      karakter:'Kalın ağaç, yosun, dallardan sızan güneş.',
+      c:{ink:'#232B1E',cell:'#EFF0E4',alt:'#E2E5D4',grid:'#B3BCA0',frame:'#5F7048',
+         R:'#AE3A22',G:'#33702F',B:'#2A5386',Y:'#8C6309',C:'#0F6B62',M:'#66307A'},
+      ui:{zemin:'#E9ECDE',zeminAlt:'#DBE0CC',yuzey:'#F6F7EE',cizgi:'#BEC7AC',
+          metin:'#232B1E',metinSoft:'#5F7048',
+          vurgu:'#33702F',vurguAlt:'#24551F',
+          ikinci:'#C0912B',ikinciAlt:'#8C6309',
+          onay:'#33702F',onayAlt:'#24551F'},
+      dok:{desen:'yildiz', kose:15, cerceve:2}
+    },
+    {
+      id:'kum', ad:'Kum', lv:150, fiyat:1450,
+      ozet:'Öğle sıcağı. Gölge keskin, renk az.',
+      karakter:'Kavrulmuş toprak, kerpiç duvar, uzun gölge.',
+      c:{ink:'#3A2C20',cell:'#F6EDDC',alt:'#EDE0C9',grid:'#CDB894',frame:'#8A6A44',
+         R:'#B23B1C',G:'#35692F',B:'#2C5185',Y:'#9A6B08',C:'#116367',M:'#6E3172'},
+      ui:{zemin:'#F1E6D0',zeminAlt:'#E4D5B9',yuzey:'#FBF4E6',cizgi:'#D3BF9C',
+          metin:'#3A2C20',metinSoft:'#8A6A44',
+          vurgu:'#B23B1C',vurguAlt:'#8B2B12',
+          ikinci:'#CE9A2E',ikinciAlt:'#9A6B08',
+          onay:'#35692F',onayAlt:'#254C20'},
+      dok:{desen:'cam', kose:11, cerceve:2}
+    },
+    {
+      id:'kuzey', ad:'Kuzey Işığı', lv:210, fiyat:1900,
+      ozet:'Kutup gecesi. Gökyüzü yanıyor.',
+      karakter:'Kara gece, buz, dalgalanan yeşil mor perde.',
+      c:{ink:'#EAF2EE',cell:'#141A26',alt:'#0F141E',grid:'#2A3346',frame:'#54648A',
+         R:'#FF7A6B',G:'#5BE3A6',B:'#6FA8F5',Y:'#F5CF6B',C:'#4FD8DE',M:'#C08CF0'},
+      ui:{zemin:'#0C1119',zeminAlt:'#080C13',yuzey:'#161D2A',cizgi:'#2A3346',
+          metin:'#EAF2EE',metinSoft:'#94A3BC',
+          vurgu:'#5BE3A6',vurguAlt:'#33A97A',
+          ikinci:'#C08CF0',ikinciAlt:'#8E5DC0',
+          onay:'#5BE3A6',onayAlt:'#33A97A'},
+      dok:{desen:'yildiz', kose:18, cerceve:1}
     }
   ];
   function temaBul(id){
@@ -1115,6 +1482,7 @@
              magaza:{},   // urun son alim zamanlari
              oynamaSn:0,  // toplam oynama suresi (saniye) - bulut kaydi icin
              dunyaAcildi:0,  // Dunyam kapisi acildi mi
+             toplamCozulen:0, //: omur boyu cozulen tahta. ASLA sifirlanmaz.
              // can + para + mod
              lives:5,livesAt:0,coins:0,mistakes:0,loopSeen:false,
              mode:'yolculuk',tLeft:0,tScore:0,tTimer:null,tTohum:0,tBaslangic:1};
@@ -1129,7 +1497,7 @@
   var SAVE_KEY='prismio_v2', SAVE_ESKI='prismio_v1', SAVE_SURUM=2;
   var SAVE_ALANLAR=['level','enYuksek','theme','unlocked','shapes','lives','livesAt',
                     'coins','stars','decos','decoAktif','basari','gorev','ayar','sayac',
-                    'magaza','dunyaAcildi','oynamaSn'];
+                    'magaza','dunyaAcildi','oynamaSn','seri','plus','toplamCozulen'];
 
   function save(){
     try{
@@ -1173,10 +1541,37 @@
     state.shapes    = (d.shapes===false)?false:true;
     state.lives     = sayi(d.lives, MAX_LIVES, 0, MAX_LIVES);
     state.livesAt   = sayi(d.livesAt, 0, 0);
-    state.coins     = Math.max(0, sayi(d.coins, 0, 0));
+    //: UST SINIR ZORUNLU. Sinirsiz birakmak ekonomiyi kirar
+    // ve ekrana sigmayan sayilar uretir (1e+300 gibi).
+    state.coins     = Math.max(0, sayi(d.coins, 0, 0, 9999999));
     state.stars     = nesne(d.stars,{});
+    // Yildiz degerleri de dogrulanir: her bolum en fazla 3 yildiz.
+    for(var _b in state.stars){
+      var _y=state.stars[_b];
+      if(typeof _y!=='number'||!isFinite(_y)||_y<0||_y>3) delete state.stars[_b];
+      else state.stars[_b]=Math.floor(_y);
+    }
 
     // --- v2 alanlari (v1'de yoktu, varsayilanla dolar) ---
+    //: Seri. Tip ve aralik dogrulamasi diger alanlarla ayni kurala tabi.
+    var _sr = nesne(d.seri, null);
+    state.seri = _sr ? {
+      gun:      sayi(_sr.gun, 0, 0, 999999),
+      sayi:     sayi(_sr.sayi, 0, 0, 99999),
+      enUzun:   sayi(_sr.enUzun, 0, 0, 99999),
+      toplamGun:sayi(_sr.toplamGun, 0, 0, 999999)
+    } : {gun:0,sayi:0,enUzun:0,toplamGun:0};
+    if(state.seri.enUzun < state.seri.sayi) state.seri.enUzun = state.seri.sayi;
+
+    //: Prismio Plus. Tek seferlik satin alma durumu.
+    // GUVENLIK NOTU: Bu deger YEREL. Gercek dogrulama Google Play tarafinda.
+    // Elle kurcalayan biri reklamsiz oynayabilir - kabul edilebilir risk.
+    // Sunucu dogrulamasi icin backend gerekir, tek gelistirici icin asiri.
+    state.plus = (d.plus===true);
+
+    //: Omur boyu cozulen tahta. Dunyam kapisi buna bakiyor.
+    state.toplamCozulen = sayi(d.toplamCozulen, 0, 0, 9999999);
+
     state.decos     = nesne(d.decos,{});
     state.decoAktif = nesne(d.decoAktif,{});
     state.basari    = nesne(d.basari,{});
@@ -1220,6 +1615,10 @@
     return sa>0?(sa+'sa '+(dk%60)+'dk'):(dk+'dk');
   }
   function canKaybet(){
+    //: Plus sahibinin cani harcanmaz. Sinirsiz can boyle calisir -
+    // sayaci buyuk bir sayiya cekmek yerine harcamayi durduruyoruz.
+    // Boylece rozet hep dolu gorunur, kafa karisikligi olmaz.
+    if(state.plus) return;
     if(state.lives>0){
       if(state.lives===MAX_LIVES)state.livesAt=Date.now();
       state.lives--;
@@ -1360,51 +1759,121 @@
   // DUNYAM KAPISI: kac tahta cozulunce acilir.
   // Tek sayi, tek yerden. Dengelemek icin sadece bunu degistir.
   var DUNYA_ESIK=100;
-  function dunyaAcikMi(){ return (state.sayac&&state.sayac.cozulen||0)>=DUNYA_ESIK; }
-  function dunyaKalan(){ return Math.max(0, DUNYA_ESIK-((state.sayac&&state.sayac.cozulen)||0)); }
+
+  // ==========================================================================
+
+  //
+
+  //  O sayac GUNLUK GOREV sayacidir ve her gece SIFIRLANIR
+  //. Sonuclari:
+  //    1. Kapi ancak 100 tahta AYNI GUN cozulurse acilirdi.
+  //       Gercekte kimse bunu yapmaz -> kapi hic acilmazdi.
+  //    2. Acilsa bile ertesi gun sayac sifirlaninca KAPANIRDI.
+  //       Oyuncu actigi ekrani kaybederdi.
+  //
+  //  DOGRU OLCU: omur boyu cozulen tahta sayisi.
+  //  state.toplamCozulen yeni alan, ASLA sifirlanmaz.
+  //  Eski kayitlarda bu alan yok - o yuzden enYuksek-1 yedek olarak
+  //  kullaniliyor (acilan bolum sayisi, makul bir alt sinir).
+  //
+  //  Ayrica kapi BIR KEZ acildiktan sonra dunyaAcildi bayragi yeter.
+  //  Acilmis bir ekran hicbir sartta geri kapanmamali.
+  // ==========================================================================
+  function cozulenToplam(){
+    var omur = (typeof state.toplamCozulen==='number' && isFinite(state.toplamCozulen))
+                 ? state.toplamCozulen : 0;
+    var acilan = Math.max(0, (state.enYuksek||1) - 1);
+    return Math.max(omur, acilan);
+  }
+  function dunyaAcikMi(){
+    if(state.dunyaAcildi) return true;        // bir kez acildi, hep acik
+    return cozulenToplam() >= DUNYA_ESIK;
+  }
+  function dunyaKalan(){ return Math.max(0, DUNYA_ESIK - cozulenToplam()); }
 
   var DECORATIONS=[
     {id:'d-fidan',  ad:'Fidan',        kat:'Nature',       kosul:{tip:'level',  deger:5},  cizim:'fidan'},
     {id:'d-tas',    ad:'Taş Öbeği',    kat:'Nature',       kosul:{tip:'level',  deger:12}, cizim:'tas'},
     {id:'d-cali',   ad:'Çalı',         kat:'Nature',       kosul:{tip:'stars',  deger:20}, cizim:'cali'},
     {id:'d-sutun',  ad:'Sütun',        kat:'Architecture', kosul:{tip:'level',  deger:20}, cizim:'sutun'},
-    {id:'d-kemer',  ad:'Kemer',        kat:'Architecture', kosul:{tip:'level',  deger:30}, cizim:'kemer'},
-    {id:'d-heykel', ad:'Heykel',       kat:'Architecture', kosul:{tip:'stars',  deger:60}, cizim:'heykel'},
+    {id:'d-kemer',  ad:'Kemer',        kat:'Architecture', kosul:{tip:'level', deger:120}, cizim:'kemer'},
+    {id:'d-heykel', ad:'Heykel',       kat:'Architecture', kosul:{tip:'stars', deger:200}, cizim:'heykel'},
     {id:'d-kume',   ad:'Kristal Küme', kat:'Crystal',      kosul:{tip:'level',  deger:15}, cizim:'kume'},
-    {id:'d-prizma', ad:'Dev Prizma',   kat:'Crystal',      kosul:{tip:'stars',  deger:40}, cizim:'devprizma'},
+    {id:'d-prizma', ad:'Dev Prizma',   kat:'Crystal',      kosul:{tip:'level', deger:250}, cizim:'devprizma'},
     {id:'d-fener',  ad:'Fener',        kat:'Light',        kosul:{tip:'level',  deger:8},  cizim:'fener'},
-    {id:'d-lamba',  ad:'Asma Lamba',   kat:'Light',        kosul:{tip:'level',  deger:25}, cizim:'lamba'},
-    {id:'d-yildiz', ad:'Yıldız',       kat:'Sky',          kosul:{tip:'level',  deger:35}, cizim:'yildizd'},
+    {id:'d-lamba',  ad:'Asma Lamba',   kat:'Light',        kosul:{tip:'level', deger:320}, cizim:'lamba'},
+    {id:'d-yildiz', ad:'Yıldız',       kat:'Sky',          kosul:{tip:'level', deger:160}, cizim:'yildizd'},
     {id:'d-bulut',  ad:'Bulut',        kat:'Sky',          kosul:{tip:'level',  deger:18}, cizim:'bulut'},
     {id:'d-cesme',  ad:'Çeşme',        kat:'Special',      kosul:{tip:'themes', deger:3},  cizim:'cesme'},
-    {id:'d-kapi',   ad:'Işık Kapısı',  kat:'Special',      kosul:{tip:'level',  deger:50}, cizim:'kapi'}
+    {id:'d-kapi',   ad:'Işık Kapısı',  kat:'Special',      kosul:{tip:'level', deger:520}, cizim:'kapi'}
   ];
   var DECO_KATEGORI=['Nature','Architecture','Crystal','Light','Sky','Special'];
 
   // ---------- BASARILAR ----------
   // kontrol(st) -> ilerleme sayisi. hedef'e ulasinca acilir.
   var ACHIEVEMENTS=[
-    {id:'a-ilk',    ad:'İlk Işık',       aciklama:'İlk bölümü tamamla.',            hedef:1,
+    {id:'a-ilk',    ad:'İlk Işık',       aciklama:'İlk bölümü tamamla.',            hedef:1,   grup:'bolum',
      kontrol:function(st){ return Math.max(0,st.enYuksek-1); }},
-    {id:'a-usta',   ad:'Usta',           aciklama:'10 bölümü 3 yıldızla bitir.',    hedef:10,
+    {id:'a-usta',   ad:'Usta',           aciklama:'10 bölümü 3 yıldızla bitir.',    hedef:10,  grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in st.stars) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-kolek',  ad:'Koleksiyoncu',   aciklama:'3 tema aç.',                     hedef:3,
+    {id:'a-kolek',  ad:'Koleksiyoncu',   aciklama:'3 tema aç.',                     hedef:3,   grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in st.unlocked)n++; return n; }},
-    {id:'a-gezgin', ad:'Gezgin',         aciklama:'50 bölüm tamamla.',              hedef:50,
+    {id:'a-gezgin', ad:'Gezgin',         aciklama:'50 bölüm tamamla.',              hedef:50,  grup:'bolum',
      kontrol:function(st){ return Math.max(0,st.enYuksek-1); }},
-    {id:'a-mile',   ad:'Bölge Ustası',   aciklama:'İlk bölgeyi tamamla.',           hedef:10,
+    {id:'a-mile',   ad:'Bölge Ustası',   aciklama:'İlk bölgeyi tamamla.',           hedef:10,  grup:'bolum',
      kontrol:function(st){ return Math.min(10,Math.max(0,st.enYuksek-1)); }},
-    {id:'a-mukem',  ad:'Mükemmeliyetçi', aciklama:'20 bölümü en iyi çözümle bitir.',hedef:20,
+    {id:'a-mukem',  ad:'Mükemmeliyetçi', aciklama:'20 bölümü en iyi çözümle bitir.',hedef:20,  grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in st.stars) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-deko',   ad:'Dünya Kurucu',   aciklama:'5 dekorasyon aç.',               hedef:5,
+    {id:'a-deko',   ad:'Dünya Kurucu',   aciklama:'5 dekorasyon aç.',               hedef:5,   grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }},
     // --- ilk saatte alinabilir olanlar (Play Games Kalite Kontrol 2.2) ---
-    {id:'a-bes',    ad:'Isınma',         aciklama:'5 bölüm tamamla.',                hedef:5,
+    {id:'a-bes',    ad:'Isınma',         aciklama:'5 bölüm tamamla.',                hedef:5,   grup:'bolum',
      kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
-    {id:'a-ilkuc',  ad:'Temiz İş',       aciklama:'Bir bölümü 3 yıldızla bitir.',    hedef:1,
+    {id:'a-ilkuc',  ad:'Temiz İş',       aciklama:'Bir bölümü 3 yıldızla bitir.',    hedef:1,   grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in (st.stars||{})) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-zaman',  ad:'Hızlı Düşün',    aciklama:'Zamana karşı 3 bölüm çöz.',       hedef:3,
-     kontrol:function(st){ return (st.sayac&&st.sayac.zamanBolum)||0; }}
+    {id:'a-zaman',  ad:'Hızlı Düşün',    aciklama:'Zamana karşı 3 bölüm çöz.',       hedef:3,   grup:'ustalik',
+     kontrol:function(st){ return (st.sayac&&st.sayac.zamanBolum)||0; }},
+
+    // --- SERI KILOMETRE TASLARI ---
+    // Seri kendi basina odul. Bu basarimlar onu GORUNUR kilar.
+    // Isik odulu YOK - ekonomiyi sismemeli.
+    {id:'s-3',      ad:'Üç Gün',         aciklama:'3 gün üst üste oyna.',            hedef:3,   grup:'seri',
+     kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
+    {id:'s-7',      ad:'Bir Hafta',      aciklama:'7 gün üst üste oyna.',            hedef:7,   grup:'seri',
+     kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
+    {id:'s-30',     ad:'Bir Ay',         aciklama:'30 gün üst üste oyna.',           hedef:30,  grup:'seri',
+     kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
+    {id:'s-100',    ad:'Yüz Gün',        aciklama:'100 gün üst üste oyna.',          hedef:100, grup:'seri',
+     kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
+
+    // --- ÜST KADEME ---
+    // En yüksek hedef 50 bölümdü. 1000 bölümlük bir oyunda bu, ilerleyen
+    // oyuncuya hiçbir şey sunmuyordu. Bu kademeler yeni sistem eklemeden
+    // sadece tabloya satır ekleyerek uzun vadeli hedef veriyor.
+    {id:'a-200',    ad:'Uzun Yol',       aciklama:'200 bölüm tamamla.',              hedef:200, grup:'bolum',
+     kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
+    {id:'a-500',    ad:'Yarı Yol',       aciklama:'500 bölüm tamamla.',              hedef:500, grup:'bolum',
+     kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
+    {id:'a-1000',   ad:'Işığın Sonu',    aciklama:'1000 bölüm tamamla.',             hedef:1000,grup:'bolum',
+     kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
+    {id:'a-y100',   ad:'Kusursuz Yüz',   aciklama:'100 bölümü 3 yıldızla bitir.',    hedef:100, grup:'ustalik',
+     kontrol:function(st){ var n=0; for(var k in (st.stars||{})) if(st.stars[k]===3)n++; return n; }},
+    {id:'a-buyuk',  ad:'Büyük Sınav',    aciklama:'10 büyük bölümü geç (her 50.).',  hedef:10,  grup:'ustalik',
+     kontrol:function(st){ return Math.floor(Math.max(0,(st.enYuksek||1)-1)/50); }},
+    {id:'a-temaall',ad:'Tam Koleksiyon', aciklama:'Bütün temaları aç.',              hedef:10,  grup:'kolek',
+     kontrol:function(st){ var n=0; for(var k in (st.unlocked||{}))n++; return n; }},
+    {id:'a-dekoall',ad:'Dünya Tamam',    aciklama:'Bütün dünya parçalarını aç.',     hedef:14,  grup:'kolek',
+     kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }}
+  ];
+
+  //: Basarim gruplari. Odul Odasi bunlara gore bolumlenir.
+  // Zip'te oldugu gibi her grubun kendi ilerleme cubugu var - oyuncu
+  // "nerede iyiyim, nerede eksigim" sorusunu bir bakista cevaplar.
+  var BASARI_GRUPLARI=[
+    {id:'bolum',   ad:'Bölümler',  ikon:'flag'},
+    {id:'ustalik', ad:'Ustalık',   ikon:'trophy'},
+    {id:'seri',    ad:'Seri',      ikon:'flame'},
+    {id:'kolek',   ad:'Koleksiyon',ikon:'palette'}
   ];
 
   // ---------- GUNLUK GOREVLER ----------
@@ -1422,9 +1891,12 @@
     {grup:'Oynanış',   id:'animasyon', ad:'Animasyonlar',        aciklama:'Geçiş ve ödül efektleri',vars:true},
     {grup:'Oynanış',   id:'parcacik',  ad:'Parçacık efektleri',  aciklama:'Arka plan ışıkları',     vars:true},
     {grup:'Oynanış',   id:'otoGec',    ad:'Otomatik geçiş',      aciklama:'Bölüm bitince ilerle',   vars:false},
-    {grup:'Ses',       id:'muzik',     ad:'Müzik',               aciklama:'',                       vars:true},
-    {grup:'Ses',       id:'efekt',     ad:'Ses efektleri',       aciklama:'',                       vars:true},
-    {grup:'Ses',       id:'ortam',     ad:'Ortam sesi',          aciklama:'Temaya özel fon',        vars:false},
+    //: "Muzik" ve "Ortam sesi" KALDIRILDI.
+    // Arkalarinda hicbir sey yoktu - oyuncu aciyor, hicbir sey olmuyordu.
+    // Calismayan anahtar, olmayan anahtardan kotudur: oyuncu uygulamayi
+    // bozuk sanir ve guveni sarsilir.
+    // Gercek muzik eklenince (ses dosyasi gerekir) geri gelecekler.
+    {grup:'Ses',       id:'efekt',     ad:'Ses efektleri',       aciklama:'Dokunma ve ödül sesleri',vars:true},
     {grup:'Erişim',    id:'shapes',    ad:'Şekil göstergeleri',  aciklama:'Renk körü desteği',      vars:true},
     {grup:'Erişim',    id:'kontrast',  ad:'Yüksek kontrast',     aciklama:'Daha keskin kenarlar',   vars:false},
     {grup:'Erişim',    id:'azHareket', ad:'Hareketi azalt',      aciklama:'Animasyonları sadeleştir',vars:false},
@@ -1455,6 +1927,13 @@
     back:     'M15 5l-7 7 7 7',
     reset:    'M3 12a9 9 0 109-9 M3 3v6h6',
     hint:     'M12 3a6 6 0 00-3 11v3h6v-3a6 6 0 00-3-11z M10 20h4',
+    //: Odul Odasi grup ikonlari
+    flag:     'M6 3v18 M6 4h11l-2 4 2 4H6',
+    //: Plus fayda ikonlari
+    heart:    'M12 20s-7-4.6-7-9.4A4 4 0 0112 8a4 4 0 017 2.6C19 15.4 12 20 12 20z',
+    noads:    'M4 5h16v11H4z M4 20h16 M5 4l14 14',
+    flame:    'M12 3c0 4-4 4-4 8a4 4 0 008 0c0-2-1-3-1-3s3 1 3 5a6 6 0 01-12 0c0-6 6-6 6-10z',
+    palette:  'M12 4a8 8 0 000 16h2a2 2 0 002-2 2 2 0 00-2-2h-1a2 2 0 010-4h3a3 3 0 003-3c0-3-3-5-7-5z',
     sound:    'M4 9h4l5-4v14l-5-4H4z M17 8.5a5 5 0 010 7',
     music:    'M9 18V6l10-2v12 M9 18a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z M19 16a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z',
     vibrate:  'M8 5h8v14H8z M4 9v6 M20 9v6',
@@ -2132,9 +2611,29 @@
   function cycle(x,y){
     if(tahtaKilitli())return;     // bolum bitti, tahta kilitli
     var k=x+','+y, cur=state.mirrors[k];
+
+    //: Kac kristal YANIYORDU - degisimi duymak icin.
+    var oncekiKristal = 0;
+    try{ oncekiKristal = simulate(state.mirrors).count; }catch(e){}
+
     if(!cur)state.mirrors[k]='/'; else if(cur==='/')state.mirrors[k]='\\'; else delete state.mirrors[k];
     state._sonAyna=state.mirrors[k]?k:null;
+
+    //: GERI BILDIRIM. Oyunun en onemli etkilesimiydi ve
+    // TAMAMEN SESSIZDI - ne ses ne titresim. Her dokunusun
+    // karsilik vermesi gerekir, yoksa oyun olu hisseder.
+    if(!cur)            titret('ayna');    // yeni ayna kondu
+    else if(cur==='/')  titret('cevir');   // ayna cevrildi
+    else                titret('dokun');   // ayna kaldirildi
+
     draw();
+
+    // Yeni kristal yandiysa AYRI bir ses. Bu oyuncunun
+    // "dogru yoldayim" anlamasinin en hizli yolu.
+    try{
+      var sonraki = simulate(state.mirrors).count;
+      if(sonraki > oncekiKristal && !state.bitti) titret('kristal');
+    }catch(e){}
   }
 
   // Kademeli gevsetme.
@@ -2205,11 +2704,13 @@
     }
     state.justWon=false; state.mistakes=0; state.loopSeen=false; state.paid=false;
     state.bitti=false;
+    state._ipucuSayi=0;              //: her tahtada bedava ipucu yeniden baslar
     if(!buildRelaxed(state.cfg)){
       document.getElementById('ipucu').textContent='Tahta üretilemedi. "Yeni tahta"ya bas.';
       return;
     }
     state.mirrors={}; state._sonAyna=null; save(); draw();
+    if(typeof ipucuButonuTazele==='function') ipucuButonuTazele();
   }
 
 
@@ -2232,7 +2733,13 @@
     if(ad==='menu')devamKartiCiz();
     if(ad==='magaza')magazaCiz();
     if(ad==='dunya')dunyaCiz();
-    if(ad==='basari')basariEkraniCiz();
+    if(ad==='basari'){
+      basariEkraniCiz();
+      //: Nereden gelindiyse o sekme acilir.
+      // Seri seridinden -> Basarilar (seri kilometre taslari orada).
+      // Menu dugmesinden -> Gunluk gorev.
+      if(state._odulSekme){ bSekmeAc(state._odulSekme); state._odulSekme=null; }
+    }
     if(ad==='ayar')ayarlarCiz();
     if(ad==='hakkinda')hakkindaCiz();
     if(ad==='hesap')hesapCiz();
@@ -2240,6 +2747,67 @@
     rozetleriCiz();
   }
   function $(id){return document.getElementById(id);}
+
+  // ==========================================================================
+  //  GERI TUSU
+  //  SORUN: Android geri tusuna bir kez basinca oyun kapaniyordu.
+  //  Oyuncu bolum ortasinda yanlislikla cikip ilerlemesini riske atiyordu.
+  //
+  //  COZUM: Gecmis yigini. Her ekran degisiminde bir kayit eklenir.
+  //  Geri tusu bir ust ekrana goturur. Menude iken ilk basista uyari
+  //  cikar, 2 saniye icinde ikinci basista cikilir.
+  //
+  //  NEDEN BOYLE: Tarayici gecmisi kullanmak Android'in geri tusunu
+  //  otomatik yakalar. Ek kopru koduna gerek kalmaz.
+  // ==========================================================================
+  var _ustEkran={ harita:'menu', oyun:'harita', magaza:'menu', ayar:'menu',
+                  dunya:'menu', basari:'menu', hakkinda:'ayar', hesap:'ayar' };
+  var _cikisSorusu=0;
+
+  function geriGit(){
+    // Acik katman varsa once onu kapat
+    var kat=$('katman');
+    if(kat && kat.classList.contains('acik')){ kat.classList.remove('acik'); return; }
+    var mag=$('magazaKatman');
+    if(mag && mag.classList.contains('acik')){ mag.classList.remove('acik'); return; }
+
+    var ust=_ustEkran[aktifEkran];
+    if(ust){ git(ust); return; }
+
+    // Menudeyiz: cift basis iste
+    var simdi=Date.now();
+    if(simdi-_cikisSorusu < 2000){
+      // Ikinci basis: gercekten cik
+      if(window.PrismioNative && window.PrismioNative.cikis){
+        try{ window.PrismioNative.cikis(); return; }catch(e){}
+      }
+      history.go(-(history.length-1));
+      return;
+    }
+    _cikisSorusu=simdi;
+    kisaBildirim('Çıkmak için tekrar bas');
+  }
+
+  // Kisa bildirim balonu - cikis uyarisi ve benzeri kisa mesajlar icin
+  function kisaBildirim(metin){
+    var e=$('_kisaBildirim');
+    if(!e){
+      e=document.createElement('div');
+      e.id='_kisaBildirim'; e.className='kisa-bildirim';
+      document.body.appendChild(e);
+    }
+    e.textContent=metin;
+    e.classList.remove('gor'); void e.offsetWidth; e.classList.add('gor');
+    clearTimeout(e._zaman);
+    e._zaman=setTimeout(function(){ e.classList.remove('gor'); },1800);
+  }
+
+  // Tarayici gecmisine baglan
+  window.addEventListener('popstate',function(){
+    history.pushState({pr:1},'');   // yigini dolu tut
+    geriGit();
+  });
+  try{ history.pushState({pr:1},''); }catch(e){}
 
   // ===================== ROZETLER (can + para) =====================
   var _sonCan=null, _sonPara=null;
@@ -2270,9 +2838,49 @@
     }
   }
 
+  // ==========================================================================
+  //  SERI SERIDI
+  //  Son 7 gunu nokta olarak gosterir. Bugun cozulduyse dolu.
+  //  Seri 0 iken de gorunur - "baslat" cagrisi yapar.
+  // ==========================================================================
+  function seriSeritCiz(){
+    var e=$('seriSerit'); if(!e)return;
+    var n=seriGoster();
+    var bugunVar=seriBugunCozuldu();
+    var sr=seriGuvenli();
+
+    $('srSayi').textContent=n;
+    $('srBirim').textContent='gün';
+    e.classList.toggle('canli', n>0);
+    e.classList.toggle('bugun', bugunVar);
+
+    var ack;
+    if(n===0)            ack='Bugün bir tahta çöz, seri başlasın';
+    else if(!bugunVar)   ack='Serin devam ediyor. Bugün çözmezsen kopar';
+    else if(n===1)       ack='Seri başladı. Yarın da gel';
+    else                 ack='En uzun serin '+(sr.enUzun||n)+' gün';
+    $('srAck').textContent=ack;
+
+    // Son 7 gun noktalari. Sadece bugun kesin bilinir; oncekiler
+    // seri sayisindan TURETILIR - gunluk gecmis tutmuyoruz (kayit sismesin).
+    var g=$('srGunler');
+    if(g){
+      var h='';
+      for(var i=6;i>=0;i--){
+        // i gun once cozulmus mu? seri n ise son n gun dolu.
+        var geride = bugunVar ? i : i+1;      // bugun cozmediyse seri dune kadar
+        var dolu = (geride < n);
+        h+='<i class="sg'+(dolu?' dolu':'')+(i===0?' bugun':'')+'"></i>';
+      }
+      g.innerHTML=h;
+    }
+    e.setAttribute('aria-label', n+' günlük seri. '+ack);
+  }
+
   function devamKartiCiz(){
     dunyaButonCiz();
     gorevSeritCiz();
+    seriSeritCiz();
     var k=$('devamKart'); if(!k)return;
     // Hangi bolum? En son oynanan, ama acik olandan ileri olamaz.
     var lv=Math.min(state.level||1, state.enYuksek||1);
@@ -2280,16 +2888,22 @@
     // Yeni oyuncu: hic bolum cozmemis. Kart gosterilmez.
     var orta=document.querySelector('.menu-orta');
     var oyna=$('btnOyna');
+    var bag=$('bagHarita');
     if(state.enYuksek<=1 && !bolumYildizi(1)){
+      // YENI OYUNCU: kart yok, "Oyna" tek birincil eylem. Harita bagi da
+      // gereksiz - gidecek yer yok. Sadelik ilk deneyimde en onemli sey.
       k.hidden=true;
       if(orta)orta.classList.remove('devamli');
-      if(oyna)oyna.textContent='Oyna';
+      if(oyna){ oyna.hidden=false; oyna.textContent='Oyna'; }
+      if(bag)bag.hidden=true;
       return;
     }
+    // ILERLEYEN OYUNCU: kart birincil. Buyuk "Oyna" butonu KALKAR,
+    // yerine metin bagi gelir. Iki birincil eylem olmaz.
     k.hidden=false;
     if(orta)orta.classList.add('devamli');
-    // Kart ana eylem oldugunda Oyna'nin ne yaptigi acik yazilir.
-    if(oyna)oyna.textContent='Bölüm haritası';
+    if(oyna)oyna.hidden=true;
+    if(bag)bag.hidden=false;
     var bolge=zoneOfLevel(lv);
     $('dkBolum').textContent='Bölüm '+lv;
     $('dkBolge').textContent=bolge.ad;
@@ -2303,7 +2917,10 @@
 
   function rozetleriCiz(){
     canYenile();
-    var c=state.lives, p=state.coins, sure=canKalanSure();
+    reklamGoster();                              //
+    //: Plus'ta can rozeti sonsuz isareti gosterir.
+    var c = state.plus ? '∞' : state.lives;
+    var p=state.coins, sure = state.plus ? 0 : canKalanSure();
     var canDegisti=(_sonCan!==null&&_sonCan!==c), paraDegisti=(_sonPara!==null&&_sonPara!==p);
     ['mCan','hCan','oCan','gCan'].forEach(function(id){var e=$(id);if(e){e.textContent=c;if(canDegisti)ziplat(e);}});
     ['mPara','hPara','oPara','gPara','dPara','bPara'].forEach(function(id){var e=$(id);if(e){e.textContent=p;if(paraDegisti)ziplat(e);}});
@@ -2514,7 +3131,9 @@
     var yeniDeko=dunyaYeni||decoTara(), yeniBasari=basariTara();
     state._dunyaAcildiSimdi=!!dunyaYeni;
     state._sonOdul={deko:yeniDeko, basari:yeniBasari};
-    titret(TITRESIM.bitis);
+    //: Eskiden desen (TITRESIM.bitis) geciliyordu - ses calmiyordu.
+    // Isimle cagirinca hem titresim hem yukselen arpej calisir.
+    titret('bitis');
     save(); rozetleriCiz();
     bulutYedekle();          // bulut bagliysa sessizce yedekle
 
@@ -2991,22 +3610,62 @@
       'kendiliğinden ilerler. Ödülü almayı unutma.';
   }
 
+  // ==========================================================================
+  //  ODUL ODASI
+  //  ESKIDEN: 10 basarim tek duz liste. Oyuncu "neyi basardim" sorusunu
+  //  cevaplayamiyordu - hepsi ayni gorunuyordu.
+  //
+  //  SIMDI: dort grup, her birinde ilerleme cubugu ve 'X / Y' sayaci.
+  //  Oyuncu bir bakista "Bolumlerde iyiyim, Seride eksigim" gorur.
+  //
+  //  VERI ODAKLI: BASARI_GRUPLARI tablosu belirler. Yeni grup eklemek
+  //  icin tabloya satir eklenir, bu kod degismez.
+  // ==========================================================================
   function basarilarCiz(){
     var box=$('basariListe'); if(!box)return;
     box.innerHTML='';
-    ACHIEVEMENTS.forEach(function(a){
-      var d=basariDurum(a);
-      var el=document.createElement('div');
-      el.className='basaris'+(d.acik?' acik':'');
-      var oran=Math.round(d.ilerleme/d.hedef*100);
-      el.innerHTML='<span class="bs-simge">'+ikon(d.acik?'trophy':'lock',24)+'</span>'+
-        '<span class="gv-govde"><span class="gv-ad">'+d.ad+'</span>'+
-        '<span class="bs-ack">'+d.aciklama+'</span>'+
-        (d.acik?'':'<span class="gv-cubuk"><span style="width:'+oran+'%"></span></span>'+
-                   '<span class="gv-sayi">'+d.ilerleme+' / '+d.hedef+'</span>')+
-        '</span>'+
-        (d.acik?'<span class="gv-odul"><span class="gv-durum">Açık</span></span>':'');
-      box.appendChild(el);
+
+    BASARI_GRUPLARI.forEach(function(gr){
+      var uyeler=ACHIEVEMENTS.filter(function(a){ return a.grup===gr.id; });
+      if(!uyeler.length)return;
+
+      var acik=0;
+      var durumlar=uyeler.map(function(a){
+        var d=basariDurum(a); if(d.acik)acik++; return d;
+      });
+      var oranGrup=Math.round(acik/uyeler.length*100);
+
+      // Grup basligi + ilerleme
+      var bas=document.createElement('div');
+      bas.className='bg-baslik';
+      bas.innerHTML=
+        '<span class="bg-ik">'+ikon(gr.ikon,20)+'</span>'+
+        '<span class="bg-ad">'+htmlKacir(gr.ad)+'</span>'+
+        '<span class="bg-sayi tnum">'+acik+' / '+uyeler.length+'</span>';
+      box.appendChild(bas);
+
+      var cub=document.createElement('div');
+      cub.className='bg-cubuk';
+      cub.innerHTML='<span style="width:'+oranGrup+'%"></span>';
+      box.appendChild(cub);
+
+      // Grubun basarimlari
+      var liste=document.createElement('div');
+      liste.className='bg-liste';
+      durumlar.forEach(function(d){
+        var el=document.createElement('div');
+        el.className='basaris'+(d.acik?' acik':'');
+        var oran=Math.round(Math.min(1,d.ilerleme/d.hedef)*100);
+        el.innerHTML='<span class="bs-simge">'+ikon(d.acik?'trophy':'lock',24)+'</span>'+
+          '<span class="gv-govde"><span class="gv-ad">'+htmlKacir(d.ad)+'</span>'+
+          '<span class="bs-ack">'+htmlKacir(d.aciklama)+'</span>'+
+          (d.acik?'':'<span class="gv-cubuk"><span style="width:'+oran+'%"></span></span>'+
+                     '<span class="gv-sayi">'+d.ilerleme+' / '+d.hedef+'</span>')+
+          '</span>'+
+          (d.acik?'<span class="gv-odul"><span class="gv-durum">Açık</span></span>':'');
+        liste.appendChild(el);
+      });
+      box.appendChild(liste);
     });
   }
   function basariEkraniCiz(){ gorevlerCiz(); basarilarCiz(); }
@@ -3069,7 +3728,7 @@
   var YAPIM={
     surum:'0.9.0',
     yapim:'test yapımı',
-    studyo:'Osmaniyeli Abdullah',
+    studyo:'Abdullah Yeşildemir',
     yil:'2026',
     gizlilik:'',        // yayindan once doldurulacak
     destek:''           // yayindan once doldurulacak
@@ -3169,6 +3828,21 @@
   //    BULUT.destek=true  ve  dort fonksiyonu doldur.
   //  Arayuz kodu DEGISMEZ.
   // ==========================================================================
+  // ==========================================================================
+  //  GUVENLIK: HTML KACISI
+  //  Dis kaynakli her metin innerHTML'e girmeden once buradan gecer.
+  //  Play Games oyuncu adini Google veriyor - icerigini BIZ belirlemiyoruz.
+  //  Kacirmadan yazilirsa <img onerror=...> gibi bir ad kod calistirabilir.
+  //  Kendi sabit tablolarimiz (tema adi, bolge adi) buna gerek duymaz
+  //  ama ileride disaridan veri gelirse kural hazir olsun.
+  // ==========================================================================
+  function htmlKacir(x){
+    if(x===undefined||x===null)return '';
+    return String(x)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
   var BULUT={
     destek:false,                 // APK'da Play Games baglaninca true
     ad:'Google Play Games',
@@ -3195,6 +3869,10 @@
   //  bolumu kapali gorunur. Tek kod, iki ortam.
   //
   //  Kopru dort is yapar: durumSor, girisYap, yedekle, indir.
+  //
+  //  GUVENLIK: Kopruden gelen HER metin dis kaynaklidir.
+  //  Oyuncu adini Google veriyor, icerigini biz belirlemiyoruz.
+  //  innerHTML'e dogrudan yazmak XSS acigidir. htmlKacir() sarttir.
   //  Java tarafi isi bitirince window.__pgXxx fonksiyonlarini cagirir.
   // ==========================================================================
   function kopruVar(){
@@ -3354,7 +4032,30 @@
     if(!d.level && !d.enYuksek) return {ok:false, hata:'Kodda ilerleme yok.'};
     // GUVENLIK: once mevcut kaydi yedekle. Ice aktarma bozarsa geri donulur.
     try{ localStorage.setItem(SAVE_KEY+'_yedek', localStorage.getItem(SAVE_KEY)||''); }catch(e){}
-    SAVE_ALANLAR.forEach(function(k){ if(d[k]!==undefined) state[k]=d[k]; });
+
+    // ------------------------------------------------------------------
+    //: TIP DOGRULAMASI ICE AKTARIMDA DA CALISIR
+    //
+    //  ESKIDEN: alanlar dogrudan state'e kopyalaniyordu. Elle duzenlenmis
+    //  bir kod state.level'a metin, state.stars'a dizi koyabiliyordu.
+    //  Oyun o oturumda cokuyordu.
+    //
+    //  SIMDI: kayit once localStorage'a yazilir, sonra load() cagrilir.
+    //  load() zaten her alani tip ve aralik kontrolunden geciriyor.
+    //  Tek dogrulama noktasi - iki ayri kural listesi tutmuyoruz.
+    // ------------------------------------------------------------------
+    var temiz={};
+    SAVE_ALANLAR.forEach(function(k){ if(d[k]!==undefined) temiz[k]=d[k]; });
+    temiz._v=2;
+
+    try{
+      localStorage.setItem(SAVE_KEY, JSON.stringify(temiz));
+    }catch(e){
+      return {ok:false, hata:'Kayıt yazılamadı. Telefon depolaması dolu olabilir.'};
+    }
+
+    load();                 // burada tum tip dogrulamasi calisir
+
     // ayarlar eksikse tamamla
     var va=varsayilanAyarlar();
     if(!state.ayar)state.ayar={};
@@ -3396,7 +4097,7 @@
         ikon(bagli?'check':(bulutVar?'world':'lock'),24,bagli?'#fff':null)+'</span>'+
         '<span class="hs-govde"><span class="hs-bas">'+BULUT.ad+'</span>'+
         '<span class="hs-ack">'+(bagli
-          ? ('Bağlı'+(BULUT.kullanici&&BULUT.kullanici.ad?' — '+BULUT.kullanici.ad:'')+
+          ? ('Bağlı'+(BULUT.kullanici&&BULUT.kullanici.ad?' — '+htmlKacir(BULUT.kullanici.ad):'')+
              '. Her bölüm sonunda yedekleniyor.')
           : bulutVar
             ? 'Giriş yaparsan ilerlemen hesabına bağlanır. Başka telefonda da açılır.'
@@ -3411,7 +4112,11 @@
           'Hesabı değiştirmek için telefonun <b>Play Oyunlar</b> uygulamasını kullan.</p>'
         : '')+
 
-      // 2) Elle yedekleme - HER ZAMAN calisir
+      // 3) Elle yedekleme -: KATLANIR, kapali gelir.
+      // Normal oyuncu goremez. Sorun yasayan oyuncu acar.
+      '<button class="hs-katla" type="button" id="hsGelismisAc">'+
+        '<span>Gelişmiş: kodla yedekleme</span><span class="ok">›</span></button>'+
+      '<div id="hsGelismis" class="hs-gizli">'+
       '<div class="hk-blok" style="margin-top:12px"><h4>Kaydını taşı</h4>'+
         '<p class="hk-metin" style="margin-bottom:12px">Aşağıdaki kodu kopyala ve sakla. '+
         'Yeni telefonda bu kodu yapıştırırsan ilerlemen geri gelir.</p>'+
@@ -3431,9 +4136,19 @@
         '<div class="hs-not" id="hsNot"></div>'+
       '</div>'+
 
+      '</div>'+   /* hsGelismis kapanis - */
+
       '<p class="hk-tesekkur">Kaydın telefonunda saklanıyor ve '+
-        'Google hesabına yedekleniyor.<br>'+
-        'Yine de kodu bir yere kaydetmen en garantisi.</p>';
+        'Google hesabına yedekleniyor.</p>';
+
+    //: Gelismis bolumu ac/kapa
+    var ga=$('hsGelismisAc');
+    if(ga)ga.addEventListener('click',function(){
+      var b=$('hsGelismis'); if(!b)return;
+      var acik=!b.classList.contains('hs-gizli');
+      b.classList.toggle('hs-gizli', acik);
+      ga.classList.toggle('acik', !acik);
+    });
 
     // kodu doldur
     var kutu=$('hsKod'); if(kutu)kutu.value=kayitDisaAktar();
@@ -3610,9 +4325,129 @@
     return (state.coins>=t.fiyat)?'alinabilir':'pahali';
   }
 
+  // ==========================================================================
+  //  PRISMIO PLUS
+  //
+  //  NE: Tek seferlik satin alma. Abonelik YOK.
+  //
+  //  NEDEN ABONELIK DEGIL:
+  //    Bulmaca oyunu her ay yeni deger uretmez. Aboneligi hakli
+  //    cikaracak surekli icerik akisi yok. Tek seferlik odeme
+  //    oyuncunun guvenini kazanir, uzun vadede daha karlidir.
+  //
+  //  NE VERIYOR:
+  //    - Reklamsiz            (en cok istenen sey)
+  //    - Sinirsiz can         (bekleme kalkar)
+  //    - 4 bedava ipucu       (2 yerine)
+  //  Hicbiri BOLUM ACMIYOR. Odeyen oyuncu daha RAHAT oynar,
+  //  daha ILERI gitmez. Bu bilincli - oyunun adaleti bozulmamali.
+  //
+  //  GUVENLIK: state.plus yerel bir bayrak. Kurcalanabilir.
+  //  Sunucu dogrulamasi backend ister, tek gelistirici icin asiri.
+  //  Kaybedilen gelir, kurulacak altyapinin maliyetinden az.
+  //
+  //  ODEME AKISI: Java koprusu (PrismioNative.plusSatinAl).
+  //  Kopru yoksa (tarayici, eski surum) sekme "yakinda" der,
+  //  satin alma butonu GOSTERILMEZ. Calismayan buton gostermeyiz.
+  // ==========================================================================
+  var PLUS={
+    fiyat: null,            // Play'den gelir. null = henuz bilinmiyor
+    hazir: false,           // odeme sistemi calisiyor mu
+    fayda: [
+      {ik:'noads',  bas:'Reklam yok',       ack:'Hiçbir reklam görmezsin.'},
+      {ik:'heart',  bas:'Sınırsız can',     ack:'Can beklemek yok. İstediğin kadar oyna.'},
+      {ik:'hint',   bas:'4 ücretsiz ipucu', ack:'Her tahtada 2 yerine 4 ipucun olur.'}
+    ]
+  };
+
+  function plusDurumSor(){
+    if(!(window.PrismioNative && window.PrismioNative.plusDurum))return;
+    try{ window.PrismioNative.plusDurum(); }catch(e){}
+  }
+  // Java buradan haber verir
+  window.__plusDurum=function(sahip, fiyatMetni, hazir){
+    if(sahip===true && !state.plus){ state.plus=true; save(); }
+    PLUS.fiyat = fiyatMetni || null;
+    PLUS.hazir = !!hazir;
+    if(aktifEkran==='magaza') plusCiz();
+    rozetleriCiz();
+  };
+  window.__plusSonuc=function(ok, mesaj){
+    var b=$('plusAl');
+    if(b){ b.disabled=false; b.textContent='Prismio Plus al'; }
+    if(ok){
+      state.plus=true; save(); plusCiz(); rozetleriCiz();
+      titret('basari');
+      kisaBildirim('Teşekkürler. Prismio Plus açıldı.');
+    }else if(mesaj){
+      kisaBildirim(String(mesaj).slice(0,80));
+    }
+  };
+
+  function plusCiz(){
+    var k=$('plusIcerik'); if(!k)return;
+
+    if(state.plus){
+      k.innerHTML=
+        '<div class="plus-sahip">'+
+          '<div class="ps-ik">'+ikon('check',30,'#fff')+'</div>'+
+          '<div class="ps-bas">Prismio Plus açık</div>'+
+          '<div class="ps-ack">Teşekkürler. Reklamsız oynuyorsun, '+
+            'canın sınırsız ve her tahtada 4 ipucun var.</div>'+
+        '</div>'+
+        '<div class="plus-liste">'+
+          PLUS.fayda.map(function(f){
+            return '<div class="pf acik"><span class="pf-ik">'+ikon(f.ik,20)+'</span>'+
+              '<span class="pf-govde"><b>'+htmlKacir(f.bas)+'</b>'+
+              '<small>'+htmlKacir(f.ack)+'</small></span>'+
+              '<span class="pf-tik">'+ikon('check',18)+'</span></div>';
+          }).join('')+
+        '</div>';
+      return;
+    }
+
+    var h=
+      '<div class="plus-bas">'+
+        '<div class="pb-ad">Prismio Plus</div>'+
+        '<div class="pb-ack">Bir kez öde. Sonsuza kadar senin.</div>'+
+      '</div>'+
+      '<div class="plus-liste">'+
+        PLUS.fayda.map(function(f){
+          return '<div class="pf"><span class="pf-ik">'+ikon(f.ik,20)+'</span>'+
+            '<span class="pf-govde"><b>'+htmlKacir(f.bas)+'</b>'+
+            '<small>'+htmlKacir(f.ack)+'</small></span></div>';
+        }).join('')+
+      '</div>';
+
+    if(PLUS.hazir){
+      h+='<button class="btn yesil tam" id="plusAl" type="button">'+
+           'Prismio Plus al'+(PLUS.fiyat?(' · '+htmlKacir(PLUS.fiyat)):'')+'</button>'+
+         '<button class="metin-bag tam" id="plusGeriYukle" type="button">'+
+           'Daha önce aldım, geri yükle</button>'+
+         '<p class="plus-not">Tek seferlik ödeme. Abonelik yok. Otomatik yenileme yok.</p>';
+    }else{
+      h+='<p class="plus-not plus-yakinda">Satın alma bu sürümde henüz açık değil. '+
+         'Google Play sürümünde gelecek.</p>';
+    }
+    k.innerHTML=h;
+
+    var al=$('plusAl');
+    if(al)al.addEventListener('click',function(){
+      if(!(window.PrismioNative && window.PrismioNative.plusSatinAl))return;
+      al.disabled=true; al.textContent='Bağlanıyor…';
+      try{ window.PrismioNative.plusSatinAl(); }
+      catch(e){ al.disabled=false; al.textContent='Prismio Plus al'; }
+    });
+    var gy=$('plusGeriYukle');
+    if(gy)gy.addEventListener('click',function(){
+      plusDurumSor(); kisaBildirim('Satın alman kontrol ediliyor…');
+    });
+  }
+
   function magazaCiz(){
     urunListeCiz('isik','isikListe');
     urunListeCiz('can','canListe');
+    plusCiz();
     var box=$('temalar'); if(!box)return;
     box.innerHTML='';
     var acikSayi=0;
@@ -3761,8 +4596,13 @@
   })();
 
   // ---- magaza sekmeleri ----
+  // NOTU: Sekme listesi eskiden ['tema','isik','can'] diye SABIT
+  // yazilmisti. Yeni sekme (Plus) ekleyince calismadi - liste guncellenmemisti.
+  // Artik DOM'dan okunuyor: HTML'e sekme eklemek yeterli, bu kod degismez.
   function sekmeAc(ad){
-    ['tema','isik','can'].forEach(function(k){
+    var sekmeler=[].map.call(document.querySelectorAll('.sekme[data-sekme]'),
+                             function(b){ return b.getAttribute('data-sekme'); });
+    sekmeler.forEach(function(k){
       var b=document.querySelector('.sekme[data-sekme="'+k+'"]');
       var i=$('sk-'+k);
       if(b){ b.classList.toggle('acik',k===ad); b.setAttribute('aria-selected',k===ad?'true':'false'); }
@@ -3796,20 +4636,28 @@
 
   // gorev seridi -> gorev ekrani
   (function(){ var e=$('gorevSerit');
-    if(e)e.addEventListener('click',function(){ git('basari'); });
+    if(e)e.addEventListener('click',function(){
+      state._odulSekme='gunluk'; git('basari');
+    });
   })();
-  // basari ekrani sekmeleri
+  // ---- Odul Odasi sekmeleri ----
+  // Mantik olay dinleyicisinden AYRILDI. Boylece hem tiklamayla hem
+  // kod icinden (seri seridinden gelis) ayni sekme acilabiliyor.
+  function bSekmeAc(ad){
+    var dugmeler=document.querySelectorAll('.sekme[data-bsekme]');
+    [].forEach.call(dugmeler,function(x){
+      var a=(x.getAttribute('data-bsekme')===ad);
+      x.classList.toggle('acik',a); x.setAttribute('aria-selected',a?'true':'false');
+    });
+    [].forEach.call(dugmeler,function(x){
+      var k=x.getAttribute('data-bsekme');
+      var i=$('bsk-'+k); if(i)i.classList.toggle('acik',k===ad);
+    });
+    var kd=document.querySelector('.basari-kaydir'); if(kd)kd.scrollTop=0;
+  }
   [].forEach.call(document.querySelectorAll('.sekme[data-bsekme]'),function(b){
     b.addEventListener('click',function(){
-      var ad=b.getAttribute('data-bsekme');
-      [].forEach.call(document.querySelectorAll('.sekme[data-bsekme]'),function(x){
-        var a=(x===b); x.classList.toggle('acik',a); x.setAttribute('aria-selected',a?'true':'false');
-      });
-      ['gunluk','basari'].forEach(function(k){
-        var i=$('bsk-'+k); if(i)i.classList.toggle('acik',k===ad);
-      });
-      var kd=document.querySelector('.basari-kaydir'); if(kd)kd.scrollTop=0;
-      titret('hafif');
+      bSekmeAc(b.getAttribute('data-bsekme')); titret('hafif');
     });
   });
   (function(){ var e=$('rozParaBasari');
@@ -3831,6 +4679,17 @@
 
   // ===================== OLAY BAĞLARI =====================
   $('btnOyna').addEventListener('click',function(){ git('harita'); });
+  //: Metin bagi da haritaya gider. Buyuk buton gizliyken bu kullanilir.
+  (function(){ var b=$('bagHarita'); if(b)b.addEventListener('click',function(){ git('harita'); }); })();
+  //: Seri seridi Odul Odasi'ni acar - kilometre taslari orada.
+  (function(){ var b=$('seriSerit'); if(b)b.addEventListener('click',function(){
+    state._odulSekme='basari';    // seri kilometre taslarina git
+    git('basari');
+  }); })();
+  //: Odul Odasi kisayolu
+  (function(){ var b=$('btnOdul'); if(b)b.addEventListener('click',function(){
+    state._odulSekme='gunluk'; git('basari');
+  }); })();
   $('btnZaman').addEventListener('click',zamanBaslat);
   $('btnMagaza').addEventListener('click',function(){ git('magaza'); });
   $('btnAyar').addEventListener('click',function(){ git('ayar'); });
@@ -3845,16 +4704,102 @@
     state._karma=(state._karma||0)+1;   // ayni bolumun baska bir varyanti
     state.mirrors={}; state.paid=false; loadLevel();
   });
+  // ==========================================================================
+  //  IPUCU EKONOMISI
+  //  SORUN: Ipucu bedavaydi ve sinirsizdi. Ard arda basip tahtayi
+  //  cozmek mumkundu. Bulmacanin tum anlami kayboluyordu.
+  //
+  //  KURAL:
+  //    - Her tahtada 1 ipucu BEDAVA. Takilan oyuncu cezalandirilmaz.
+  //    - Sonraki her ipucu 1 CAN.
+  //    - Can yoksa ipucu verilmez, magaza acilir.
+  //    - Iki ipucu arasinda 1.2 saniye bekleme. Ard arda basis engellenir.
+  //
+  //  NEDEN CAN, ISIK DEGIL: Isik biriktirilir, can zamanla dolar.
+  //  Ipucunun bedeli "biraz bekle" olmali, "biraz biriktir" degil.
+  //  Boylece cok ipucu kullanan oyuncu oyunu birakmaz, yavaslar.
+  // ==========================================================================
+  // DENGE NOTU: Bedava ipucu 1'den 2'ye cikarildi.
+  // 1 tane cok cimriydi - takilan oyuncu hemen can odemek zorunda kaliyordu.
+  // 2 tane "dene, takilirsan yardim var" hissi verir. 3. ipucu hala can.
+  // Plus alan oyuncu 4 bedava ipucu alir.
+  var IPUCU={ bedava:2, plusBedava:4, bedel:1, bekleme:1200 };
+  function ipucuHakki(){ return state.plus ? IPUCU.plusBedava : IPUCU.bedava; }
+  var _sonIpucu=0;
+
   $('btnIpucu').addEventListener('click',function(){
     if(state.bitti)return;
-    // Cozumden henuz konulmamis TEK aynayi acar. Tamamini vermez.
+
+    // Ard arda basisi engelle
+    var simdi=Date.now();
+    if(simdi-_sonIpucu < IPUCU.bekleme) return;
+
+    // Cozumde henuz konulmamis ayna kaldi mi
     var eksik=[];
     for(var k in state.solution) if(!state.mirrors[k]) eksik.push(k);
     if(!eksik.length){ $('ipucu').textContent='Bu tahtada ipucu kalmadı.'; return; }
+
+    // Bu tahtada kacinci ipucu
+    state._ipucuSayi=(state._ipucuSayi||0);
+    var bedavaMi = state._ipucuSayi < ipucuHakki();
+
+    if(!bedavaMi){
+      if((state.lives||0) < IPUCU.bedel){
+        $('ipucu').className='ipucu hata';
+        $('ipucu').textContent='Can yok. İpucu için can gerekiyor.';
+        titret('hata');
+        setTimeout(function(){ magazaAc('can'); },600);
+        return;
+      }
+      canKaybet();
+      rozetleriCiz();
+    }
+
+    state._ipucuSayi++;
+    _sonIpucu=simdi;
+
     var sec=eksik[rnd(eksik.length)];
     state.mirrors[sec]=state.solution[sec];
+    titret('hafif');
     draw();
+
+    // Sonraki ipucunun bedelini SIMDIDEN soyle. Surpriz olmasin.
+    var kalanBedava = ipucuHakki() - state._ipucuSayi;
+    $('ipucu').className='ipucu';
+    if(kalanBedava > 0){
+      $('ipucu').textContent='İpucu verildi. '+kalanBedava+' ücretsiz ipucu kaldı.';
+    }else{
+      $('ipucu').textContent='İpucu verildi. Sonraki ipucu 1 can.';
+    }
+    ipucuButonuTazele();
   });
+
+  // Buton uzerinde bedeli goster. Oyuncu basmadan once bilmeli.
+  function ipucuButonuTazele(){
+    var hak=ipucuHakki();
+    var kalan=Math.max(0, hak-(state._ipucuSayi||0));
+
+    var b=$('btnIpucu');
+    if(b){
+      b.classList.toggle('bedelli', kalan<=0);
+      b.setAttribute('aria-label', kalan>0
+        ? ('İpucu, '+kalan+' ücretsiz hakkın var')
+        : 'İpucu, 1 cana mal olur');
+    }
+
+    //: Pipler. Dolu = kullanilabilir, bos = harcanmis.
+    // Oyuncu tahtaya bakarken bile kenardan gorur.
+    var pip=$('hudPipler');
+    if(pip){
+      var h='';
+      for(var i=0;i<hak;i++) h+='<i class="pip'+(i<kalan?' dolu':'')+'"></i>';
+      if(kalan<=0) h+='<i class="pip-bedel">1♥</i>';
+      pip.innerHTML=h;
+    }
+    var hi=$('hudIpucu');
+    if(hi) hi.setAttribute('aria-label', kalan>0
+      ? (kalan+' ücretsiz ipucu kaldı') : 'Ücretsiz ipucu bitti, sonraki 1 can');
+  }
 
 
   // ==========================================================================
@@ -3932,6 +4877,71 @@
       save();
     }
   }
+  // ==========================================================================
+  //  SERI (STREAK)
+  //
+  //  KURAL: Gunde en az 1 tahta coz -> seri 1 artar.
+  //         Bir gun atlarsan seri sifirlanir.
+  //         Ayni gun kac tahta cozersen coz seri 1 artar.
+  //
+  //  NEDEN GUNLUK GOREVIN YANINDA, YERINE DEGIL:
+  //    Gunluk gorev "bugun ne yapayim" sorusunu cevaplar - ISI verir.
+  //    Seri "neden yarin da geleyim" sorusunu cevaplar - SUREKLILIK verir.
+  //    Ikisi farkli isler. Gorev seriyi besler.
+  //
+  //  NEDEN ODUL YOK: Seri kendi basina odul. Uzerine isik vermek
+  //  ekonomiyi sisirir. Kilometre taslari (7, 30, 100 gun) basari
+  //  olarak verilir - oyuncu onlari Odul Odasi'nda gorur.
+  //
+  //  TARIH HESABI: Gun farki yerel saate gore. Oyuncu gece 23:59'da
+  //  cozup 00:01'de tekrar cozerse seri 2 olur. Bu kasitli - cezalandirmak
+  //  yerine odullendiriyoruz.
+  // ==========================================================================
+  function gunSayisi(d){
+    // Yerel gun numarasi. Saat farkindan etkilenmez.
+    return Math.floor((d.getTime() - d.getTimezoneOffset()*60000) / 86400000);
+  }
+
+  function seriVarsayilan(){ return {gun:0, sayi:0, enUzun:0, toplamGun:0}; }
+
+  function seriGuvenli(){
+    var v=seriVarsayilan();
+    var x=state.seri;
+    if(!x || typeof x!=='object' || Array.isArray(x)){ state.seri=v; return state.seri; }
+    function s(a,b){ return (typeof a==='number' && isFinite(a) && a>=0 && a<1e7) ? Math.floor(a) : b; }
+    state.seri={ gun:s(x.gun,0), sayi:s(x.sayi,0), enUzun:s(x.enUzun,0), toplamGun:s(x.toplamGun,0) };
+    return state.seri;
+  }
+
+  // Tahta cozulunce cagrilir. Seriyi gunceller, YENI kilometre tasi varsa dondurur.
+  function seriIsle(){
+    var sr=seriGuvenli();
+    var bugun=gunSayisi(new Date());
+    if(sr.gun===bugun) return null;          // bugun zaten sayildi
+    var fark = bugun - sr.gun;
+    sr.sayi = (sr.gun>0 && fark===1) ? sr.sayi+1 : 1;   // ardisik mi
+    sr.gun = bugun;
+    sr.toplamGun = (sr.toplamGun||0)+1;
+    if(sr.sayi > sr.enUzun) sr.enUzun = sr.sayi;
+    save();
+    return sr.sayi;
+  }
+
+  // Ekranda gosterilecek seri. Gun atlandiysa 0 gosterir ama KAYDI BOZMAZ -
+  // oyuncu bugun cozerse seriIsle() zaten 1'e ceker.
+  function seriGoster(){
+    var sr=seriGuvenli();
+    var bugun=gunSayisi(new Date());
+    if(sr.gun===0) return 0;
+    var fark=bugun-sr.gun;
+    if(fark===0) return sr.sayi;      // bugun cozdu
+    if(fark===1) return sr.sayi;      // dun cozdu, seri hala canli
+    return 0;                          // kopmus
+  }
+  function seriBugunCozuldu(){
+    return seriGuvenli().gun === gunSayisi(new Date());
+  }
+
   function gorevListesi(){
     gorevKontrol();
     return DAILY_TASKS.map(function(t){
@@ -3952,6 +4962,10 @@
   // Bolum bitince cagrilir, sayaclari isler
   function sayacIsle(yildiz,mod){
     gorevKontrol();
+    state._yeniSeri = seriIsle();        //: gunun ilk cozumuyse seri artar
+    //: Omur boyu sayac. state.sayac GUNLUK ve sifirlaniyor,
+    // bu yuzden kalici ilerleme icin ayri bir sayac sart.
+    state.toplamCozulen = (state.toplamCozulen||0) + 1;
     state.sayac.cozulen=(state.sayac.cozulen||0)+1;
     if(yildiz===3)state.sayac.ucYildiz=(state.sayac.ucYildiz||0)+1;
     if(mod==='zaman')state.sayac.zamanBolum=(state.sayac.zamanBolum||0)+1;
@@ -3970,8 +4984,20 @@
     save();
   }
   // Ayarlarin gorsel etkisini <html> uzerinde toplar. CSS bunlara bakar.
+  //: Plus sahibine reklam GOSTERILMEZ.
+  // Banner kutulari DOM'dan kaldirilmaz, gizlenir - Plus iptal
+  // edilirse (iade) tekrar gorunur. Tek yerden yonetilir.
+  function reklamGoster(){
+    var gizle = !!state.plus;
+    ['bnMenu','bnHarita','bnMagaza','bnDunya','bnBasari','bnAyar'].forEach(function(id){
+      var e=document.getElementById(id);
+      if(e) e.hidden = gizle;
+    });
+  }
+
   function ayarUygula(){
     var r=document.documentElement;
+    reklamGoster();                 //: Plus durumu her ayar uygulamada tazelenir
     r.classList.toggle('az-hareket', !ayar('animasyon') || !!ayar('azHareket'));
     r.classList.toggle('parcacik-yok', !ayar('parcacik'));
     r.classList.toggle('yuksek-kontrast', !!ayar('kontrast'));
@@ -3979,6 +5005,121 @@
   }
 
   // --- Titresim (haptic). Cihaz desteklemiyorsa sessizce gecer. ---
+  // ==========================================================================
+  //  SES SISTEMI
+  //
+  //  SORUN: Ayarlarda uc ses anahtari vardi ama ARKALARINDA HICBIR SEY YOKTU.
+  //  Oyuncu "Muzik" acip hicbir sey duymuyordu. Calismayan anahtar,
+  //  olmayan anahtardan KOTUDUR - oyuncu uygulamayi bozuk sanir.
+  //
+  //  COZUM: Gercek ses. Ama dosya YOK - WebAudio ile sentezleniyor.
+  //  NEDEN DOSYA YOK:
+  //    - Oyun tek HTML dosyasi. Ses dosyasi base64 olarak gomulurse
+  //      dosya megabaytlarca sisar, acilis yavaslar.
+  //    - Sentez birkac kilobayt kod. Eski telefonlarda bile ucuz.
+  //
+  //  SES TASARIMI: Isik kirilmasi oyunu. Sesler CAM gibi olmali -
+  //  temiz, kisa, cinlayan. Vurmali veya elektronik degil.
+  //  Notalar pentatonik dizide (C-D-E-G-A) - rastgele bip sesleri
+  //  birbiriyle kavga eder, dizideki notalar uyumlu durur.
+  //
+  //  SES SEVIYESI: Bilincli olarak DUSUK (0.18). Oyun sesi
+  //  oyuncunun muzigini bastirmamali.
+  // ==========================================================================
+  var SES = (function(){
+    var ac=null, ana=null, kapali=false;
+
+    // AudioContext ILK DOKUNUSTA kurulur. Tarayicilar dokunmadan
+    // ses calmaya izin vermez - erken kurarsak "suspended" kalir.
+    function hazirla(){
+      if(ac||kapali)return ac;
+      try{
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC){ kapali=true; return null; }
+        ac = new AC();
+        ana = ac.createGain();
+        ana.gain.value = 0.18;          // dusuk tutuldu
+        ana.connect(ac.destination);
+      }catch(e){ kapali=true; ac=null; }
+      return ac;
+    }
+
+    // Askiya alinmis baglami uyandir (arka plandan donunce olur)
+    function uyandir(){
+      if(ac && ac.state==='suspended'){ try{ ac.resume(); }catch(e){} }
+    }
+
+    // Tek nota. f=frekans, sure=saniye, tip=dalga, gecikme, ses seviyesi
+    function nota(f, sure, tip, gecikme, seviye){
+      var c=hazirla(); if(!c)return;
+      try{
+        var t = c.currentTime + (gecikme||0);
+        var o = c.createOscillator();
+        var g = c.createGain();
+        o.type = tip||'sine';
+        o.frequency.setValueAtTime(f, t);
+        // Zarf: hizli yukselis, yumusak dusus. Cam cinlamasi boyle olur.
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(seviye||0.9, t+0.008);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+sure);
+        o.connect(g); g.connect(ana);
+        o.start(t); o.stop(t+sure+0.02);
+      }catch(e){}
+    }
+
+    // Pentatonik dizi (C majör pentatonik). Notalar birbiriyle uyumlu.
+    var N = { C:523.25, D:587.33, E:659.25, G:783.99, A:880.00,
+              C2:1046.50, D2:1174.66, E2:1318.51, G2:1567.98,
+              Gd:392.00, Ad:440.00, Cd:261.63 };
+
+    // Ses sozlugu. Titresim vokabuleriyle AYNI isimler -
+    // tek cagri ikisini de tetikler, isimler dagilmaz.
+    var SOZLUK = {
+      dokun:   function(){ nota(N.G, .06, 'sine', 0, .5); },
+      ayna:    function(){ nota(N.E, .09, 'triangle', 0, .7); },
+      cevir:   function(){ nota(N.D, .07, 'triangle', 0, .55);
+                           nota(N.G, .07, 'triangle', .05, .45); },
+      kristal: function(){ nota(N.C2, .22, 'sine', 0, .8);
+                           nota(N.G2, .30, 'sine', .04, .45); },
+      hafif:   function(){ nota(N.A, .05, 'sine', 0, .4); },
+      basari:  function(){ nota(N.C, .12, 'sine', 0, .7);
+                           nota(N.E, .12, 'sine', .07, .7);
+                           nota(N.G, .20, 'sine', .14, .7); },
+      // Bolum bitisi: yukselen arpej. Oyunun en guzel ani, sesi de oyle olsun.
+      bitis:   function(){ nota(N.C,  .16, 'sine', 0,   .75);
+                           nota(N.E,  .16, 'sine', .08, .75);
+                           nota(N.G,  .16, 'sine', .16, .75);
+                           nota(N.C2, .40, 'sine', .24, .85);
+                           nota(N.E2, .40, 'sine', .28, .40); },
+      acilis:  function(){ nota(N.Cd, .18, 'sine', 0,  .5);
+                           nota(N.Gd, .18, 'sine', .1, .5);
+                           nota(N.C,  .30, 'sine', .2, .6); },
+
+      hata:    function(){ nota(N.D, .10, 'triangle', 0,   .55);
+                           nota(N.Cd,.16, 'triangle', .08, .5); },
+      uyari:   function(){ nota(N.A, .09, 'triangle', 0, .5); }
+    };
+
+    return {
+      cal: function(ad){
+        if(!SOZLUK[ad])return;
+        uyandir();
+        try{ SOZLUK[ad](); }catch(e){}
+      },
+      uyandir: uyandir
+    };
+  })();
+
+  // Ilk dokunusta ses baglamini ac. Tarayici kurali: ses ancak
+  // kullanici etkilesiminden SONRA calabilir.
+  (function(){
+    function ac(){ SES.uyandir(); SES.cal('dokun'); }
+    document.addEventListener('pointerdown', function bir(){
+      document.removeEventListener('pointerdown', bir);
+      if(ayar('efekt')) ac(); else SES.uyandir();
+    }, {once:true, passive:true});
+  })();
+
   // Titresim desenleri. Isimle cagrilir: titret('ayna')
   var TITRESIM={
     dokun:8, ayna:12, cevir:[6,20,6], kristal:18,
@@ -3989,7 +5130,14 @@
   //  titret('ayna')  -> TITRESIM.ayna
   //  titret(25)      -> dogrudan
   // Bilinmeyen isim sessizce gecer, hata vermez.
+  //: Bu fonksiyon artik HEM titresim HEM ses verir.
+  // Adi 'titret' kaldi cunku 22 cagri yeri var ve ikisi hep birlikte
+  // kullaniliyor - ayirmak iki kat cagri demek olurdu.
+  // Iki ayar BAGIMSIZ: titresim kapali ses acik olabilir, tersi de.
   function titret(d){
+    // Ses: sadece isimle cagrildiginda (desen numarasinin sesi olmaz)
+    if(typeof d==='string' && ayar('efekt')) SES.cal(d);
+    // Titresim
     if(!ayar('haptic'))return;
     var desen = (typeof d==='string') ? TITRESIM[d] : d;
     if(desen===undefined||desen===null)return;
@@ -4011,10 +5159,38 @@
   if(!state.ayar)state.ayar=varsayilanAyarlar();
   temaUygula(); ayarUygula(); gorevKontrol(); decoTara(); basariTara(); debugKur();
   kopruyuBagla();          // Android kabugu varsa Play Games baglanir
+  plusDurumSor();          //: satin alma durumu ve fiyat sorulur
   dunyaAcilisKontrol();   // eski kayitta kapi zaten acik olabilir
   canYenile();
   rozetleriCiz();
   git('menu');
+
+  // ---- ACILIS PERDESINI KAPAT ----
+  // 1.3 saniye sonra kendiliginden kapanir. Dokunursa hemen kapanir.
+  // Ayni oturumda bir daha gosterilmez (sessionStorage).
+  (function(){
+    var perde=document.getElementById('acilis');
+    if(!perde)return;
+
+    // Bu oturumda daha once gosterildiyse hic gosterme
+    var gosterildi=false;
+    try{ gosterildi = sessionStorage.getItem('pr_acilis')==='1'; }catch(e){}
+    if(gosterildi){ perde.parentNode.removeChild(perde); return; }
+    try{ sessionStorage.setItem('pr_acilis','1'); }catch(e){}
+
+    var kapandi=false;
+    function kapat(){
+      if(kapandi)return; kapandi=true;
+      perde.classList.add('kapat');
+      setTimeout(function(){
+        if(perde.parentNode)perde.parentNode.removeChild(perde);
+      },380);
+    }
+    perde.addEventListener('click',kapat);
+    perde.addEventListener('touchstart',kapat,{passive:true});
+    setTimeout(kapat, 1300);
+  })();
+
   setInterval(function(){ if(state.lives<MAX_LIVES)rozetleriCiz(); },30000);
   // Oynama suresi sayaci. Play Games kayitlarinda gosterilir (Kalite Kontrol 6.1).
   // Sadece oyun ekranindayken sayar - menude bekleyen sure sayilmaz.
