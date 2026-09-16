@@ -2039,57 +2039,57 @@
   // ==========================================================================
   var TIERS=[
     // kademe 1  (bolum 1-10)   - OGRETICI. 4x4, delik yok, tek renk cifti.
-    { n:[4,4],  cry:[2,2], mir:[2,3], wall:[2,4],   ayristirici:0, holes:0, path:[4,99],  srcPrism:2 },
+    { n:[4,4],  cry:[2,3], mir:[2,3], wall:[2,4],   ayristirici:0, holes:0, path:[4,99],  srcPrism:2 },
     // kademe 2  (bolum 11-20)  - 5x5 basliyor
-    { n:[5,5],  cry:[2,3], mir:[2,4], wall:[4,7],   ayristirici:0, holes:0, path:[6,99],  srcPrism:2 },
+    { n:[5,5],  cry:[2,3], mir:[2,4], wall:[3,7],   ayristirici:0, holes:0, path:[5,99],  srcPrism:2 },
     // kademe 3  (bolum 21-30)  - 5x5, duvarlar sikilasir
-    { n:[5,5],  cry:[2,3], mir:[3,5], wall:[5,9],   ayristirici:0, holes:1, path:[7,99],  srcPrism:2 },
+    { n:[5,5],  cry:[2,3], mir:[3,5], wall:[3,7],   ayristirici:0, holes:1, path:[5,99],  srcPrism:2 },
     // kademe 4  (bolum 31-40)  - 6x6. Delik gercek kacis kapisi olarak girer.
-    { n:[6,6],  cry:[3,3], mir:[4,6], wall:[7,12],  ayristirici:0, holes:1, path:[9,99],  srcPrism:3 },
+    { n:[6,6],  cry:[3,3], mir:[4,6], wall:[10,13],  ayristirici:0, holes:1, path:[7,99],  srcPrism:3 },
     // kademe 5  (bolum 41-50)  - 6x6 ustalik
-    { n:[6,6],  cry:[3,3], mir:[4,7], wall:[9,14],  ayristirici:0, holes:1, path:[10,99], srcPrism:3 },
+    { n:[6,6],  cry:[3,3], mir:[4,6], wall:[10,13],  ayristirici:0, holes:1, path:[7,99], srcPrism:3 },
     // kademe 6  (bolum 51-60)  - 7x7 basliyor
-    { n:[7,7],  cry:[3,3], mir:[5,7], wall:[11,17], ayristirici:0, holes:2, path:[12,99], srcPrism:3 },
+    { n:[7,7],  cry:[3,3], mir:[5,7], wall:[13,18], ayristirici:0, holes:2, path:[9,99], srcPrism:3 },
     // kademe 7  (bolum 61-70)  - 7x7
-    { n:[7,7],  cry:[3,5], mir:[5,8], wall:[12,18], ayristirici:1, holes:2, path:[13,99], srcPrism:4 },
+    { n:[7,7],  cry:[3,3], mir:[5,7], wall:[13,18], ayristirici:1, holes:2, path:[9,99], srcPrism:4 },
     // kademe 8  (bolum 71-80)  - 7x7
-    { n:[7,7],  cry:[3,5], mir:[6,8], wall:[13,19], ayristirici:1, holes:2, path:[14,99], srcPrism:4 },
+    { n:[7,7],  cry:[3,3], mir:[5,7], wall:[13,18], ayristirici:1, holes:2, path:[9,99], srcPrism:4 },
     // kademe 9  (bolum 81-90)  - 7x7
-    { n:[7,7],  cry:[3,5], mir:[6,9], wall:[14,20], ayristirici:1, holes:2, path:[15,99], srcPrism:4 },
+    { n:[7,7],  cry:[3,3], mir:[6,8], wall:[13,18], ayristirici:1, holes:2, path:[9,99], srcPrism:4 },
     // kademe 10 (bolum 91-100) - 7x7 son basamak
-    { n:[7,7],  cry:[3,5], mir:[6,9], wall:[15,21], ayristirici:1, holes:2, path:[15,99], srcPrism:4 },
+    { n:[7,7],  cry:[3,3], mir:[6,8], wall:[13,18], ayristirici:1, holes:2, path:[9,99], srcPrism:4 },
     // kademe 11 (bolum 101-110) - 8x8 basliyor
-    { n:[8,8],  cry:[3,5], mir:[7,9], wall:[16,23], ayristirici:1, holes:2, path:[16,99], srcPrism:4 },
+    { n:[8,8],  cry:[3,4], mir:[6,8], wall:[17,24], ayristirici:1, holes:2, path:[12,99], srcPrism:4 },
     // kademe 12 (bolum 111-120) - 8x8
-    { n:[8,8],  cry:[3,5], mir:[7,10], wall:[17,24], ayristirici:1, holes:3, path:[17,99], srcPrism:4 },
+    { n:[8,8],  cry:[3,4], mir:[6,8], wall:[17,24], ayristirici:1, holes:3, path:[12,99], srcPrism:4 },
     // kademe 13 (bolum 121-130) - 8x8
-    { n:[8,8],  cry:[3,5], mir:[7,10], wall:[18,25], ayristirici:1, holes:3, path:[17,99], srcPrism:5 },
+    { n:[8,8],  cry:[3,4], mir:[7,9], wall:[17,24], ayristirici:1, holes:3, path:[12,99], srcPrism:5 },
     // kademe 14 (bolum 131-140) - 8x8
-    { n:[8,8],  cry:[3,5], mir:[8,10], wall:[18,25], ayristirici:1, holes:3, path:[18,99], srcPrism:5 },
+    { n:[8,8],  cry:[3,4], mir:[7,9], wall:[17,24], ayristirici:1, holes:3, path:[12,99], srcPrism:5 },
     // kademe 15 (bolum 141-150) - 8x8 son basamak
-    { n:[8,8],  cry:[3,5], mir:[8,11], wall:[19,26], ayristirici:1, holes:3, path:[18,99], srcPrism:5 },
+    { n:[8,8],  cry:[3,4], mir:[7,9], wall:[17,24], ayristirici:1, holes:3, path:[12,99], srcPrism:5 },
     // kademe 16 (bolum 151-160) - 9x9 basliyor
-    { n:[9,9],  cry:[3,5], mir:[8,11], wall:[20,29], ayristirici:1, holes:3, path:[19,99], srcPrism:5 },
+    { n:[9,9],  cry:[3,4], mir:[7,9], wall:[22,30], ayristirici:1, holes:3, path:[16,99], srcPrism:5 },
     // kademe 17 (bolum 161-170) - 9x9
-    { n:[9,9],  cry:[3,5], mir:[8,11], wall:[22,31], ayristirici:1, holes:3, path:[19,99], srcPrism:5 },
+    { n:[9,9],  cry:[3,4], mir:[7,9], wall:[22,30], ayristirici:1, holes:3, path:[16,99], srcPrism:5 },
     // kademe 18 (bolum 171-180) - 9x9
-    { n:[9,9],  cry:[3,5], mir:[9,12], wall:[23,32], ayristirici:1, holes:3, path:[20,99], srcPrism:6 },
+    { n:[9,9],  cry:[3,4], mir:[7,9], wall:[22,30], ayristirici:1, holes:3, path:[16,99], srcPrism:6 },
     // kademe 19 (bolum 181-190) - 9x9
-    { n:[9,9],  cry:[3,5], mir:[9,12], wall:[24,33], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[9,9],  cry:[3,4], mir:[8,10], wall:[22,30], ayristirici:1, holes:4, path:[16,99], srcPrism:6 },
     // kademe 20 (bolum 191-200) - 9x9 son basamak
-    { n:[9,9],  cry:[3,5], mir:[9,12], wall:[25,34], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[9,9],  cry:[3,4], mir:[8,10], wall:[22,30], ayristirici:1, holes:4, path:[16,99], srcPrism:6 },
     // kademe 21 (bolum 201-210) - 10x10 basliyor. Son boyut artisi.
-    { n:[10,10], cry:[3,5], mir:[9,12], wall:[26,36], ayristirici:1, holes:4, path:[21,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
     // kademe 22-30 (bolum 211-300) - 10x10, duvar ve yol sikilasir
-    { n:[10,10], cry:[3,5], mir:[10,12], wall:[28,38], ayristirici:1, holes:4, path:[21,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[10,12], wall:[29,39], ayristirici:1, holes:4, path:[22,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[10,13], wall:[30,40], ayristirici:1, holes:4, path:[22,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[10,13], wall:[31,41], ayristirici:1, holes:4, path:[23,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[11,13], wall:[32,42], ayristirici:1, holes:4, path:[23,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[11,13], wall:[32,43], ayristirici:1, holes:4, path:[24,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[11,14], wall:[33,43], ayristirici:1, holes:4, path:[24,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[11,14], wall:[34,44], ayristirici:1, holes:4, path:[25,99], srcPrism:6 },
-    { n:[10,10], cry:[3,5], mir:[12,14], wall:[34,45], ayristirici:1, holes:4, path:[25,99], srcPrism:6 }
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 },
+    { n:[10,10], cry:[4,5], mir:[8,10], wall:[28,38], ayristirici:1, holes:4, path:[20,99], srcPrism:6 }
   ];
   // Kademe basina hedef zorluk puani araligi. Uretilen tahta bu araliga girmezse
   // reddedilir. 30 kademe icin uretilir - elle yazmak hataya acik.
@@ -2137,7 +2137,21 @@
   // Tavan 9x9 -> 10x10. TIERS artik 10x10'a kadar cikiyor,
   // tavan onu kirpmamali. 11x11 test edilmedi, bilerek acilmadi.
   // cry 3 -> 5. Ayristirici prizma bir kristali ikiye boluyor.
-  var TAVAN={ n:10, mir:14, cry:5, holes:4, duvarOran:0.42, srcPrism:6 };
+  // (sahip karari): Ayna tavani 14 -> 10.
+  //
+  //  OLCULEN SORUN: Bolum 151-1000 arasi ortalama 10 ayna, %32'si 10'un
+  //  ustunde, en yuksek 12. Bolum 350'de 13 aynalik tahta uretildi.
+  //  Oyuncu bunu "cozulemez" diye bildirdi ve HAKLIYDI - tahta teknik
+  //  olarak cozulebilirdi ama 13 aynalik zinciri insan kafasinda kuramaz.
+  //
+  //  BENIM HATAM:'de kendim yazmisim: "6-7 aynadan sonra tahtalar
+  //  zekice olmaktan cikip yorucu oluyor." Sonra'de tavani hic
+  //  dusunmeden 12'den 14'e cikardim. Kendi kararimi cignedim.
+  //
+  //  10 NEDEN: Insanin bir bakista kurabildigi zincir sinirı. Bunun
+  //  ustunde oyuncu dusunmuyor, deneme yaniliyor.
+  //  Zorluk AYNA SAYISINDAN degil duvar, delik, prizma ve renkten gelmeli.
+  var TAVAN={ n:10, mir:10, cry:5, holes:4, duvarOran:0.42, srcPrism:6 };
   // Buyuk sinav (her 50. bolum) tahtasi. Normal tavanin BIR USTU.
   // Oyuncu 10x10 tahtayi gorunce "bu farkli" der. Sayilari biraz
   // artirmak yetmiyordu (olcum: 20 bolumun sadece 11'i komsusundan zordu).
@@ -2221,6 +2235,44 @@
     return pos/9;                      // 0 = kademenin en kolayi, 1 = en zoru
   }
 
+  // ==========================================================================
+  //  MEKANIK RITMI
+  // --------------------------------------------------------------------------
+  //  SAHIBIN SOZU: "Dengeli olmali. Hepsine hepsi olsun veya olmasin demek
+  //  dogru degil. Bazi bolumler zor olmali ve her mekanik olmaliyken bazi
+  //  bolumlerde daha az olabilir."
+  //
+  //  OLCULEN SORUN: Bolum 151'den sonra HER tahtada her sey vardi -
+  //  2 prizma + 4 cift delik + 34 duvar + 4 kristal. Ortalama ayna 151-300
+  //  arasi 10.4, 601-1000 arasi 10.3. Yani zorluk DUZLESMISTI ve tahtalar
+  //  birbirinin kopyasiydi. Oyuncu bolum 200 ile bolum 900'u ayirt edemez.
+  //
+  //  COZUM - 10 BOLUMLUK NEFES DONGUSU:
+  //    Bolum 1-2  SADE    tek mekanik. Yeni kademeye alisma.
+  //    Bolum 3-5  ORTA    iki mekanik.
+  //    Bolum 6-7  SADE-2  bir tik geri. Nefes molasi.
+  //    Bolum 8-9  YOGUN   her mekanik acik.
+  //    Bolum 10   SINAV   en yogun + ayna limiti.
+  //
+  //  Boylece oyuncu her 10 bolumde bir inis-cikis yasar. Duz bir duvar
+  //  yerine dalga. Bu,'deki "nefes molasi" kararinin mekaniklere
+  //  uygulanmis hali.
+  // ==========================================================================
+  var RITIM=[
+    // pos 0..9  ->  delik carpani, ayristirici izni, duvar carpani
+    {ad:'sade',  delik:0.0, ayr:0, duvar:0.80},   // 1
+    {ad:'sade',  delik:0.3, ayr:0, duvar:0.85},   // 2
+    {ad:'orta',  delik:0.6, ayr:0, duvar:0.95},   // 3
+    {ad:'orta',  delik:0.6, ayr:1, duvar:0.95},   // 4
+    {ad:'orta',  delik:0.7, ayr:1, duvar:1.00},   // 5
+    {ad:'nefes', delik:0.3, ayr:0, duvar:0.85},   // 6  <- geri cekilme
+    {ad:'nefes', delik:0.5, ayr:1, duvar:0.90},   // 7
+    {ad:'yogun', delik:1.0, ayr:1, duvar:1.00},   // 8
+    {ad:'yogun', delik:1.0, ayr:1, duvar:1.00},   // 9
+    {ad:'sinav', delik:1.0, ayr:1, duvar:1.05}    // 10 - milestone
+  ];
+  function ritim(level){ return RITIM[(level-1)%10]; }
+
   // Iki sayi arasinda oranla, tam sayiya yuvarla
   function ara(dizi,t){ return Math.round(dizi[0]+(dizi[1]-dizi[0])*t); }
 
@@ -2252,25 +2304,38 @@
 
     var n=ara(pr.n,t);
     var minBest=ara(pr.mir,t);
-    var maxBest=Math.min(pr.mir[1], minBest+1);
+    // OLCUM: maxBest=minBest+1 araligi COK DARDI. Uretici bu
+    // araliga sigan tahta bulamayip gevsetme adim 5'e dusuyordu ve
+    // orada delik sarti kapaniyordu. Olcum: 124 tahtanin 108'inde
+    // delik istendi ama konmadi. Aralik +2'ye acildi, tavan korundu.
+    var maxBest=Math.min(TAVAN.mir, Math.min(pr.mir[1], minBest+2));
     var walls=ara(pr.wall,t);
     var cry=ara(pr.cry,t);
-    // Eskiden cryMin hep cry-1 idi. 3 kristal istenip 2 kabul
-    // ediliyordu, olcumde bolum 700'de bile 2 kristal cikti.
-    // Kademe 4'ten (bolum 31) sonra 3 kristal SART.
-    var cryMin = (tier>=4) ? Math.min(3,cry) : Math.max(2,cry-1);
+    // cryMin artik 3'te KILITLI DEGIL.
+    // Eskiden min(3,cry) idi - ayristirici 4-5 kristal uretebilirken
+    // uretici 3'e razi oluyordu. Olcumde bolum 600'de 2 kristal cikti.
+    // Artik kademe ile birlikte yukselir: k4+ 3 kristal, k11+ 4 kristal.
+    var cryMin;
+    if(tier>=11)     cryMin = Math.min(4, cry);
+    else if(tier>=4) cryMin = Math.min(3, cry);
+    else             cryMin = Math.max(2, cry-1);
     var minPath=ara([pr.path[0], pr.path[0]+4], t);
     var minSrcPrism=pr.srcPrism;
-    var holePairs=pr.holes;
-    var ayristirici=pr.ayristirici||0;
+    // MEKANIK RITMI. Ayni kademedeki 10 bolum artik birbirinin
+    // kopyasi degil. Bazi bolumler sade, bazilari her mekanigi tasiyor.
+    var rt=ritim(level);
+    var holePairs = Math.round((pr.holes||0) * rt.delik);
+    var ayristirici = (pr.ayristirici||0) * rt.ayr;
+    walls = Math.max(2, Math.round(walls * rt.duvar));
 
     // MILESTONE (her 10. bolum): kademenin en zoru + bir tik daha.
     if(milestone){
       // Sabit 9 yerine TAVAN.n. Merdiven 10x10'a kadar cikiyor,
       // milestone onu 9'a kirpmamali.
       n=Math.min(TAVAN.n, n+ (tier<=2?1:0));
-      minBest=Math.min(pr.mir[1]+1, minBest+1);
-      maxBest=minBest+1;
+      // TAVAN.mir asilmaz. Eskiden pr.mir[1]+1 idi, tavani deliyordu.
+      minBest=Math.min(TAVAN.mir, minBest+1);
+      maxBest=Math.min(TAVAN.mir, minBest+1);
       walls=Math.min(pr.wall[1]+2, walls+2);
       cry=Math.min(3,Math.max(cry,3));
       minPath+=2;
@@ -2283,18 +2348,22 @@
     // Oyuncu 50, 100, 150... bolumlerini hatirlamali.
     var buyuk=buyukMilestone(level);
     if(buyuk){
-      // OLCULEN gercege gore ayarli. Ikisinin de tavanini ayni anda istemez.
-      // Zorluk AYNA sayisindan gelir, yol sarti gevsek birakilir ki
-      // uretici gercekten bulabilsin.
-      // Kademe 5'ten sonra tahta BUYUR. Gorunur fark yaratir.
+      // DUZELTMESI: Buyuk sinav zorlugu AYNA SAYISINDAN almiyordu -
+      // min(12,...) ve min(14,...) sabitleri TAVAN.mir'i tanimiyordu.
+      // Bolum 350'de 13 aynalik tahta boyle uretildi. Oyuncu hakli olarak
+      // "cozulemez" dedi.
+      //
+      // YENI YAKLASIM: Buyuk sinav AYNA ile degil, ISIN YOLU, KRISTAL
+      // SAYISI ve MEKANIK YOGUNLUGU ile zorlasir. Ayna tavani ASILMAZ.
       if(tier>=5) n=BUYUK_N;
-      minBest=Math.min(12, Math.max(minBest+1, 9));
-      maxBest=Math.min(14, minBest+2);
-      cry=Math.min(TAVAN.cry, 3);
-      cryMin=3;                              // ucu de olacak
-      minPath=Math.min(24, minPath+3);
-      holePairs=Math.max(1, holePairs);      // solucan deligi garanti
-      walls=Math.min(Math.floor(n*n*0.34), Math.round(walls*1.2));
+      minBest=Math.min(TAVAN.mir, Math.max(minBest+1, Math.round(TAVAN.mir*0.8)));
+      maxBest=Math.min(TAVAN.mir, minBest+1);
+      cry=Math.min(TAVAN.cry, Math.max(cry, tier>=11 ? 4 : 3));
+      cryMin=Math.min(cry, 3);
+      minPath=Math.min(28, minPath+5);       // yol UZAR - asil zorluk burada
+      holePairs=Math.max(2, holePairs);      // solucan deligi garanti, en az 2 cift
+      ayristirici=1;                          // ayristirici garanti
+      walls=Math.min(Math.floor(n*n*0.36), Math.round(walls*1.2));
     }
     // Bolum 1 ozel: hicbir sey ogretilmemis, en yalin hali
     if(level===1){ n=5; minBest=2; maxBest=3; walls=3; cry=2; cryMin=2; minPath=4; holePairs=0; }
@@ -3075,6 +3144,12 @@
     // Kolaya kacarsa "buyuk sinav" olmaktan cikar.
     if(cfg.buyuk){ tabanAyna=Math.max(tabanAyna, 8); tabanYol=Math.max(tabanYol, 14); }
 
+    // maxBest ARTIK TAVANI ASMIYOR.
+    // Eskiden gevsetme adimlari maxBest+1, +2, +4 yapiyordu ve TAVAN.mir
+    // sessizce asiliyordu. Bolum 200'de 11 aynalik tahta boyle uretildi.
+    // Gevsetme ayna sayisini ARTIRMAZ, AZALTIR.
+    function ust(x){ return Math.min(TAVAN.mir, x); }
+
     var adimlar=[
       // Delik sarti ARTIK GEC birakilir. Eskiden 3. adimda birakiliyordu,
       // olcumde 29 tahtanin 29'unda delik konamadi. Once yol ve ayna gevsetilir,
@@ -3083,14 +3158,16 @@
       {_skorGevsek:1},                                // 2) zorluk puanini birak
       {_skorGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-3)},                  // 3) yolu kisalt
       {_skorGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-6),
-       minBest:Math.max(tabanAyna,cfg.minBest-2),maxBest:cfg.maxBest+1},         // 4) ayna araligini ac (delik HALA sart)
+       minBest:Math.max(tabanAyna,cfg.minBest-2),maxBest:ust(cfg.maxBest)},      // 4) ayna araligini ac (delik HALA sart)
       {_skorGevsek:1,_delikGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-6),
-       minBest:Math.max(tabanAyna,cfg.minBest-2),maxBest:cfg.maxBest+1},         // 5) delik sartini birak
+       minBest:Math.max(tabanAyna,cfg.minBest-2),maxBest:ust(cfg.maxBest)},      // 5) delik sartini birak
       {_skorGevsek:1,_delikGevsek:1,minPath:Math.max(tabanYol,cfg.minPath-9),
-       minBest:Math.max(tabanAyna,cfg.minBest-4),maxBest:cfg.maxBest+2,
-       walls:Math.max(4,cfg.walls-4),cryMin:Math.max(2,cfg.cryMin-1),holePairs:0}, // 6) genis
+       minBest:Math.max(tabanAyna,cfg.minBest-4),maxBest:ust(cfg.maxBest),
+       walls:Math.max(4,cfg.walls-4),cryMin:Math.max(2,cfg.cryMin-1),
+       holePairs:Math.max(0,Math.floor((cfg.holePairs||0)/2))},                      // 6) genis
       {_skorGevsek:1,_delikGevsek:1,minPath:tabanYol,minBest:tabanAyna,
-       maxBest:cfg.maxBest+4,walls:Math.max(2,cfg.walls-8),cryMin:2,holePairs:0}   // 7) son care
+       maxBest:ust(cfg.maxBest),walls:Math.max(2,cfg.walls-8),cryMin:2,
+       holePairs:Math.max(0,Math.floor((cfg.holePairs||0)/2))}                       // 7) son care
     ];
     // Uretim saati burada baslar. Butun adimlar ayni butceyi paylasir.
     state._uretimBaslangic=(window.performance&&performance.now)?performance.now():Date.now();
@@ -3105,7 +3182,8 @@
     state._uretimBaslangic=(window.performance&&performance.now)?performance.now():Date.now();
     state._genisButce=1;
     var r=build(kopya({_skorGevsek:1,_delikGevsek:1,minPath:2,minBest:2,
-                       maxBest:cfg.maxBest+6,walls:Math.max(2,cfg.walls-10),
+                       maxBest:Math.min(TAVAN.mir,cfg.maxBest),
+                       walls:Math.max(2,cfg.walls-10),
                        cryMin:2,holePairs:0}));
     state._genisButce=0; state._uretimBaslangic=0;
     return r;
@@ -3374,7 +3452,19 @@
   //  Neden C her bolumde degil: her tahtada sert limit, ogrenmeyi oldurur.
   //  Her 10 bolumde bir sinav, ogrenmeyi OLCER.
   // ==========================================================================
-  var AYNA_LIMIT_TOLERANS = 1;      // optimal + bu kadar
+  // (sahip karari): Tolerans SABIT +1 yerine ORANSAL.
+  //
+  //  SORUN: Bolum 350'de optimal 13 ayna idi, limit 14. Yani 13 aynalik
+  //  bir zincirde SADECE 1 hata payi. Pratikte imkansiz.
+  //  Sabit tolerans kucuk tahtada gevsek, buyuk tahtada bogucu.
+  //
+  //  YENI KURAL: hata payi = optimal'in %25'i, en az 1.
+  //    4 ayna  -> limit 5   (+1)
+  //    6 ayna  -> limit 8   (+2)
+  //    8 ayna  -> limit 10  (+2)
+  //   10 ayna  -> limit 13  (+3)
+  //  Hata payi zorlukla birlikte buyur. Adil olan bu.
+  var AYNA_LIMIT_ORAN = 0.25;
 
   function aynaLimitiVarMi(){
     // Zaman modunda limit YOK - orada zaten sure baski yapiyor.
@@ -3383,15 +3473,19 @@
   }
   function aynaLimiti(){
     if(!aynaLimitiVarMi()) return 0;
-    return (state.best||0) + AYNA_LIMIT_TOLERANS;
+    var b = state.best||0;
+    return b + Math.max(1, Math.ceil(b * AYNA_LIMIT_ORAN));
   }
 
   function yildizSayisi(kullanilan,enIyi){
     var fazla=kullanilan-enIyi;
     if(fazla<=0)return 3;
-    if(fazla===1)return 2;
-    if(fazla<=3)return 1;
-    return 0;        // 4+ fazla ayna = odul yok
+    // Esikler de oransal. 4 aynalik tahtada 2 fazla cok,
+    // 10 aynalik tahtada 2 fazla normal. Sabit esik ikisine de haksiz.
+    var pay = Math.max(1, Math.ceil((enIyi||0) * 0.25));
+    if(fazla <= pay)       return 2;
+    if(fazla <= pay*2)     return 1;
+    return 0;              // cok fazla ayna = odul yok, tahta yine gecilir
   }
   function yildizSVG(dolu){
     return '<span class="y'+(dolu?' dolu':'')+'"><svg viewBox="0 0 24 24">'+
@@ -3563,7 +3657,16 @@
     state.loopSeen=false;
     ip.className='ipucu';
 
-    if(sim.count===state.crystals.length){ kazandI(kullanilan); return; }
+    if(sim.count===state.crystals.length){
+      // Metin ONCE guncellenir, sonra kazandI cagrilir.
+      // Eskiden dogrudan return ediliyordu ve ekranda "1 kristal daha
+      // yanacak" yazisi ASILI KALIYORDU - oyuncu kazandigi hâlde
+      // eksik varmis gibi goruyordu.
+      var fazla = kullanilan - (state.best||0);
+      ip.textContent = (fazla<=0) ? 'Tüm kristaller yandı. En iyi çözüm.'
+                                  : 'Tüm kristaller yandı.';
+      kazandI(kullanilan); return;
+    }
     var kalan=state.crystals.length-sim.count;
     ip.textContent=kalan+' kristal daha yanacak.';
   }
