@@ -86,7 +86,7 @@ public class Odeme {
         if (istemci != null) return;
 
         istemci = BillingClient.newBuilder(etkinlik)
-                .setListener(satinAlmaDinleyici)
+                .setListener(this::satinAlmaGuncellendi)
                 .enablePendingPurchases()
                 .build();
 
@@ -208,7 +208,17 @@ public class Odeme {
         }
     }
 
-    private final PurchasesUpdatedListener satinAlmaDinleyici = (sonuc, liste) -> {
+    /**
+     * Satin alma sonucu buraya duser.
+     *
+     * NEDEN ALAN DEGIL METOT:
+     * Eskiden bu bir lambda ALANI idi. Java alan baslaticilarini
+     * kurucudan ONCE calistirir. Lambda icinde 'geri' kullaniliyor
+     * ama 'geri' kurucuda ataniyor - derleyici
+     * "variable geri might not have been initialized" diyordu.
+     * Metot olarak yazilinca bu sira sorunu ortadan kalkiyor.
+     */
+    private void satinAlmaGuncellendi(BillingResult sonuc, java.util.List<Purchase> liste) {
         int kod = sonuc.getResponseCode();
 
         if (kod == BillingClient.BillingResponseCode.OK && liste != null) {
@@ -234,7 +244,7 @@ public class Odeme {
         }
 
         geri.sonuc(false, "Satın alma tamamlanamadı.");
-    };
+    }
 
     // ------------------------------------------------------------------
     //  ONAYLAMA — ATLANAMAZ
