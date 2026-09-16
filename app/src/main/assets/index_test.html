@@ -300,6 +300,10 @@
 
   /* Ayna sayaci. Fazla ayna kullaninca ANINDA gorunur.
      Ceza degil farkindalik - oyuncu bitince surpriz yasamasin. */
+  /* Dil secici. 8 dil yan yana sigmaz, sarar. */
+  .ayar-dil{flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:62%}
+  .ayar-dil button{flex:0 0 auto;padding:7px 11px;font-size:.78rem}
+
   .ayna-sayac{font-variant-numeric:tabular-nums;font-weight:800;
     padding:1px 7px;border-radius:7px;background:var(--kart);
     box-shadow:inset 0 0 0 2px var(--cizgi)}
@@ -975,7 +979,7 @@
       </svg>
     </div>
     <h1 class="oyunadi">Prismio</h1>
-    <p class="slogan">Çöz. Sonra daha iyi çöz.</p>
+    <p class="slogan" data-t="slogan">Çöz. Sonra daha iyi çöz.</p>
 
     <!-- SERI SERIDI: kac gundur ust uste oynuyorsun.
          Gunluk gorevin USTUNDE durur - gorev "bugun ne yapayim",
@@ -992,7 +996,7 @@
       </span>
       <span class="sr-govde">
         <span class="sr-sayi"><b class="tnum" id="srSayi">0</b> <span id="srBirim">gün</span></span>
-        <span class="sr-ack" id="srAck">Bugün bir tahta çöz, seri başlasın</span>
+        <span class="sr-ack" id="srAck" data-t="seri_basla">Bugün bir tahta çöz, seri başlasın</span>
       </span>
       <span class="sr-gunler" id="srGunler" aria-hidden="true"></span>
     </button>
@@ -1001,7 +1005,7 @@
          Yeni oyuncuda gizlenir, "Oyna" tek basina kalir. -->
     <button class="devam-kart" id="devamKart" type="button" hidden>
       <span class="dk-sol">
-        <span class="dk-etiket">Kaldığın yer</span>
+        <span class="dk-etiket" data-t="kaldigin_yer">Kaldığın yer</span>
         <span class="dk-bolum" id="dkBolum">Bölüm 1</span>
         <span class="dk-bolge" id="dkBolge">Fildişi Bahçesi</span>
       </span>
@@ -1015,7 +1019,7 @@
          Yeni ekran açmaz, mevcut menüye sığar. -->
     <button class="gorev-serit" id="gorevSerit" type="button" hidden>
       <span class="gs-sol">
-        <span class="gs-etiket">Günlük görev</span>
+        <span class="gs-etiket" data-t="gunluk_gorev">Günlük görev</span>
         <span class="gs-metin" id="gsMetin">—</span>
       </span>
       <span class="gs-sag" id="gsSag"></span>
@@ -1029,22 +1033,22 @@
          bagi oldu - lazim olana kadar one cikmaz. Zamana karsi ikincil.
          Yeni oyuncuda kart gizli, o zaman "Oyna" birincil olur. -->
     <div class="menu-btnler">
-      <button class="btn buyuk tam" id="btnOyna">Oyna</button>
-      <button class="metin-bag" id="bagHarita" type="button" hidden>Tüm bölümler ›</button>
+      <button class="btn buyuk tam" id="btnOyna" data-t="oyna">Oyna</button>
+      <button class="metin-bag" id="bagHarita" type="button" hidden data-t="tum_bolumler">Tüm bölümler ›</button>
       <!-- Sari degil SADE. Sari buton ekranin en gurultulu ogesiydi
            ve Devam kartini bastiriyordu - duzeltmek istedigimiz seyin ta kendisi.
            Zamana karsi ikincil bir mod, birincil eylem degil. -->
       <button class="btn sade tam zaman-btn" id="btnZaman">
-        <span class="zb-ik">◷</span>Zamana karşı</button>
+        <span class="zb-ik">◷</span data-t="zamana_karsi">Zamana karşı</button>
       <!-- Ikili izgara. Dort dugme 2+2 dagilmis duruyordu,
            simdi hep duzenli iki sutun. Dunyam gizliyken uc kalir,
            sonuncusu tam genislik alir (CSS :last-child:nth-child(odd)). -->
       <div class="menu-alt izgara">
-        <button class="btn sade" id="btnMagaza">Temalar</button>
-        <button class="btn sade" id="btnOdul">Ödüller</button>
+        <button class="btn sade" id="btnMagaza" data-t="temalar">Temalar</button>
+        <button class="btn sade" id="btnOdul" data-t="oduller">Ödüller</button>
         <!-- Dünyam: 100 tahta çözülmeden GÖRÜNMEZ -->
-        <button class="btn sade" id="btnDunya" hidden>Dünyam</button>
-        <button class="btn sade" id="btnAyar">Ayarlar</button>
+        <button class="btn sade" id="btnDunya" hidden data-t="dunyam">Dünyam</button>
+        <button class="btn sade" id="btnAyar" data-t="ayarlar">Ayarlar</button>
       </div>
     </div>
   </div>
@@ -1077,7 +1081,7 @@
     <div class="bosluk"></div>
     <button class="rozet" id="rozParaHarita" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="hPara">0</span></button>
   </div>
-  <div class="kap"><div class="harita-basI">Yolculuk</div></div>
+  <div class="kap"><div class="harita-basI" data-t="yolculuk">Yolculuk</div></div>
   <div class="harita-kaydir"><div class="yol" id="yol"></div></div>
   <div class="banner" id="bnHarita"><div class="kutu">Reklam alanı · 320×50</div></div>
   <div style="height:12px"></div>
@@ -1119,12 +1123,12 @@
            aria-label="Işık bulmacası tahtası"></svg>
     </div>
 
-    <div class="ipucu" id="ipucu">Aynaları yerleştir, ışığı kristallere ulaştır.</div>
+    <div class="ipucu" id="ipucu" data-t="baslangic_ipucu">Aynaları yerleştir, ışığı kristallere ulaştır.</div>
 
     <div class="oyunalt">
-      <button class="btn sade" id="btnSifirla">Sıfırla</button>
-      <button class="btn sade" id="btnIpucu">İpucu</button>
-      <button class="btn sade bedelli" id="btnYeni">Yeni tahta</button>
+      <button class="btn sade" id="btnSifirla" data-t="sifirla">Sıfırla</button>
+      <button class="btn sade" id="btnIpucu" data-t="ipucu">İpucu</button>
+      <button class="btn sade bedelli" id="btnYeni" data-t="yeni_tahta">Yeni tahta</button>
     </div>
   </div>
 </div>
@@ -1138,12 +1142,12 @@
     <div class="rozet"><span class="ik">◆</span><span class="tnum" id="gPara">0</span></div>
   </div>
   <div class="kap">
-    <div class="bolumbaslik">Mağaza</div>
+    <div class="bolumbaslik" data-t="magaza">Mağaza</div>
     <div class="sekmeler" role="tablist">
-      <button class="sekme acik" data-sekme="tema" role="tab" aria-selected="true">Temalar</button>
-      <button class="sekme" data-sekme="isik" role="tab" aria-selected="false">Işık</button>
-      <button class="sekme" data-sekme="can" role="tab" aria-selected="false">Can</button>
-      <button class="sekme" data-sekme="plus" role="tab" aria-selected="false">Plus</button>
+      <button class="sekme acik" data-sekme="tema" role="tab" aria-selected="true" data-t="temalar">Temalar</button>
+      <button class="sekme" data-sekme="isik" role="tab" aria-selected="false" data-t="isik">Işık</button>
+      <button class="sekme" data-sekme="can" role="tab" aria-selected="false" data-t="can">Can</button>
+      <button class="sekme" data-sekme="plus" role="tab" aria-selected="false" data-t="plus">Plus</button>
     </div>
   </div>
   <div class="magaza-kaydir">
@@ -1170,7 +1174,7 @@
 <!-- ========= TEMA ÖNİZLEME ========= -->
 <div class="onizPencere" id="onizPencere" role="dialog" aria-modal="true" aria-labelledby="onizAd">
   <div class="onizKart">
-    <h3 id="onizAd">Tema</h3>
+    <h3 id="onizAd" data-t="tema">Tema</h3>
     <p class="alt" id="onizAlt"></p>
     <div class="oniz-grid" id="onizGrid"></div>
     <div class="oniz-btnler" id="onizBtnler"></div>
@@ -1185,7 +1189,7 @@
     <button class="rozet" id="rozParaDunya" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="dPara">0</span></button>
   </div>
   <div class="kap">
-    <div class="bolumbaslik">Dünyam</div>
+    <div class="bolumbaslik" data-t="dunyam">Dünyam</div>
   </div>
   <div class="dunya-kaydir">
     <div class="kap">
@@ -1211,10 +1215,10 @@
     <!-- Baslik "Gorevler" idi ama menudeki dugme "Oduller" diyor.
          Iki ad ayni ekrani isaret edemez - oyuncu kafasi karisir.
          Ekranin adi ODUL ODASI, iki sekmesi var. -->
-    <div class="bolumbaslik">Ödül Odası</div>
+    <div class="bolumbaslik" data-t="odul_odasi">Ödül Odası</div>
     <div class="sekmeler" role="tablist">
-      <button class="sekme acik" data-bsekme="gunluk" role="tab" aria-selected="true">Günlük görev</button>
-      <button class="sekme" data-bsekme="basari" role="tab" aria-selected="false">Başarılar</button>
+      <button class="sekme acik" data-bsekme="gunluk" role="tab" aria-selected="true" data-t="gunluk_gorev">Günlük görev</button>
+      <button class="sekme" data-bsekme="basari" role="tab" aria-selected="false" data-t="basarilar">Başarılar</button>
     </div>
   </div>
   <div class="basari-kaydir">
@@ -1240,7 +1244,7 @@
   </div>
   <div class="hesap-kaydir">
     <div class="kap">
-      <div class="bolumbaslik">Hesap</div>
+      <div class="bolumbaslik" data-t="hesap">Hesap</div>
       <div id="hesapIcerik"></div>
     </div>
   </div>
@@ -1255,7 +1259,7 @@
   </div>
   <div class="hakkinda-kaydir">
     <div class="kap">
-      <div class="bolumbaslik">Hakkında</div>
+      <div class="bolumbaslik" data-t="hakkinda">Hakkında</div>
       <div id="hakkindaIcerik"></div>
     </div>
   </div>
@@ -1268,14 +1272,14 @@
     <button class="geri" data-git="menu" aria-label="Geri">‹</button>
     <div class="bosluk"></div>
   </div>
-  <div class="kap"><div class="bolumbaslik">Ayarlar</div></div>
+  <div class="kap"><div class="bolumbaslik" data-t="ayarlar">Ayarlar</div></div>
   <div class="ayar-kaydir">
     <div class="kap">
       <!-- SETTINGS_DEF tablosundan üretilir -->
       <div class="ayarlar" id="ayarListe"></div>
       <div class="ayar-alt">
-        <button class="btn sade tam" id="btnHesap">Hesap ve yedekleme</button>
-        <button class="btn sade tam" id="btnHakkinda" style="margin-top:8px">Hakkında</button>
+        <button class="btn sade tam" id="btnHesap" data-t="hesap_yedek">Hesap ve yedekleme</button>
+        <button class="btn sade tam" id="btnHakkinda" style="margin-top:8px" data-t="hakkinda">Hakkında</button>
       </div>
     </div>
   </div>
@@ -1286,7 +1290,7 @@
 <!-- ================= SONUÇ KATMANI ================= -->
 <div class="katman" id="katman">
   <div class="kart">
-    <h2 id="kBaslik">Çözdün</h2>
+    <h2 id="kBaslik" data-t="cozdun">Çözdün</h2>
     <p class="altyazi" id="kAlt"></p>
     <div class="yildizlar" id="kYildiz"></div>
     <div id="kHediye"></div>
@@ -1298,6 +1302,132 @@
 <script>
 (function(){
   "use strict";
+  // ==========================================================================
+  //  DIL SISTEMI
+  // --------------------------------------------------------------------------
+  //  NEDEN SOZLUK: Metinler koda gomuluydu. 8 dil icin her metni 8 kez
+  //  yazmak yerine tek bir anahtar kullaniyoruz: T('oyna') -> "Oyna" / "Play"
+  //
+  //  DIL SECIMI:
+  //    1. Oyuncu ayarlardan sectiyse o dil
+  //    2. Yoksa telefonun dili (navigator.language)
+  //    3. O da desteklenmiyorsa Ingilizce
+  //
+  //  EKSIK CEVIRI GUVENLIGI: Bir anahtar secili dilde yoksa Ingilizceye,
+  //  o da yoksa anahtarin kendisine duser. Oyun ASLA bos metin gostermez.
+  //
+  //  DURUST SINIR (kayda geciyor): Ispanyolca, Almanca, Fransizca,
+  //  Portekizce, Rusca ve Cince cevirilerin oyun ici kalitesini
+  //  dogrulayamiyorum. Yanlis terim bulunursa DILLER tablosunda tek satir
+  //  degistirilir - kod degismez.
+  // ==========================================================================
+  var DIL_LISTE=[
+    {kod:'tr', ad:'Türkçe'},
+    {kod:'en', ad:'English'},
+    {kod:'es', ad:'Español'},
+    {kod:'pt', ad:'Português'},
+    {kod:'de', ad:'Deutsch'},
+    {kod:'fr', ad:'Français'},
+    {kod:'ru', ad:'Русский'},
+    {kod:'zh', ad:'繁體中文'}
+  ];
+  var DILLER={};
+  // ---- SOZLUK ----
+  // Yanlis ceviri bulunursa SADECE bu satirlar degisir, kod degismez.
+  DILLER.tr={"oyna":"Oyna","tum_bolumler":"Tüm bölümler ›","zamana_karsi":"Zamana karşı","temalar":"Temalar","oduller":"Ödüller","odul_odasi":"Ödül Odası","dunyam":"Dünyam","ayarlar":"Ayarlar","hakkinda":"Hakkında","hesap":"Hesap","hesap_yedek":"Hesap ve yedekleme","magaza":"Mağaza","basarilar":"Başarılar","gunluk_gorev":"Günlük görev","ana_menu":"Ana menü","haritaya_don":"Haritaya dön","magazaya_git":"Mağazaya git","kaldigin_yer":"Kaldığın yer","yolculuk":"Yolculuk","bolum":"Bölüm","sifirla":"Sıfırla","ipucu":"İpucu","yeni_tahta":"Yeni tahta","ayna":"ayna","sinir":"SINIR","can":"Can","isik":"Işık","isik_kucuk":"ışık","gun":"gün","baslangic_ipucu":"Aynaları yerleştir, ışığı kristallere ulaştır.","kristal_kaldi":"{n} kristal daha yanacak.","kristal_kaldi_1":"{n} kristal daha yanacak.","hepsi_yandi":"Tüm kristaller yandı.","hepsi_yandi_eniyi":"Tüm kristaller yandı. En iyi çözüm.","dongu_hatasi":"Işık kendi üzerine kapandı. Aynayı çevir ya da kaldır.","ipucu_kalmadi":"Bu tahtada ipucu kalmadı.","ipucu_verildi_can":"İpucu verildi. 1 can harcandı.","ipucu_bedava_kaldi":"İpucu verildi. Bu tahtada {n} ücretsiz hakkın kaldı.","can_yok_ipucu":"Can yok. İpucu için can gerekiyor.","can_yok_yeni":"Can yok. Yeni tahta 1 can ister.","yeni_tahta_onay":"Yeni tahta 1 can. Onaylamak için tekrar bas.","ayna_siniri":"Ayna sınırı: {n}. Bir aynayı kaldır.","tahta_uretilemedi":"Tahta üretilemedi. \"Yeni tahta\"ya bas.","cikmak_tekrar":"Çıkmak için tekrar bas","cozdun":"Çözdün","buyuk_bitti":"Büyük bölüm bitti","en_iyi_cozum":"En iyi çözüm. Bundan azı yok.","bir_ayna_fazla":"Bir ayna fazla. {n} aynayla da olur.","ayna_fazla":"{f} ayna fazla. En iyisi {n}.","yildiz_yok":"Çok fazla ayna kullandın. Yıldız yok. En iyisi {n}.","sonraki_bolum":"Sonraki bölüm →","daha_az_dene":"Daha az aynayla dene","tekrar_dene":"Tekrar dene","yeniden_dene":"Yeniden dene","tema_acildi":"\"{ad}\" teması açıldı","sure_bitti":"Süre bitti","canin_bitti":"Canın bitti","yeni_can":"Yeni can","reklam_can":"Reklam izle · +1 can","reklam_oynatiliyor":"Reklam oynatılıyor…","plus_al":"Prismio Plus al","plus_geri_yukle":"Daha önce aldım, geri yükle","plus_kontrol":"Satın alman kontrol ediliyor…","plus_tesekkur":"Teşekkürler. Prismio Plus açıldı.","tema":"Tema","plus":"Plus","baglaniyor":"Bağlanıyor…","kod_kopyala":"Kodu kopyala","kod_yanlis":"Kod yanlış.","odulu_al":"Ödülü al","gorevler_bitti":"Bugünkü görevler bitti","seri_basla":"Bugün bir tahta çöz, seri başlasın","dil":"Dil","gelistirici":"Geliştirici","tahta_kaldi":"{n} tahta kaldı","aciliyor":"Açılıyor…","reklam_alani":"Reklam alanı","slogan":"Çöz. Sonra daha iyi çöz.","bolum_n":"Bölüm {n}","bolum_acilir":"Bölüm {n} açılır","yildiz_n":"{n} yıldız","buyuk_bolum":"büyük bölüm"};
+  DILLER.en={"oyna":"Play","tum_bolumler":"All levels ›","zamana_karsi":"Time attack","temalar":"Themes","oduller":"Rewards","odul_odasi":"Reward Room","dunyam":"My World","ayarlar":"Settings","hakkinda":"About","hesap":"Account","hesap_yedek":"Account and backup","magaza":"Shop","basarilar":"Achievements","gunluk_gorev":"Daily task","ana_menu":"Main menu","haritaya_don":"Back to map","magazaya_git":"Go to shop","kaldigin_yer":"Where you left off","yolculuk":"Journey","bolum":"Level","sifirla":"Reset","ipucu":"Hint","yeni_tahta":"New board","ayna":"mirrors","sinir":"LIMIT","can":"Lives","isik":"Light","isik_kucuk":"light","gun":"days","baslangic_ipucu":"Place mirrors, guide the light to the crystals.","kristal_kaldi":"{n} more crystals to light.","kristal_kaldi_1":"1 more crystal to light.","hepsi_yandi":"All crystals lit.","hepsi_yandi_eniyi":"All crystals lit. Best solution.","dongu_hatasi":"The light looped back on itself. Turn or remove a mirror.","ipucu_kalmadi":"No hints left on this board.","ipucu_verildi_can":"Hint used. 1 life spent.","ipucu_bedava_kaldi":"Hint used. {n} free left on this board.","can_yok_ipucu":"No lives. Hints cost a life.","can_yok_yeni":"No lives. A new board costs 1 life.","yeni_tahta_onay":"New board costs 1 life. Tap again to confirm.","ayna_siniri":"Mirror limit: {n}. Remove one.","tahta_uretilemedi":"Could not build a board. Tap \"New board\".","cikmak_tekrar":"Tap again to exit","cozdun":"Solved","buyuk_bitti":"Big level cleared","en_iyi_cozum":"The best solution. Nothing lower.","bir_ayna_fazla":"One mirror too many. {n} is enough.","ayna_fazla":"{f} mirrors too many. Best is {n}.","yildiz_yok":"Too many mirrors. No stars. Best is {n}.","sonraki_bolum":"Next level →","daha_az_dene":"Try with fewer mirrors","tekrar_dene":"Try again","yeniden_dene":"Retry","tema_acildi":"Theme \"{ad}\" unlocked","sure_bitti":"Time up","canin_bitti":"Out of lives","yeni_can":"New life","reklam_can":"Watch ad · +1 life","reklam_oynatiliyor":"Playing ad…","plus_al":"Get Prismio Plus","plus_geri_yukle":"Already bought, restore","plus_kontrol":"Checking your purchase…","plus_tesekkur":"Thank you. Prismio Plus is active.","tema":"Theme","plus":"Plus","baglaniyor":"Connecting…","kod_kopyala":"Copy code","kod_yanlis":"Wrong code.","odulu_al":"Claim","gorevler_bitti":"Today's tasks are done","seri_basla":"Solve one board today to start a streak","dil":"Language","gelistirici":"Developer","tahta_kaldi":"{n} boards to go","aciliyor":"Unlocking…","reklam_alani":"Ad space","slogan":"Solve it. Then solve it better.","bolum_n":"Level {n}","bolum_acilir":"Unlocks at level {n}","yildiz_n":"{n} stars","buyuk_bolum":"big level"};
+  DILLER.es={"oyna":"Jugar","tum_bolumler":"Todos los niveles ›","zamana_karsi":"Contrarreloj","temalar":"Temas","oduller":"Recompensas","odul_odasi":"Sala de Premios","dunyam":"Mi Mundo","ayarlar":"Ajustes","hakkinda":"Acerca de","hesap":"Cuenta","hesap_yedek":"Cuenta y copia","magaza":"Tienda","basarilar":"Logros","gunluk_gorev":"Misión diaria","ana_menu":"Menú principal","haritaya_don":"Volver al mapa","magazaya_git":"Ir a la tienda","kaldigin_yer":"Donde lo dejaste","yolculuk":"Viaje","bolum":"Nivel","sifirla":"Reiniciar","ipucu":"Pista","yeni_tahta":"Nuevo tablero","ayna":"espejos","sinir":"LÍMITE","can":"Vidas","isik":"Luz","isik_kucuk":"luz","gun":"días","baslangic_ipucu":"Coloca espejos y lleva la luz a los cristales.","kristal_kaldi":"Faltan {n} cristales.","kristal_kaldi_1":"Falta 1 cristal.","hepsi_yandi":"Todos los cristales encendidos.","hepsi_yandi_eniyi":"Todos encendidos. La mejor solución.","dongu_hatasi":"La luz se cerró sobre sí misma. Gira o quita un espejo.","ipucu_kalmadi":"No quedan pistas en este tablero.","ipucu_verildi_can":"Pista usada. 1 vida gastada.","ipucu_bedava_kaldi":"Pista usada. Te quedan {n} gratis.","can_yok_ipucu":"Sin vidas. Las pistas cuestan una vida.","can_yok_yeni":"Sin vidas. Un tablero nuevo cuesta 1 vida.","yeni_tahta_onay":"Nuevo tablero: 1 vida. Toca otra vez para confirmar.","ayna_siniri":"Límite de espejos: {n}. Quita uno.","tahta_uretilemedi":"No se pudo generar el tablero. Toca \"Nuevo tablero\".","cikmak_tekrar":"Toca otra vez para salir","cozdun":"Resuelto","buyuk_bitti":"Nivel grande superado","en_iyi_cozum":"La mejor solución. No hay menos.","bir_ayna_fazla":"Un espejo de más. Con {n} basta.","ayna_fazla":"{f} espejos de más. El mejor es {n}.","yildiz_yok":"Demasiados espejos. Sin estrellas. El mejor es {n}.","sonraki_bolum":"Siguiente nivel →","daha_az_dene":"Inténtalo con menos espejos","tekrar_dene":"Inténtalo de nuevo","yeniden_dene":"Reintentar","tema_acildi":"Tema \"{ad}\" desbloqueado","sure_bitti":"Se acabó el tiempo","canin_bitti":"Sin vidas","yeni_can":"Nueva vida","reklam_can":"Ver anuncio · +1 vida","reklam_oynatiliyor":"Reproduciendo anuncio…","plus_al":"Consigue Prismio Plus","plus_geri_yukle":"Ya lo compré, restaurar","plus_kontrol":"Comprobando tu compra…","plus_tesekkur":"Gracias. Prismio Plus está activo.","tema":"Tema","plus":"Plus","baglaniyor":"Conectando…","kod_kopyala":"Copiar código","kod_yanlis":"Código incorrecto.","odulu_al":"Reclamar","gorevler_bitti":"Las misiones de hoy están hechas","seri_basla":"Resuelve un tablero hoy para empezar una racha","dil":"Idioma","gelistirici":"Desarrollador","tahta_kaldi":"Faltan {n} tableros","aciliyor":"Desbloqueando…","reklam_alani":"Espacio publicitario","slogan":"Resuélvelo. Luego resuélvelo mejor.","bolum_n":"Nivel {n}","bolum_acilir":"Se abre en el nivel {n}","yildiz_n":"{n} estrellas","buyuk_bolum":"nivel grande"};
+  DILLER.pt={"oyna":"Jogar","tum_bolumler":"Todas as fases ›","zamana_karsi":"Contra o tempo","temalar":"Temas","oduller":"Recompensas","odul_odasi":"Sala de Prêmios","dunyam":"Meu Mundo","ayarlar":"Configurações","hakkinda":"Sobre","hesap":"Conta","hesap_yedek":"Conta e backup","magaza":"Loja","basarilar":"Conquistas","gunluk_gorev":"Missão diária","ana_menu":"Menu principal","haritaya_don":"Voltar ao mapa","magazaya_git":"Ir à loja","kaldigin_yer":"Onde você parou","yolculuk":"Jornada","bolum":"Fase","sifirla":"Reiniciar","ipucu":"Dica","yeni_tahta":"Novo tabuleiro","ayna":"espelhos","sinir":"LIMITE","can":"Vidas","isik":"Luz","isik_kucuk":"luz","gun":"dias","baslangic_ipucu":"Posicione espelhos e leve a luz aos cristais.","kristal_kaldi":"Faltam {n} cristais.","kristal_kaldi_1":"Falta 1 cristal.","hepsi_yandi":"Todos os cristais acesos.","hepsi_yandi_eniyi":"Todos acesos. A melhor solução.","dongu_hatasi":"A luz fechou sobre si mesma. Gire ou remova um espelho.","ipucu_kalmadi":"Não há mais dicas neste tabuleiro.","ipucu_verildi_can":"Dica usada. 1 vida gasta.","ipucu_bedava_kaldi":"Dica usada. Restam {n} grátis.","can_yok_ipucu":"Sem vidas. As dicas custam uma vida.","can_yok_yeni":"Sem vidas. Um novo tabuleiro custa 1 vida.","yeni_tahta_onay":"Novo tabuleiro: 1 vida. Toque de novo para confirmar.","ayna_siniri":"Limite de espelhos: {n}. Remova um.","tahta_uretilemedi":"Não foi possível gerar o tabuleiro. Toque em \"Novo tabuleiro\".","cikmak_tekrar":"Toque de novo para sair","cozdun":"Resolvido","buyuk_bitti":"Fase grande concluída","en_iyi_cozum":"A melhor solução. Não há menos.","bir_ayna_fazla":"Um espelho a mais. {n} bastam.","ayna_fazla":"{f} espelhos a mais. O melhor é {n}.","yildiz_yok":"Espelhos demais. Sem estrelas. O melhor é {n}.","sonraki_bolum":"Próxima fase →","daha_az_dene":"Tente com menos espelhos","tekrar_dene":"Tente de novo","yeniden_dene":"Repetir","tema_acildi":"Tema \"{ad}\" desbloqueado","sure_bitti":"Tempo esgotado","canin_bitti":"Sem vidas","yeni_can":"Nova vida","reklam_can":"Ver anúncio · +1 vida","reklam_oynatiliyor":"Reproduzindo anúncio…","plus_al":"Obter Prismio Plus","plus_geri_yukle":"Já comprei, restaurar","plus_kontrol":"Verificando sua compra…","plus_tesekkur":"Obrigado. Prismio Plus está ativo.","tema":"Tema","plus":"Plus","baglaniyor":"Conectando…","kod_kopyala":"Copiar código","kod_yanlis":"Código incorreto.","odulu_al":"Resgatar","gorevler_bitti":"As missões de hoje acabaram","seri_basla":"Resolva um tabuleiro hoje para iniciar uma sequência","dil":"Idioma","gelistirici":"Desenvolvedor","tahta_kaldi":"Faltam {n} tabuleiros","aciliyor":"Desbloqueando…","reklam_alani":"Espaço de anúncio","slogan":"Resolva. Depois resolva melhor.","bolum_n":"Fase {n}","bolum_acilir":"Abre na fase {n}","yildiz_n":"{n} estrelas","buyuk_bolum":"fase grande"};
+  DILLER.de={"oyna":"Spielen","tum_bolumler":"Alle Level ›","zamana_karsi":"Zeitangriff","temalar":"Designs","oduller":"Belohnungen","odul_odasi":"Belohnungsraum","dunyam":"Meine Welt","ayarlar":"Einstellungen","hakkinda":"Über","hesap":"Konto","hesap_yedek":"Konto und Backup","magaza":"Shop","basarilar":"Erfolge","gunluk_gorev":"Tagesaufgabe","ana_menu":"Hauptmenü","haritaya_don":"Zurück zur Karte","magazaya_git":"Zum Shop","kaldigin_yer":"Wo du warst","yolculuk":"Reise","bolum":"Level","sifirla":"Zurücksetzen","ipucu":"Tipp","yeni_tahta":"Neues Brett","ayna":"Spiegel","sinir":"LIMIT","can":"Leben","isik":"Licht","isik_kucuk":"Licht","gun":"Tage","baslangic_ipucu":"Platziere Spiegel und führe das Licht zu den Kristallen.","kristal_kaldi":"Noch {n} Kristalle.","kristal_kaldi_1":"Noch 1 Kristall.","hepsi_yandi":"Alle Kristalle leuchten.","hepsi_yandi_eniyi":"Alle leuchten. Beste Lösung.","dongu_hatasi":"Das Licht schließt sich selbst ein. Dreh oder entferne einen Spiegel.","ipucu_kalmadi":"Keine Tipps mehr auf diesem Brett.","ipucu_verildi_can":"Tipp benutzt. 1 Leben verbraucht.","ipucu_bedava_kaldi":"Tipp benutzt. Noch {n} gratis.","can_yok_ipucu":"Keine Leben. Tipps kosten ein Leben.","can_yok_yeni":"Keine Leben. Ein neues Brett kostet 1 Leben.","yeni_tahta_onay":"Neues Brett: 1 Leben. Nochmal tippen zum Bestätigen.","ayna_siniri":"Spiegel-Limit: {n}. Entferne einen.","tahta_uretilemedi":"Brett konnte nicht erzeugt werden. Tippe \"Neues Brett\".","cikmak_tekrar":"Nochmal tippen zum Beenden","cozdun":"Gelöst","buyuk_bitti":"Großes Level geschafft","en_iyi_cozum":"Die beste Lösung. Weniger geht nicht.","bir_ayna_fazla":"Ein Spiegel zu viel. {n} reichen.","ayna_fazla":"{f} Spiegel zu viel. Bestwert {n}.","yildiz_yok":"Zu viele Spiegel. Keine Sterne. Bestwert {n}.","sonraki_bolum":"Nächstes Level →","daha_az_dene":"Mit weniger Spiegeln versuchen","tekrar_dene":"Nochmal versuchen","yeniden_dene":"Wiederholen","tema_acildi":"Theme \"{ad}\" freigeschaltet","sure_bitti":"Zeit vorbei","canin_bitti":"Keine Leben mehr","yeni_can":"Neues Leben","reklam_can":"Werbung ansehen · +1 Leben","reklam_oynatiliyor":"Werbung läuft…","plus_al":"Prismio Plus holen","plus_geri_yukle":"Schon gekauft, wiederherstellen","plus_kontrol":"Kauf wird geprüft…","plus_tesekkur":"Danke. Prismio Plus ist aktiv.","tema":"Design","plus":"Plus","baglaniyor":"Verbinde…","kod_kopyala":"Code kopieren","kod_yanlis":"Falscher Code.","odulu_al":"Einlösen","gorevler_bitti":"Heutige Aufgaben erledigt","seri_basla":"Löse heute ein Brett für eine Serie","dil":"Sprache","gelistirici":"Entwickler","tahta_kaldi":"Noch {n} Bretter","aciliyor":"Wird freigeschaltet…","reklam_alani":"Werbefläche","slogan":"Löse es. Dann löse es besser.","bolum_n":"Level {n}","bolum_acilir":"Ab Level {n}","yildiz_n":"{n} Sterne","buyuk_bolum":"großes Level"};
+  DILLER.fr={"oyna":"Jouer","tum_bolumler":"Tous les niveaux ›","zamana_karsi":"Contre la montre","temalar":"Thèmes","oduller":"Récompenses","odul_odasi":"Salle des Récompenses","dunyam":"Mon Monde","ayarlar":"Paramètres","hakkinda":"À propos","hesap":"Compte","hesap_yedek":"Compte et sauvegarde","magaza":"Boutique","basarilar":"Succès","gunluk_gorev":"Mission du jour","ana_menu":"Menu principal","haritaya_don":"Retour à la carte","magazaya_git":"Aller à la boutique","kaldigin_yer":"Où tu t'es arrêté","yolculuk":"Voyage","bolum":"Niveau","sifirla":"Réinitialiser","ipucu":"Indice","yeni_tahta":"Nouveau plateau","ayna":"miroirs","sinir":"LIMITE","can":"Vies","isik":"Lumière","isik_kucuk":"lumière","gun":"jours","baslangic_ipucu":"Place des miroirs et guide la lumière vers les cristaux.","kristal_kaldi":"Encore {n} cristaux.","kristal_kaldi_1":"Encore 1 cristal.","hepsi_yandi":"Tous les cristaux allumés.","hepsi_yandi_eniyi":"Tous allumés. La meilleure solution.","dongu_hatasi":"La lumière boucle sur elle-même. Tourne ou retire un miroir.","ipucu_kalmadi":"Plus d'indices sur ce plateau.","ipucu_verildi_can":"Indice utilisé. 1 vie dépensée.","ipucu_bedava_kaldi":"Indice utilisé. {n} gratuits restants.","can_yok_ipucu":"Pas de vies. Les indices coûtent une vie.","can_yok_yeni":"Pas de vies. Un nouveau plateau coûte 1 vie.","yeni_tahta_onay":"Nouveau plateau : 1 vie. Retouche pour confirmer.","ayna_siniri":"Limite de miroirs : {n}. Retires-en un.","tahta_uretilemedi":"Impossible de générer le plateau. Touche \"Nouveau plateau\".","cikmak_tekrar":"Retouche pour quitter","cozdun":"Résolu","buyuk_bitti":"Grand niveau terminé","en_iyi_cozum":"La meilleure solution. Pas moins.","bir_ayna_fazla":"Un miroir de trop. {n} suffisent.","ayna_fazla":"{f} miroirs de trop. Le mieux est {n}.","yildiz_yok":"Trop de miroirs. Pas d'étoiles. Le mieux est {n}.","sonraki_bolum":"Niveau suivant →","daha_az_dene":"Essaie avec moins de miroirs","tekrar_dene":"Réessayer","yeniden_dene":"Recommencer","tema_acildi":"Thème \"{ad}\" débloqué","sure_bitti":"Temps écoulé","canin_bitti":"Plus de vies","yeni_can":"Nouvelle vie","reklam_can":"Voir une pub · +1 vie","reklam_oynatiliyor":"Publicité en cours…","plus_al":"Obtenir Prismio Plus","plus_geri_yukle":"Déjà acheté, restaurer","plus_kontrol":"Vérification de l'achat…","plus_tesekkur":"Merci. Prismio Plus est actif.","tema":"Thème","plus":"Plus","baglaniyor":"Connexion…","kod_kopyala":"Copier le code","kod_yanlis":"Code incorrect.","odulu_al":"Réclamer","gorevler_bitti":"Missions du jour terminées","seri_basla":"Résous un plateau aujourd'hui pour lancer une série","dil":"Langue","gelistirici":"Développeur","tahta_kaldi":"Encore {n} plateaux","aciliyor":"Déverrouillage…","reklam_alani":"Espace publicitaire","slogan":"Résous-le. Puis fais mieux.","bolum_n":"Niveau {n}","bolum_acilir":"Débloqué au niveau {n}","yildiz_n":"{n} étoiles","buyuk_bolum":"grand niveau"};
+  DILLER.ru={"oyna":"Играть","tum_bolumler":"Все уровни ›","zamana_karsi":"На время","temalar":"Темы","oduller":"Награды","odul_odasi":"Комната наград","dunyam":"Мой Мир","ayarlar":"Настройки","hakkinda":"О игре","hesap":"Аккаунт","hesap_yedek":"Аккаунт и резервная копия","magaza":"Магазин","basarilar":"Достижения","gunluk_gorev":"Ежедневное задание","ana_menu":"Главное меню","haritaya_don":"Назад к карте","magazaya_git":"В магазин","kaldigin_yer":"Где остановился","yolculuk":"Путешествие","bolum":"Уровень","sifirla":"Сброс","ipucu":"Подсказка","yeni_tahta":"Новое поле","ayna":"зеркал","sinir":"ЛИМИТ","can":"Жизни","isik":"Свет","isik_kucuk":"света","gun":"дн.","baslangic_ipucu":"Расставь зеркала и доведи свет до кристаллов.","kristal_kaldi":"Осталось кристаллов: {n}.","kristal_kaldi_1":"Остался 1 кристалл.","hepsi_yandi":"Все кристаллы зажжены.","hepsi_yandi_eniyi":"Все зажжены. Лучшее решение.","dongu_hatasi":"Свет замкнулся сам на себя. Поверни или убери зеркало.","ipucu_kalmadi":"Подсказок на этом поле не осталось.","ipucu_verildi_can":"Подсказка использована. Потрачена 1 жизнь.","ipucu_bedava_kaldi":"Подсказка использована. Осталось бесплатных: {n}.","can_yok_ipucu":"Нет жизней. Подсказка стоит жизнь.","can_yok_yeni":"Нет жизней. Новое поле стоит 1 жизнь.","yeni_tahta_onay":"Новое поле: 1 жизнь. Нажми ещё раз.","ayna_siniri":"Лимит зеркал: {n}. Убери одно.","tahta_uretilemedi":"Не удалось создать поле. Нажми «Новое поле».","cikmak_tekrar":"Нажми ещё раз для выхода","cozdun":"Решено","buyuk_bitti":"Большой уровень пройден","en_iyi_cozum":"Лучшее решение. Меньше некуда.","bir_ayna_fazla":"Одно зеркало лишнее. Хватит {n}.","ayna_fazla":"Лишних зеркал: {f}. Лучшее — {n}.","yildiz_yok":"Слишком много зеркал. Без звёзд. Лучшее — {n}.","sonraki_bolum":"Следующий уровень →","daha_az_dene":"Попробуй с меньшим числом зеркал","tekrar_dene":"Ещё раз","yeniden_dene":"Повторить","tema_acildi":"Тема «{ad}» открыта","sure_bitti":"Время вышло","canin_bitti":"Жизни кончились","yeni_can":"Новая жизнь","reklam_can":"Смотреть рекламу · +1 жизнь","reklam_oynatiliyor":"Реклама…","plus_al":"Купить Prismio Plus","plus_geri_yukle":"Уже куплено, восстановить","plus_kontrol":"Проверка покупки…","plus_tesekkur":"Спасибо. Prismio Plus активен.","tema":"Тема","plus":"Plus","baglaniyor":"Подключение…","kod_kopyala":"Копировать код","kod_yanlis":"Неверный код.","odulu_al":"Забрать","gorevler_bitti":"Задания на сегодня выполнены","seri_basla":"Реши одно поле сегодня, начни серию","dil":"Язык","gelistirici":"Разработчик","tahta_kaldi":"Осталось полей: {n}","aciliyor":"Открывается…","reklam_alani":"Место для рекламы","slogan":"Реши. Потом реши лучше.","bolum_n":"Уровень {n}","bolum_acilir":"Открывается на уровне {n}","yildiz_n":"звёзд: {n}","buyuk_bolum":"большой уровень"};
+  DILLER.zh={"oyna":"開始","tum_bolumler":"所有關卡 ›","zamana_karsi":"限時挑戰","temalar":"主題","oduller":"獎勵","odul_odasi":"獎勵室","dunyam":"我的世界","ayarlar":"設定","hakkinda":"關於","hesap":"帳號","hesap_yedek":"帳號與備份","magaza":"商店","basarilar":"成就","gunluk_gorev":"每日任務","ana_menu":"主選單","haritaya_don":"返回地圖","magazaya_git":"前往商店","kaldigin_yer":"上次進度","yolculuk":"旅程","bolum":"關卡","sifirla":"重置","ipucu":"提示","yeni_tahta":"新棋盤","ayna":"鏡子","sinir":"上限","can":"生命","isik":"光","isik_kucuk":"光","gun":"天","baslangic_ipucu":"放置鏡子，把光引到水晶上。","kristal_kaldi":"還有 {n} 個水晶。","kristal_kaldi_1":"還有 1 個水晶。","hepsi_yandi":"所有水晶都亮了。","hepsi_yandi_eniyi":"全部亮起。最佳解法。","dongu_hatasi":"光線繞回自己。轉動或移除一面鏡子。","ipucu_kalmadi":"此棋盤沒有提示了。","ipucu_verildi_can":"已用提示。消耗 1 生命。","ipucu_bedava_kaldi":"已用提示。此棋盤還剩 {n} 次免費。","can_yok_ipucu":"沒有生命。提示需要 1 生命。","can_yok_yeni":"沒有生命。新棋盤需要 1 生命。","yeni_tahta_onay":"新棋盤需 1 生命。再按一次確認。","ayna_siniri":"鏡子上限：{n}。移除一面。","tahta_uretilemedi":"無法產生棋盤。請按「新棋盤」。","cikmak_tekrar":"再按一次離開","cozdun":"已解開","buyuk_bitti":"大關卡完成","en_iyi_cozum":"最佳解法。不能更少了。","bir_ayna_fazla":"多了一面鏡子。{n} 面就夠。","ayna_fazla":"多了 {f} 面鏡子。最佳為 {n}。","yildiz_yok":"鏡子太多。沒有星星。最佳為 {n}。","sonraki_bolum":"下一關 →","daha_az_dene":"試著用更少鏡子","tekrar_dene":"再試一次","yeniden_dene":"重新挑戰","tema_acildi":"主題「{ad}」已解鎖","sure_bitti":"時間到","canin_bitti":"生命用完","yeni_can":"新生命","reklam_can":"看廣告 · +1 生命","reklam_oynatiliyor":"廣告播放中…","plus_al":"取得 Prismio Plus","plus_geri_yukle":"已購買，還原","plus_kontrol":"正在確認購買…","plus_tesekkur":"感謝。Prismio Plus 已啟用。","tema":"主題","plus":"Plus","baglaniyor":"連線中…","kod_kopyala":"複製代碼","kod_yanlis":"代碼錯誤。","odulu_al":"領取","gorevler_bitti":"今日任務已完成","seri_basla":"今天解一個棋盤，開始連勝","dil":"語言","gelistirici":"開發者","tahta_kaldi":"還差 {n} 個棋盤","aciliyor":"解鎖中…","reklam_alani":"廣告區","slogan":"解開它。然後解得更好。","bolum_n":"關卡 {n}","bolum_acilir":"關卡 {n} 解鎖","yildiz_n":"{n} 顆星","buyuk_bolum":"大關卡"};
+  var _Etr={"b_ilk_isik":"İlk Işık","b_usta":"Usta","b_koleksiyon":"Koleksiyoncu","b_gezgin":"Gezgin","b_bolge_usta":"Bölge Ustası","b_mukemmel":"Mükemmeliyetçi","b_dunya_kur":"Dünya Kurucu","b_isinma":"Isınma","b_temiz_is":"Temiz İş","b_hizli_dusun":"Hızlı Düşün","b_uc_gun":"Üç Gün","b_bir_hafta":"Bir Hafta","b_bir_ay":"Bir Ay","b_yuz_gun":"Yüz Gün","b_uzun_yol":"Uzun Yol","b_yari_yol":"Yarı Yol","b_isigin_sonu":"Işığın Sonu","b_kusursuz":"Kusursuz Yüz","b_buyuk_sinav":"Büyük Sınav","b_tam_kolek":"Tam Koleksiyon","b_dunya_tamam":"Dünya Tamam","g_bolumler":"Bölümler","g_ustalik":"Ustalık","g_seri":"Seri","g_koleksiyon":"Koleksiyon","a_titresim":"Titreşim","a_titresim_a":"Dokunma geri bildirimi","a_animasyon":"Animasyonlar","a_animasyon_a":"Geçiş ve ödül efektleri","a_parcacik":"Parçacık efektleri","a_parcacik_a":"Arka plan ışıkları","a_otogec":"Otomatik geçiş","a_otogec_a":"Bölüm bitince ilerle","a_efekt":"Ses efektleri","a_efekt_a":"Dokunma ve ödül sesleri","a_shapes":"Şekil göstergeleri","a_shapes_a":"Renk körü desteği","a_kontrast":"Yüksek kontrast","a_kontrast_a":"Daha keskin kenarlar","a_azhareket":"Hareketi azalt","a_azhareket_a":"Animasyonları sadeleştir","a_kalite":"Görsel kalite","a_kalite_a":"Düşük / Orta / Yüksek","a_dusuk":"Düşük","a_orta":"Orta","a_yuksek":"Yüksek","d_fidan":"Fidan","d_tas":"Taş Öbeği","d_cali":"Çalı","d_sutun":"Sütun","d_kemer":"Kemer","d_heykel":"Heykel","d_kristal":"Kristal Küme","d_dev_prizma":"Dev Prizma","d_fener":"Fener","d_asma_lamba":"Asma Lamba","d_yildiz":"Yıldız","d_bulut":"Bulut","d_cesme":"Çeşme","d_isik_kapisi":"Işık Kapısı","gv_3bolum":"3 bölüm çöz","gv_2yildiz":"2 kez 3 yıldız al","gv_zaman5":"Zamana karşı 5 bölüm"};
+  var _Een={"b_ilk_isik":"First Light","b_usta":"Master","b_koleksiyon":"Collector","b_gezgin":"Wanderer","b_bolge_usta":"Region Master","b_mukemmel":"Perfectionist","b_dunya_kur":"World Builder","b_isinma":"Warm Up","b_temiz_is":"Clean Work","b_hizli_dusun":"Quick Thinker","b_uc_gun":"Three Days","b_bir_hafta":"One Week","b_bir_ay":"One Month","b_yuz_gun":"Hundred Days","b_uzun_yol":"Long Road","b_yari_yol":"Halfway","b_isigin_sonu":"End of Light","b_kusursuz":"Perfect Hundred","b_buyuk_sinav":"Big Test","b_tam_kolek":"Full Collection","b_dunya_tamam":"World Complete","g_bolumler":"Levels","g_ustalik":"Mastery","g_seri":"Streak","g_koleksiyon":"Collection","a_titresim":"Vibration","a_titresim_a":"Touch feedback","a_animasyon":"Animations","a_animasyon_a":"Transition and reward effects","a_parcacik":"Particle effects","a_parcacik_a":"Background lights","a_otogec":"Auto advance","a_otogec_a":"Continue when a level ends","a_efekt":"Sound effects","a_efekt_a":"Touch and reward sounds","a_shapes":"Shape markers","a_shapes_a":"Colorblind support","a_kontrast":"High contrast","a_kontrast_a":"Sharper edges","a_azhareket":"Reduce motion","a_azhareket_a":"Simplify animations","a_kalite":"Visual quality","a_kalite_a":"Low / Medium / High","a_dusuk":"Low","a_orta":"Medium","a_yuksek":"High","d_fidan":"Sapling","d_tas":"Stone Cluster","d_cali":"Shrub","d_sutun":"Column","d_kemer":"Arch","d_heykel":"Statue","d_kristal":"Crystal Cluster","d_dev_prizma":"Giant Prism","d_fener":"Lantern","d_asma_lamba":"Hanging Lamp","d_yildiz":"Star","d_bulut":"Cloud","d_cesme":"Fountain","d_isik_kapisi":"Gate of Light","gv_3bolum":"Solve 3 levels","gv_2yildiz":"Get 3 stars twice","gv_zaman5":"5 levels in time attack"};
+  var _Ees={"b_ilk_isik":"Primera Luz","b_usta":"Maestro","b_koleksiyon":"Coleccionista","b_gezgin":"Viajero","b_bolge_usta":"Maestro de Región","b_mukemmel":"Perfeccionista","b_dunya_kur":"Constructor de Mundos","b_isinma":"Calentamiento","b_temiz_is":"Trabajo Limpio","b_hizli_dusun":"Pensador Rápido","b_uc_gun":"Tres Días","b_bir_hafta":"Una Semana","b_bir_ay":"Un Mes","b_yuz_gun":"Cien Días","b_uzun_yol":"Camino Largo","b_yari_yol":"A Medio Camino","b_isigin_sonu":"El Fin de la Luz","b_kusursuz":"Cien Perfectos","b_buyuk_sinav":"Gran Prueba","b_tam_kolek":"Colección Completa","b_dunya_tamam":"Mundo Completo","g_bolumler":"Niveles","g_ustalik":"Maestría","g_seri":"Racha","g_koleksiyon":"Colección","a_titresim":"Vibración","a_titresim_a":"Respuesta táctil","a_animasyon":"Animaciones","a_animasyon_a":"Efectos de transición y premio","a_parcacik":"Efectos de partículas","a_parcacik_a":"Luces de fondo","a_otogec":"Avance automático","a_otogec_a":"Continuar al terminar un nivel","a_efekt":"Efectos de sonido","a_efekt_a":"Sonidos de toque y premio","a_shapes":"Marcadores de forma","a_shapes_a":"Apoyo para daltónicos","a_kontrast":"Alto contraste","a_kontrast_a":"Bordes más nítidos","a_azhareket":"Reducir movimiento","a_azhareket_a":"Simplificar animaciones","a_kalite":"Calidad visual","a_kalite_a":"Baja / Media / Alta","a_dusuk":"Baja","a_orta":"Media","a_yuksek":"Alta","d_fidan":"Retoño","d_tas":"Grupo de Piedras","d_cali":"Arbusto","d_sutun":"Columna","d_kemer":"Arco","d_heykel":"Estatua","d_kristal":"Racimo de Cristal","d_dev_prizma":"Prisma Gigante","d_fener":"Farol","d_asma_lamba":"Lámpara Colgante","d_yildiz":"Estrella","d_bulut":"Nube","d_cesme":"Fuente","d_isik_kapisi":"Puerta de Luz","gv_3bolum":"Resuelve 3 niveles","gv_2yildiz":"Consigue 3 estrellas 2 veces","gv_zaman5":"5 niveles contrarreloj"};
+  var _Ept={"b_ilk_isik":"Primeira Luz","b_usta":"Mestre","b_koleksiyon":"Colecionador","b_gezgin":"Viajante","b_bolge_usta":"Mestre da Região","b_mukemmel":"Perfeccionista","b_dunya_kur":"Construtor de Mundos","b_isinma":"Aquecimento","b_temiz_is":"Trabalho Limpo","b_hizli_dusun":"Pensador Rápido","b_uc_gun":"Três Dias","b_bir_hafta":"Uma Semana","b_bir_ay":"Um Mês","b_yuz_gun":"Cem Dias","b_uzun_yol":"Estrada Longa","b_yari_yol":"Meio Caminho","b_isigin_sonu":"O Fim da Luz","b_kusursuz":"Cem Perfeitos","b_buyuk_sinav":"Grande Teste","b_tam_kolek":"Coleção Completa","b_dunya_tamam":"Mundo Completo","g_bolumler":"Fases","g_ustalik":"Maestria","g_seri":"Sequência","g_koleksiyon":"Coleção","a_titresim":"Vibração","a_titresim_a":"Resposta ao toque","a_animasyon":"Animações","a_animasyon_a":"Efeitos de transição e prêmio","a_parcacik":"Efeitos de partículas","a_parcacik_a":"Luzes de fundo","a_otogec":"Avanço automático","a_otogec_a":"Continuar ao terminar a fase","a_efekt":"Efeitos sonoros","a_efekt_a":"Sons de toque e prêmio","a_shapes":"Marcadores de forma","a_shapes_a":"Suporte para daltônicos","a_kontrast":"Alto contraste","a_kontrast_a":"Bordas mais nítidas","a_azhareket":"Reduzir movimento","a_azhareket_a":"Simplificar animações","a_kalite":"Qualidade visual","a_kalite_a":"Baixa / Média / Alta","a_dusuk":"Baixa","a_orta":"Média","a_yuksek":"Alta","d_fidan":"Muda","d_tas":"Conjunto de Pedras","d_cali":"Arbusto","d_sutun":"Coluna","d_kemer":"Arco","d_heykel":"Estátua","d_kristal":"Aglomerado de Cristal","d_dev_prizma":"Prisma Gigante","d_fener":"Lanterna","d_asma_lamba":"Lâmpada Suspensa","d_yildiz":"Estrela","d_bulut":"Nuvem","d_cesme":"Fonte","d_isik_kapisi":"Portal de Luz","gv_3bolum":"Resolva 3 fases","gv_2yildiz":"Ganhe 3 estrelas 2 vezes","gv_zaman5":"5 fases contra o tempo"};
+  var _Ede={"b_ilk_isik":"Erstes Licht","b_usta":"Meister","b_koleksiyon":"Sammler","b_gezgin":"Wanderer","b_bolge_usta":"Regionsmeister","b_mukemmel":"Perfektionist","b_dunya_kur":"Weltenbauer","b_isinma":"Aufwärmen","b_temiz_is":"Saubere Arbeit","b_hizli_dusun":"Schnelldenker","b_uc_gun":"Drei Tage","b_bir_hafta":"Eine Woche","b_bir_ay":"Ein Monat","b_yuz_gun":"Hundert Tage","b_uzun_yol":"Langer Weg","b_yari_yol":"Halbzeit","b_isigin_sonu":"Das Ende des Lichts","b_kusursuz":"Perfekte Hundert","b_buyuk_sinav":"Große Prüfung","b_tam_kolek":"Volle Sammlung","b_dunya_tamam":"Welt Vollständig","g_bolumler":"Level","g_ustalik":"Meisterschaft","g_seri":"Serie","g_koleksiyon":"Sammlung","a_titresim":"Vibration","a_titresim_a":"Haptisches Feedback","a_animasyon":"Animationen","a_animasyon_a":"Übergangs- und Belohnungseffekte","a_parcacik":"Partikeleffekte","a_parcacik_a":"Hintergrundlichter","a_otogec":"Automatisch weiter","a_otogec_a":"Nach Levelende fortfahren","a_efekt":"Soundeffekte","a_efekt_a":"Berührungs- und Belohnungstöne","a_shapes":"Formmarkierungen","a_shapes_a":"Farbenblind-Unterstützung","a_kontrast":"Hoher Kontrast","a_kontrast_a":"Schärfere Kanten","a_azhareket":"Bewegung reduzieren","a_azhareket_a":"Animationen vereinfachen","a_kalite":"Bildqualität","a_kalite_a":"Niedrig / Mittel / Hoch","a_dusuk":"Niedrig","a_orta":"Mittel","a_yuksek":"Hoch","d_fidan":"Setzling","d_tas":"Steinhaufen","d_cali":"Strauch","d_sutun":"Säule","d_kemer":"Bogen","d_heykel":"Statue","d_kristal":"Kristallgruppe","d_dev_prizma":"Riesenprisma","d_fener":"Laterne","d_asma_lamba":"Hängelampe","d_yildiz":"Stern","d_bulut":"Wolke","d_cesme":"Brunnen","d_isik_kapisi":"Lichttor","gv_3bolum":"Löse 3 Level","gv_2yildiz":"Zweimal 3 Sterne holen","gv_zaman5":"5 Level im Zeitangriff"};
+  var _Efr={"b_ilk_isik":"Première Lumière","b_usta":"Maître","b_koleksiyon":"Collectionneur","b_gezgin":"Voyageur","b_bolge_usta":"Maître de Région","b_mukemmel":"Perfectionniste","b_dunya_kur":"Bâtisseur de Monde","b_isinma":"Échauffement","b_temiz_is":"Travail Propre","b_hizli_dusun":"Penseur Rapide","b_uc_gun":"Trois Jours","b_bir_hafta":"Une Semaine","b_bir_ay":"Un Mois","b_yuz_gun":"Cent Jours","b_uzun_yol":"Longue Route","b_yari_yol":"Mi-Chemin","b_isigin_sonu":"La Fin de la Lumière","b_kusursuz":"Cent Parfaits","b_buyuk_sinav":"Grande Épreuve","b_tam_kolek":"Collection Complète","b_dunya_tamam":"Monde Complet","g_bolumler":"Niveaux","g_ustalik":"Maîtrise","g_seri":"Série","g_koleksiyon":"Collection","a_titresim":"Vibration","a_titresim_a":"Retour haptique","a_animasyon":"Animations","a_animasyon_a":"Effets de transition et récompense","a_parcacik":"Effets de particules","a_parcacik_a":"Lumières d'arrière-plan","a_otogec":"Avance automatique","a_otogec_a":"Continuer à la fin du niveau","a_efekt":"Effets sonores","a_efekt_a":"Sons de contact et récompense","a_shapes":"Marqueurs de forme","a_shapes_a":"Support daltonien","a_kontrast":"Contraste élevé","a_kontrast_a":"Bords plus nets","a_azhareket":"Réduire le mouvement","a_azhareket_a":"Simplifier les animations","a_kalite":"Qualité visuelle","a_kalite_a":"Bas / Moyen / Élevé","a_dusuk":"Bas","a_orta":"Moyen","a_yuksek":"Élevé","d_fidan":"Jeune Pousse","d_tas":"Amas de Pierres","d_cali":"Arbuste","d_sutun":"Colonne","d_kemer":"Arche","d_heykel":"Statue","d_kristal":"Amas de Cristal","d_dev_prizma":"Prisme Géant","d_fener":"Lanterne","d_asma_lamba":"Lampe Suspendue","d_yildiz":"Étoile","d_bulut":"Nuage","d_cesme":"Fontaine","d_isik_kapisi":"Porte de Lumière","gv_3bolum":"Résous 3 niveaux","gv_2yildiz":"Obtiens 3 étoiles 2 fois","gv_zaman5":"5 niveaux contre la montre"};
+  var _Eru={"b_ilk_isik":"Первый Свет","b_usta":"Мастер","b_koleksiyon":"Коллекционер","b_gezgin":"Странник","b_bolge_usta":"Мастер Региона","b_mukemmel":"Перфекционист","b_dunya_kur":"Строитель Мира","b_isinma":"Разминка","b_temiz_is":"Чистая Работа","b_hizli_dusun":"Быстрый Ум","b_uc_gun":"Три Дня","b_bir_hafta":"Неделя","b_bir_ay":"Месяц","b_yuz_gun":"Сто Дней","b_uzun_yol":"Долгий Путь","b_yari_yol":"Половина Пути","b_isigin_sonu":"Конец Света","b_kusursuz":"Идеальная Сотня","b_buyuk_sinav":"Большое Испытание","b_tam_kolek":"Полная Коллекция","b_dunya_tamam":"Мир Завершён","g_bolumler":"Уровни","g_ustalik":"Мастерство","g_seri":"Серия","g_koleksiyon":"Коллекция","a_titresim":"Вибрация","a_titresim_a":"Тактильный отклик","a_animasyon":"Анимации","a_animasyon_a":"Эффекты переходов и наград","a_parcacik":"Эффекты частиц","a_parcacik_a":"Фоновые огни","a_otogec":"Автопереход","a_otogec_a":"Продолжать после уровня","a_efekt":"Звуковые эффекты","a_efekt_a":"Звуки касаний и наград","a_shapes":"Метки-формы","a_shapes_a":"Поддержка дальтоников","a_kontrast":"Высокий контраст","a_kontrast_a":"Более чёткие края","a_azhareket":"Меньше движения","a_azhareket_a":"Упростить анимации","a_kalite":"Качество графики","a_kalite_a":"Низкое / Среднее / Высокое","a_dusuk":"Низкое","a_orta":"Среднее","a_yuksek":"Высокое","d_fidan":"Саженец","d_tas":"Груда Камней","d_cali":"Куст","d_sutun":"Колонна","d_kemer":"Арка","d_heykel":"Статуя","d_kristal":"Скопление Кристаллов","d_dev_prizma":"Гигантская Призма","d_fener":"Фонарь","d_asma_lamba":"Подвесная Лампа","d_yildiz":"Звезда","d_bulut":"Облако","d_cesme":"Фонтан","d_isik_kapisi":"Врата Света","gv_3bolum":"Реши 3 уровня","gv_2yildiz":"Получи 3 звезды дважды","gv_zaman5":"5 уровней на время"};
+  var _Ezh={"b_ilk_isik":"初光","b_usta":"大師","b_koleksiyon":"收藏家","b_gezgin":"旅人","b_bolge_usta":"區域大師","b_mukemmel":"完美主義者","b_dunya_kur":"世界建造者","b_isinma":"熱身","b_temiz_is":"乾淨俐落","b_hizli_dusun":"思緒敏捷","b_uc_gun":"三天","b_bir_hafta":"一週","b_bir_ay":"一個月","b_yuz_gun":"一百天","b_uzun_yol":"長路","b_yari_yol":"半途","b_isigin_sonu":"光之盡頭","b_kusursuz":"完美百關","b_buyuk_sinav":"大考驗","b_tam_kolek":"完整收藏","b_dunya_tamam":"世界完成","g_bolumler":"關卡","g_ustalik":"精通","g_seri":"連勝","g_koleksiyon":"收藏","a_titresim":"震動","a_titresim_a":"觸覺回饋","a_animasyon":"動畫","a_animasyon_a":"轉場與獎勵特效","a_parcacik":"粒子特效","a_parcacik_a":"背景光效","a_otogec":"自動前進","a_otogec_a":"關卡結束後繼續","a_efekt":"音效","a_efekt_a":"觸控與獎勵聲","a_shapes":"形狀標記","a_shapes_a":"色盲支援","a_kontrast":"高對比","a_kontrast_a":"更銳利的邊緣","a_azhareket":"減少動態","a_azhareket_a":"簡化動畫","a_kalite":"畫面品質","a_kalite_a":"低 / 中 / 高","a_dusuk":"低","a_orta":"中","a_yuksek":"高","d_fidan":"樹苗","d_tas":"石叢","d_cali":"灌木","d_sutun":"石柱","d_kemer":"拱門","d_heykel":"雕像","d_kristal":"水晶叢","d_dev_prizma":"巨型稜鏡","d_fener":"燈籠","d_asma_lamba":"吊燈","d_yildiz":"星星","d_bulut":"雲","d_cesme":"噴泉","d_isik_kapisi":"光之門","gv_3bolum":"解開 3 關","gv_2yildiz":"拿 2 次三星","gv_zaman5":"限時挑戰 5 關"};
+  for(var _k in _Etr) DILLER.tr[_k]=_Etr[_k];
+  for(var _k in _Een) DILLER.en[_k]=_Een[_k];
+  for(var _k in _Ees) DILLER.es[_k]=_Ees[_k];
+  for(var _k in _Ept) DILLER.pt[_k]=_Ept[_k];
+  for(var _k in _Ede) DILLER.de[_k]=_Ede[_k];
+  for(var _k in _Efr) DILLER.fr[_k]=_Efr[_k];
+  for(var _k in _Eru) DILLER.ru[_k]=_Eru[_k];
+  for(var _k in _Ezh) DILLER.zh[_k]=_Ezh[_k];
+
+  var _dil='en';
+
+  function dilSec(){
+    // 1) Oyuncunun secimi
+    try{
+      var k=localStorage.getItem('prismio_dil');
+      if(k && DILLER[k]) return k;
+    }catch(e){}
+    // 2) Telefonun dili
+    var n=(navigator.language||navigator.userLanguage||'en').toLowerCase();
+    if(n.indexOf('zh')===0) return DILLER.zh?'zh':'en';
+    var kok=n.split('-')[0];
+    if(DILLER[kok]) return kok;
+    // 3) Ingilizce
+    return 'en';
+  }
+  function dilKur(k){
+    if(!DILLER[k]) return false;
+    _dil=k;
+    try{ localStorage.setItem('prismio_dil',k); }catch(e){}
+    document.documentElement.setAttribute('lang',k);
+    if(document.body) dilUygula();
+    return true;
+  }
+  // Sayfadaki data-t isaretli TUM metinleri secili dile cevirir.
+  // Dil degisince tek cagriyla her sey guncellenir.
+  // Veri tablosu kaydinin cevrili adini dondurur.
+  // tAd anahtari varsa cevirir, yoksa Turkce ada duser.
+  // Boylece anahtar eklenmemis kayitlar da calisir - hicbir yer bos kalmaz.
+  function tad(k){ return (k && k.tAd) ? T(k.tAd) : ((k && k.ad) || ''); }
+  function tack(k){ return (k && k.tAciklama) ? T(k.tAciklama) : ((k && k.aciklama) || ''); }
+
+  function dilUygula(){
+    var e=document.querySelectorAll('[data-t]');
+    for(var i=0;i<e.length;i++){
+      var a=e[i].getAttribute('data-t');
+      if(a) e[i].textContent=T(a);
+    }
+    var p=document.querySelectorAll('[data-t-ph]');
+    for(var j=0;j<p.length;j++){
+      var b=p[j].getAttribute('data-t-ph');
+      if(b) p[j].setAttribute('placeholder', T(b));
+    }
+    var l=document.querySelectorAll('[data-t-aria]');
+    for(var q=0;q<l.length;q++){
+      var c=l[q].getAttribute('data-t-aria');
+      if(c) l[q].setAttribute('aria-label', T(c));
+    }
+  }
+
+  // T('anahtar')            -> metin
+  // T('anahtar',{a:5})      -> "{a} tahta" icindeki {a} yerine 5 yazar
+  function T(anahtar, degerler){
+    var d=DILLER[_dil], m=(d && d[anahtar]);
+    if(m===undefined) m=(DILLER.en && DILLER.en[anahtar]);
+    if(m===undefined) m=anahtar;          // son care: anahtarin kendisi
+    if(degerler){
+      for(var k in degerler) m=m.split('{'+k+'}').join(degerler[k]);
+    }
+    return m;
+  }
+  // Sayiya gore tekil/cogul secer. Turkce'de fark yok, digerlerinde var.
+  function Tn(anahtar, n, degerler){
+    var d=degerler||{}; d.n=n;
+    var tekil=T(anahtar+'_1', d);
+    if(n===1 && tekil!==anahtar+'_1') return tekil;
+    return T(anahtar, d);
+  }
+
   var DX=[0,1,0,-1], DY=[-1,0,1,0];
   var SLASH=[1,0,3,2], BACK=[3,2,1,0];
   var EMPTY=0, WALL=1, PRISM=2, CRYSTAL=3, SOURCE=4, HOLE=5;
@@ -1833,77 +1963,77 @@
   function dunyaKalan(){ return Math.max(0, DUNYA_ESIK - cozulenToplam()); }
 
   var DECORATIONS=[
-    {id:'d-fidan',  ad:'Fidan',        kat:'Nature',       kosul:{tip:'level',  deger:5},  cizim:'fidan'},
-    {id:'d-tas',    ad:'Taş Öbeği',    kat:'Nature',       kosul:{tip:'level',  deger:12}, cizim:'tas'},
-    {id:'d-cali',   ad:'Çalı',         kat:'Nature',       kosul:{tip:'stars',  deger:20}, cizim:'cali'},
-    {id:'d-sutun',  ad:'Sütun',        kat:'Architecture', kosul:{tip:'level',  deger:20}, cizim:'sutun'},
-    {id:'d-kemer',  ad:'Kemer',        kat:'Architecture', kosul:{tip:'level', deger:120}, cizim:'kemer'},
-    {id:'d-heykel', ad:'Heykel',       kat:'Architecture', kosul:{tip:'stars', deger:200}, cizim:'heykel'},
-    {id:'d-kume',   ad:'Kristal Küme', kat:'Crystal',      kosul:{tip:'level',  deger:15}, cizim:'kume'},
-    {id:'d-prizma', ad:'Dev Prizma',   kat:'Crystal',      kosul:{tip:'level', deger:250}, cizim:'devprizma'},
-    {id:'d-fener',  ad:'Fener',        kat:'Light',        kosul:{tip:'level',  deger:8},  cizim:'fener'},
-    {id:'d-lamba',  ad:'Asma Lamba',   kat:'Light',        kosul:{tip:'level', deger:320}, cizim:'lamba'},
-    {id:'d-yildiz', ad:'Yıldız',       kat:'Sky',          kosul:{tip:'level', deger:160}, cizim:'yildizd'},
-    {id:'d-bulut',  ad:'Bulut',        kat:'Sky',          kosul:{tip:'level',  deger:18}, cizim:'bulut'},
-    {id:'d-cesme',  ad:'Çeşme',        kat:'Special',      kosul:{tip:'themes', deger:3},  cizim:'cesme'},
-    {id:'d-kapi',   ad:'Işık Kapısı',  kat:'Special',      kosul:{tip:'level', deger:520}, cizim:'kapi'}
+    {id:'d-fidan',  ad:'Fidan',tAd:'d_fidan',        kat:'Nature',       kosul:{tip:'level',  deger:5},  cizim:'fidan'},
+    {id:'d-tas',    ad:'Taş Öbeği',tAd:'d_tas',    kat:'Nature',       kosul:{tip:'level',  deger:12}, cizim:'tas'},
+    {id:'d-cali',   ad:'Çalı',tAd:'d_cali',         kat:'Nature',       kosul:{tip:'stars',  deger:20}, cizim:'cali'},
+    {id:'d-sutun',  ad:'Sütun',tAd:'d_sutun',        kat:'Architecture', kosul:{tip:'level',  deger:20}, cizim:'sutun'},
+    {id:'d-kemer',  ad:'Kemer',tAd:'d_kemer',        kat:'Architecture', kosul:{tip:'level', deger:120}, cizim:'kemer'},
+    {id:'d-heykel', ad:'Heykel',tAd:'d_heykel',       kat:'Architecture', kosul:{tip:'stars', deger:200}, cizim:'heykel'},
+    {id:'d-kume',   ad:'Kristal Küme',tAd:'d_kristal', kat:'Crystal',      kosul:{tip:'level',  deger:15}, cizim:'kume'},
+    {id:'d-prizma', ad:'Dev Prizma',tAd:'d_dev_prizma',   kat:'Crystal',      kosul:{tip:'level', deger:250}, cizim:'devprizma'},
+    {id:'d-fener',  ad:'Fener',tAd:'d_fener',        kat:'Light',        kosul:{tip:'level',  deger:8},  cizim:'fener'},
+    {id:'d-lamba',  ad:'Asma Lamba',tAd:'d_asma_lamba',   kat:'Light',        kosul:{tip:'level', deger:320}, cizim:'lamba'},
+    {id:'d-yildiz', ad:'Yıldız',tAd:'d_yildiz',       kat:'Sky',          kosul:{tip:'level', deger:160}, cizim:'yildizd'},
+    {id:'d-bulut',  ad:'Bulut',tAd:'d_bulut',        kat:'Sky',          kosul:{tip:'level',  deger:18}, cizim:'bulut'},
+    {id:'d-cesme',  ad:'Çeşme',tAd:'d_cesme',        kat:'Special',      kosul:{tip:'themes', deger:3},  cizim:'cesme'},
+    {id:'d-kapi',   ad:'Işık Kapısı',tAd:'d_isik_kapisi',  kat:'Special',      kosul:{tip:'level', deger:520}, cizim:'kapi'}
   ];
   var DECO_KATEGORI=['Nature','Architecture','Crystal','Light','Sky','Special'];
 
   // ---------- BASARILAR ----------
   // kontrol(st) -> ilerleme sayisi. hedef'e ulasinca acilir.
   var ACHIEVEMENTS=[
-    {id:'a-ilk',    ad:'İlk Işık',       aciklama:'İlk bölümü tamamla.',            hedef:1,   grup:'bolum',
+    {id:'a-ilk',    ad:'İlk Işık',tAd:'b_ilk_isik',       aciklama:'İlk bölümü tamamla.',            hedef:1,   grup:'bolum',
      kontrol:function(st){ return Math.max(0,st.enYuksek-1); }},
-    {id:'a-usta',   ad:'Usta',           aciklama:'10 bölümü 3 yıldızla bitir.',    hedef:10,  grup:'ustalik',
+    {id:'a-usta',   ad:'Usta',tAd:'b_usta',           aciklama:'10 bölümü 3 yıldızla bitir.',    hedef:10,  grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in st.stars) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-kolek',  ad:'Koleksiyoncu',   aciklama:'3 tema aç.',                     hedef:3,   grup:'kolek',
+    {id:'a-kolek',  ad:'Koleksiyoncu',tAd:'b_koleksiyon',   aciklama:'3 tema aç.',                     hedef:3,   grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in st.unlocked)n++; return n; }},
-    {id:'a-gezgin', ad:'Gezgin',         aciklama:'50 bölüm tamamla.',              hedef:50,  grup:'bolum',
+    {id:'a-gezgin', ad:'Gezgin',tAd:'b_gezgin',         aciklama:'50 bölüm tamamla.',              hedef:50,  grup:'bolum',
      kontrol:function(st){ return Math.max(0,st.enYuksek-1); }},
-    {id:'a-mile',   ad:'Bölge Ustası',   aciklama:'İlk bölgeyi tamamla.',           hedef:10,  grup:'bolum',
+    {id:'a-mile',   ad:'Bölge Ustası',tAd:'b_bolge_usta',   aciklama:'İlk bölgeyi tamamla.',           hedef:10,  grup:'bolum',
      kontrol:function(st){ return Math.min(10,Math.max(0,st.enYuksek-1)); }},
-    {id:'a-mukem',  ad:'Mükemmeliyetçi', aciklama:'20 bölümü en iyi çözümle bitir.',hedef:20,  grup:'ustalik',
+    {id:'a-mukem',  ad:'Mükemmeliyetçi',tAd:'b_mukemmel', aciklama:'20 bölümü en iyi çözümle bitir.',hedef:20,  grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in st.stars) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-deko',   ad:'Dünya Kurucu',   aciklama:'5 dekorasyon aç.',               hedef:5,   grup:'kolek',
+    {id:'a-deko',   ad:'Dünya Kurucu',tAd:'b_dunya_kur',   aciklama:'5 dekorasyon aç.',               hedef:5,   grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }},
     // --- ilk saatte alinabilir olanlar (Play Games Kalite Kontrol 2.2) ---
-    {id:'a-bes',    ad:'Isınma',         aciklama:'5 bölüm tamamla.',                hedef:5,   grup:'bolum',
+    {id:'a-bes',    ad:'Isınma',tAd:'b_isinma',         aciklama:'5 bölüm tamamla.',                hedef:5,   grup:'bolum',
      kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
-    {id:'a-ilkuc',  ad:'Temiz İş',       aciklama:'Bir bölümü 3 yıldızla bitir.',    hedef:1,   grup:'ustalik',
+    {id:'a-ilkuc',  ad:'Temiz İş',tAd:'b_temiz_is',       aciklama:'Bir bölümü 3 yıldızla bitir.',    hedef:1,   grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in (st.stars||{})) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-zaman',  ad:'Hızlı Düşün',    aciklama:'Zamana karşı 3 bölüm çöz.',       hedef:3,   grup:'ustalik',
+    {id:'a-zaman',  ad:'Hızlı Düşün',tAd:'b_hizli_dusun',    aciklama:'Zamana karşı 3 bölüm çöz.',       hedef:3,   grup:'ustalik',
      kontrol:function(st){ return (st.sayac&&st.sayac.zamanBolum)||0; }},
 
     // --- SERI KILOMETRE TASLARI ---
     // Seri kendi basina odul. Bu basarimlar onu GORUNUR kilar.
     // Isik odulu YOK - ekonomiyi sismemeli.
-    {id:'s-3',      ad:'Üç Gün',         aciklama:'3 gün üst üste oyna.',            hedef:3,   grup:'seri',
+    {id:'s-3',      ad:'Üç Gün',tAd:'b_uc_gun',         aciklama:'3 gün üst üste oyna.',            hedef:3,   grup:'seri',
      kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
-    {id:'s-7',      ad:'Bir Hafta',      aciklama:'7 gün üst üste oyna.',            hedef:7,   grup:'seri',
+    {id:'s-7',      ad:'Bir Hafta',tAd:'b_bir_hafta',      aciklama:'7 gün üst üste oyna.',            hedef:7,   grup:'seri',
      kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
-    {id:'s-30',     ad:'Bir Ay',         aciklama:'30 gün üst üste oyna.',           hedef:30,  grup:'seri',
+    {id:'s-30',     ad:'Bir Ay',tAd:'b_bir_ay',         aciklama:'30 gün üst üste oyna.',           hedef:30,  grup:'seri',
      kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
-    {id:'s-100',    ad:'Yüz Gün',        aciklama:'100 gün üst üste oyna.',          hedef:100, grup:'seri',
+    {id:'s-100',    ad:'Yüz Gün',tAd:'b_yuz_gun',        aciklama:'100 gün üst üste oyna.',          hedef:100, grup:'seri',
      kontrol:function(st){ return (st.seri&&st.seri.enUzun)||0; }},
 
     // --- ÜST KADEME ---
     // En yüksek hedef 50 bölümdü. 1000 bölümlük bir oyunda bu, ilerleyen
     // oyuncuya hiçbir şey sunmuyordu. Bu kademeler yeni sistem eklemeden
     // sadece tabloya satır ekleyerek uzun vadeli hedef veriyor.
-    {id:'a-200',    ad:'Uzun Yol',       aciklama:'200 bölüm tamamla.',              hedef:200, grup:'bolum',
+    {id:'a-200',    ad:'Uzun Yol',tAd:'b_uzun_yol',       aciklama:'200 bölüm tamamla.',              hedef:200, grup:'bolum',
      kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
-    {id:'a-500',    ad:'Yarı Yol',       aciklama:'500 bölüm tamamla.',              hedef:500, grup:'bolum',
+    {id:'a-500',    ad:'Yarı Yol',tAd:'b_yari_yol',       aciklama:'500 bölüm tamamla.',              hedef:500, grup:'bolum',
      kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
-    {id:'a-1000',   ad:'Işığın Sonu',    aciklama:'1000 bölüm tamamla.',             hedef:1000,grup:'bolum',
+    {id:'a-1000',   ad:'Işığın Sonu',tAd:'b_isigin_sonu',    aciklama:'1000 bölüm tamamla.',             hedef:1000,grup:'bolum',
      kontrol:function(st){ return Math.max(0,(st.enYuksek||1)-1); }},
-    {id:'a-y100',   ad:'Kusursuz Yüz',   aciklama:'100 bölümü 3 yıldızla bitir.',    hedef:100, grup:'ustalik',
+    {id:'a-y100',   ad:'Kusursuz Yüz',tAd:'b_kusursuz',   aciklama:'100 bölümü 3 yıldızla bitir.',    hedef:100, grup:'ustalik',
      kontrol:function(st){ var n=0; for(var k in (st.stars||{})) if(st.stars[k]===3)n++; return n; }},
-    {id:'a-buyuk',  ad:'Büyük Sınav',    aciklama:'10 büyük bölümü geç (her 50.).',  hedef:10,  grup:'ustalik',
+    {id:'a-buyuk',  ad:'Büyük Sınav',tAd:'b_buyuk_sinav',    aciklama:'10 büyük bölümü geç (her 50.).',  hedef:10,  grup:'ustalik',
      kontrol:function(st){ return Math.floor(Math.max(0,(st.enYuksek||1)-1)/50); }},
-    {id:'a-temaall',ad:'Tam Koleksiyon', aciklama:'Bütün temaları aç.',              hedef:10,  grup:'kolek',
+    {id:'a-temaall',ad:'Tam Koleksiyon',tAd:'b_tam_kolek', aciklama:'Bütün temaları aç.',              hedef:10,  grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in (st.unlocked||{}))n++; return n; }},
-    {id:'a-dekoall',ad:'Dünya Tamam',    aciklama:'Bütün dünya parçalarını aç.',     hedef:14,  grup:'kolek',
+    {id:'a-dekoall',ad:'Dünya Tamam',tAd:'b_dunya_tamam',    aciklama:'Bütün dünya parçalarını aç.',     hedef:14,  grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }}
   ];
 
@@ -1911,38 +2041,40 @@
   // Zip'te oldugu gibi her grubun kendi ilerleme cubugu var - oyuncu
   // "nerede iyiyim, nerede eksigim" sorusunu bir bakista cevaplar.
   var BASARI_GRUPLARI=[
-    {id:'bolum',   ad:'Bölümler',  ikon:'flag'},
-    {id:'ustalik', ad:'Ustalık',   ikon:'trophy'},
-    {id:'seri',    ad:'Seri',      ikon:'flame'},
-    {id:'kolek',   ad:'Koleksiyon',ikon:'palette'}
+    {id:'bolum',   ad:'Bölümler',tAd:'g_bolumler',  ikon:'flag'},
+    {id:'ustalik', ad:'Ustalık',tAd:'g_ustalik',   ikon:'trophy'},
+    {id:'seri',    ad:'Seri',tAd:'g_seri',      ikon:'flame'},
+    {id:'kolek',   ad:'Koleksiyon',tAd:'g_koleksiyon',ikon:'palette'}
   ];
 
   // ---------- GUNLUK GOREVLER ----------
   // Opsiyonel. Gameplay'i bozmaz, sadece ekstra odul.
   var DAILY_TASKS=[
-    {id:'g-coz3',   ad:'3 bölüm çöz',            hedef:3,  odul:15, sayac:'cozulen'},
-    {id:'g-yildiz2',ad:'2 kez 3 yıldız al',      hedef:2,  odul:20, sayac:'ucYildiz'},
-    {id:'g-zaman',  ad:'Zamana karşı 5 bölüm',   hedef:5,  odul:25, sayac:'zamanBolum'}
+    {id:'g-coz3',   ad:'3 bölüm çöz',tAd:'gv_3bolum',            hedef:3,  odul:15, sayac:'cozulen'},
+    {id:'g-yildiz2',ad:'2 kez 3 yıldız al',tAd:'gv_2yildiz',      hedef:2,  odul:20, sayac:'ucYildiz'},
+    {id:'g-zaman',  ad:'Zamana karşı 5 bölüm',tAd:'gv_zaman5',   hedef:5,  odul:25, sayac:'zamanBolum'}
   ];
 
   // ---------- AYARLAR ----------
   // Her satir bir ayar. Arayuz bu tablodan uretilir.
   var SETTINGS_DEF=[
-    {grup:'Oynanış',   id:'haptic',    ad:'Titreşim',            aciklama:'Dokunma geri bildirimi', vars:true},
-    {grup:'Oynanış',   id:'animasyon', ad:'Animasyonlar',        aciklama:'Geçiş ve ödül efektleri',vars:true},
-    {grup:'Oynanış',   id:'parcacik',  ad:'Parçacık efektleri',  aciklama:'Arka plan ışıkları',     vars:true},
-    {grup:'Oynanış',   id:'otoGec',    ad:'Otomatik geçiş',      aciklama:'Bölüm bitince ilerle',   vars:false},
+    // Dil secici en uste. Oyuncu yanlis dilde acilirsa ilk gorecegi yer.
+    {grup:'Dil', id:'dil', ad:'Dil', tAd:'dil', aciklama:'', vars:'', tip:'dil'},
+    {grup:'Oynanış',   id:'haptic',    ad:'Titreşim',tAd:'a_titresim',            aciklama:'Dokunma geri bildirimi',tAciklama:'a_titresim_a', vars:true},
+    {grup:'Oynanış',   id:'animasyon', ad:'Animasyonlar',tAd:'a_animasyon',        aciklama:'Geçiş ve ödül efektleri',tAciklama:'a_animasyon_a',vars:true},
+    {grup:'Oynanış',   id:'parcacik',  ad:'Parçacık efektleri',tAd:'a_parcacik',  aciklama:'Arka plan ışıkları',tAciklama:'a_parcacik_a',     vars:true},
+    {grup:'Oynanış',   id:'otoGec',    ad:'Otomatik geçiş',tAd:'a_otogec',      aciklama:'Bölüm bitince ilerle',tAciklama:'a_otogec_a',   vars:false},
     // "Muzik" ve "Ortam sesi" KALDIRILDI.
     // Arkalarinda hicbir sey yoktu - oyuncu aciyor, hicbir sey olmuyordu.
     // Calismayan anahtar, olmayan anahtardan kotudur: oyuncu uygulamayi
     // bozuk sanir ve guveni sarsilir.
     // Gercek muzik eklenince (ses dosyasi gerekir) geri gelecekler.
-    {grup:'Ses',       id:'efekt',     ad:'Ses efektleri',       aciklama:'Dokunma ve ödül sesleri',vars:true},
-    {grup:'Erişim',    id:'shapes',    ad:'Şekil göstergeleri',  aciklama:'Renk körü desteği',      vars:true},
-    {grup:'Erişim',    id:'kontrast',  ad:'Yüksek kontrast',     aciklama:'Daha keskin kenarlar',   vars:false},
-    {grup:'Erişim',    id:'azHareket', ad:'Hareketi azalt',      aciklama:'Animasyonları sadeleştir',vars:false},
-    {grup:'Görüntü',   id:'kalite',    ad:'Görsel kalite',       aciklama:'Düşük / Orta / Yüksek',  vars:'HIGH', tip:'secim',
-     secenek:[['LOW','Düşük'],['MED','Orta'],['HIGH','Yüksek']]}
+    {grup:'Ses',       id:'efekt',     ad:'Ses efektleri',tAd:'a_efekt',       aciklama:'Dokunma ve ödül sesleri',tAciklama:'a_efekt_a',vars:true},
+    {grup:'Erişim',    id:'shapes',    ad:'Şekil göstergeleri',tAd:'a_shapes',  aciklama:'Renk körü desteği',tAciklama:'a_shapes_a',      vars:true},
+    {grup:'Erişim',    id:'kontrast',  ad:'Yüksek kontrast',tAd:'a_kontrast',     aciklama:'Daha keskin kenarlar',tAciklama:'a_kontrast_a',   vars:false},
+    {grup:'Erişim',    id:'azHareket', ad:'Hareketi azalt',tAd:'a_azhareket',      aciklama:'Animasyonları sadeleştir',tAciklama:'a_azhareket_a',vars:false},
+    {grup:'Görüntü',   id:'kalite',    ad:'Görsel kalite',tAd:'a_kalite',       aciklama:'Düşük / Orta / Yüksek',tAciklama:'a_kalite_a',  vars:'HIGH', tip:'secim',
+     secenek:[['LOW','Düşük','a_dusuk'],['MED','Orta','a_orta'],['HIGH','Yüksek','a_yuksek']]}
   ];
   function varsayilanAyarlar(){
     var o={}; SETTINGS_DEF.forEach(function(d){ o[d.id]=d.vars; }); return o;
@@ -3090,7 +3222,7 @@
     if(!cur && aynaLimitiVarMi()){
       var sayi=0; for(var _mk in state.mirrors) sayi++;
       if(sayi >= aynaLimiti()){
-        kisaBildirim('Ayna sınırı: '+aynaLimiti()+'. Bir aynayı kaldır.');
+        kisaBildirim(T('ayna_siniri',{n:aynaLimiti()}));
         titret('uyari');
         return;
       }
@@ -3206,7 +3338,7 @@
     state.bitti=false;
     state._ipucuSayi=0;              // her tahtada bedava ipucu yeniden baslar
     if(!buildRelaxed(state.cfg)){
-      document.getElementById('ipucu').textContent='Tahta üretilemedi. "Yeni tahta"ya bas.';
+      document.getElementById('ipucu').textContent=T('tahta_uretilemedi');
       return;
     }
     state.mirrors={}; state._sonAyna=null; save(); draw();
@@ -3285,7 +3417,7 @@
       return;
     }
     _cikisSorusu=simdi;
-    kisaBildirim('Çıkmak için tekrar bas');
+    kisaBildirim(T('cikmak_tekrar'));
   }
 
   // Kisa bildirim balonu - cikis uyarisi ve benzeri kisa mesajlar icin
@@ -3394,7 +3526,7 @@
       // gereksiz - gidecek yer yok. Sadelik ilk deneyimde en onemli sey.
       k.hidden=true;
       if(orta)orta.classList.remove('devamli');
-      if(oyna){ oyna.hidden=false; oyna.textContent='Oyna'; }
+      if(oyna){ oyna.hidden=false; oyna.textContent=T('oyna'); }
       if(bag)bag.hidden=true;
       return;
     }
@@ -3405,14 +3537,14 @@
     if(oyna)oyna.hidden=true;
     if(bag)bag.hidden=false;
     var bolge=zoneOfLevel(lv);
-    $('dkBolum').textContent='Bölüm '+lv;
+    $('dkBolum').textContent=T('bolum')+' '+lv;
     $('dkBolge').textContent=bolge.ad;
     // bolge ilerlemesi: bu bolgede kac bolum bitti
     var bas=(bolge.tier-1)*10+1, cozulen=0;
     for(var i=bas;i<bas+10;i++) if(i<state.enYuksek)cozulen++;
     var h=$('dkHalka');
     if(h)h.style.setProperty('--oran', Math.round(cozulen/10*100));
-    k.setAttribute('aria-label','Bölüm '+lv+' oyna, '+bolge.ad);
+    k.setAttribute('aria-label',T('bolum')+' '+lv+' · '+bolge.ad);
   }
 
   function rozetleriCiz(){
@@ -3578,7 +3710,7 @@
     if(durum==='bitti')      ic+='<span class="yildiz">'+yildizNokta(y)+'</span>';
     else if(durum==='kilit') ic+='<span class="kilitik">'+ikon('lock',13)+'</span>';
     b.innerHTML=ic;
-    b.setAttribute('aria-label','Bölüm '+i+(mile?', büyük bölüm':'')+
+    b.setAttribute('aria-label',T('bolum_n',{n:i})+(mile?', '+T('buyuk_bolum'):'')+
       (durum==='kilit'?', kilitli':(durum==='bitti'?', '+y+' yıldız':'')));
     if(durum!=='kilit') b.addEventListener('click',function(){ bolumBaslat(i); });
     d.appendChild(b);
@@ -3624,7 +3756,7 @@
   function updateHud(sim){
     var kullanilan=Object.keys(state.mirrors).length;
     var mile=state.cfg&&state.cfg.milestone;
-    $('bolumNo').textContent = (state.mode==='zaman')?'Zamana karşı':('Bölüm '+state.level);
+    $('bolumNo').textContent = (state.mode==='zaman')?T('zamana_karsi'):(T('bolum')+' '+state.level);
     $('bolumBas').className='bolumbasI'+(mile?' buyuk':'');
     // AYNA SAYACI. Duz metin yerine "4 / 3" formati.
     // Fazlaysa kirmizi olur. Oyuncu tahtaya bakarken bile kenardan gorur.
@@ -3634,8 +3766,8 @@
     var fazlaMi = kullanilan > (state.best||0);
     var ba=$('bolumAlt');
     ba.innerHTML = '<span class="ayna-sayac'+(fazlaMi?' fazla':'')+'">'+
-                   kullanilan+' / '+hedef+'</span> ayna'+
-                   (limitVar ? ' <span class="ayna-limit">sınır</span>' : '');
+                   kullanilan+' / '+hedef+'</span> '+htmlKacir(T('ayna'))+
+                   (limitVar ? ' <span class="ayna-limit">'+htmlKacir(T('sinir'))+'</span>' : '');
     ba.setAttribute('aria-label', kullanilan+' ayna kullandın, en iyisi '+
                     (state.best||0)+(limitVar?(', bu bölümde sınır '+limit):''));
     $('tahtakutu').className='tahtakutu'+(mile?' buyuk':'')+(state.bitti?' kilitli':'');
@@ -3650,7 +3782,7 @@
         if(state.mistakes>=MISTAKE_LIMIT){ state.mistakes=0; canKaybet(); rozetleriCiz(); }
       }
       ip.className='ipucu hata';
-      ip.textContent='Işık kendi üzerine kapandı. Aynayı çevir ya da kaldır.'+
+      ip.textContent=T('dongu_hatasi')+
         (state.mistakes>0?(' ('+state.mistakes+'/'+MISTAKE_LIMIT+')'):'');
       return;
     }
@@ -3663,12 +3795,11 @@
       // yanacak" yazisi ASILI KALIYORDU - oyuncu kazandigi hâlde
       // eksik varmis gibi goruyordu.
       var fazla = kullanilan - (state.best||0);
-      ip.textContent = (fazla<=0) ? 'Tüm kristaller yandı. En iyi çözüm.'
-                                  : 'Tüm kristaller yandı.';
+      ip.textContent = (fazla<=0) ? T('hepsi_yandi_eniyi') : T('hepsi_yandi');
       kazandI(kullanilan); return;
     }
     var kalan=state.crystals.length-sim.count;
-    ip.textContent=kalan+' kristal daha yanacak.';
+    ip.textContent=(kalan===1)?T('kristal_kaldi_1',{n:1}):T('kristal_kaldi',{n:kalan});
   }
 
   // ===================== KAZANMA =====================
@@ -3731,34 +3862,34 @@
 
   // ===================== SONUÇ KARTI =====================
   function sonucKart(y,kullanilan,kazanc,hediye,mile){
-    $('kBaslik').textContent = mile?'Büyük bölüm bitti':'Çözdün';
+    $('kBaslik').textContent = mile?T('buyuk_bitti'):T('cozdun');
     // 0 yildiz durumu eklendi. Tahta gecilir ama odul yok.
     // Metin sucluyor degil, yol gosteriyor: "tekrar dene" butonu zaten altta.
-    $('kAlt').textContent = (y===3)?'En iyi çözüm. Bundan azı yok.'
-                          : (y===2)?('Bir ayna fazla. '+state.best+' aynayla da olur.')
-                          : (y===1)?((kullanilan-state.best)+' ayna fazla. En iyisi '+state.best+'.')
-                          : ('Çok fazla ayna kullandın. Yıldız yok. En iyisi '+state.best+'.');
+    $('kAlt').textContent = (y===3)?T('en_iyi_cozum')
+                          : (y===2)?T('bir_ayna_fazla',{n:state.best})
+                          : (y===1)?T('ayna_fazla',{f:(kullanilan-state.best),n:state.best})
+                          : T('yildiz_yok',{n:state.best});
     $('kYildiz').innerHTML = yildizSVG(y>=1)+yildizSVG(y>=2)+yildizSVG(y>=3);
     $('kOdulSayi').textContent = kazanc;
     $('kHediye').innerHTML = hediye ? ('<div class="hediye">🎁 "'+hediye.ad+'" teması açıldı</div>') : '';
     var b=$('kBtnler'); b.innerHTML='';
     if(y<3){
       var t=document.createElement('button');
-      t.className='btn sari tam'; t.textContent='Daha az aynayla dene';
+      t.className='btn sari tam'; t.textContent=T('daha_az_dene');
       t.addEventListener('click',function(){ katmanKapat(); bolumBaslat(state.level); });
       b.appendChild(t);
     } else {
       var t3=document.createElement('button');
-      t3.className='btn sade tam'; t3.textContent='Yeniden dene';
+      t3.className='btn sade tam'; t3.textContent=T('yeniden_dene');
       t3.addEventListener('click',function(){ katmanKapat(); bolumBaslat(state.level); });
       b.appendChild(t3);
     }
     var n=document.createElement('button');
-    n.className='btn tam'; n.textContent='Sonraki bölüm →';
+    n.className='btn tam'; n.textContent=T('sonraki_bolum');
     n.addEventListener('click',function(){ katmanKapat(); bolumBaslat(state.level+1); });
     b.appendChild(n);
     var h=document.createElement('button');
-    h.className='btn sade tam'; h.textContent='Haritaya dön';
+    h.className='btn sade tam'; h.textContent=T('haritaya_don');
     h.addEventListener('click',function(){ katmanKapat(); git('harita'); });
     b.appendChild(h);
     $('katman').classList.add('acik');
@@ -3767,15 +3898,15 @@
 
   // ===================== CAN BİTTİ =====================
   function canYokKart(){
-    $('kBaslik').textContent='Canın bitti';
+    $('kBaslik').textContent=T('canin_bitti');
     $('kAlt').textContent='Yeni can '+(canKalanSure()||'birazdan')+' sonra geliyor.';
     $('kYildiz').innerHTML=''; $('kHediye').innerHTML='';
     $('kOdul').style.display='none';
     var b=$('kBtnler'); b.innerHTML='';
     var r=document.createElement('button');
-    r.className='btn sari tam'; r.textContent='Reklam izle · +1 can';
+    r.className='btn sari tam'; r.textContent=T('reklam_can');
     r.addEventListener('click',function(){
-      r.disabled=true; r.textContent='Reklam oynatılıyor…';
+      r.disabled=true; r.textContent=T('reklam_oynatiliyor');
       setTimeout(function(){
         state.lives=Math.min(MAX_LIVES,state.lives+1);
         if(state.lives>=MAX_LIVES)state.livesAt=0;
@@ -3785,7 +3916,7 @@
     });
     b.appendChild(r);
     var h=document.createElement('button');
-    h.className='btn sade tam'; h.textContent='Mağazaya git';
+    h.className='btn sade tam'; h.textContent=T('magazaya_git');
     h.addEventListener('click',function(){ $('kOdul').style.display=''; katmanKapat(); magazaAc('can'); });
     b.appendChild(h);
     $('katman').classList.add('acik');
@@ -4071,7 +4202,7 @@
         b.className='deko'+(acik?'':' kilitli')+(aktif?' aktif':'');
         b.type='button'; b.disabled=!acik;
         b.innerHTML='<span class="dk-gorsel">'+(acik?dekoSVG(d,54):ikon('lock',24))+'</span>'+
-          '<span class="dk-ad">'+(acik?d.ad:'?')+'</span>'+
+          '<span class="dk-ad">'+(acik?tad(d):'?')+'</span>'+
           '<span class="dk-kosul">'+(acik?(aktif?'Dünyanda':'Gizli'):dekoKosulMetni(d))+'</span>';
         if(acik) b.addEventListener('click',function(){
           state.decoAktif[d.id]=aktif?0:1;
@@ -4115,7 +4246,7 @@
                    Light:'Işık',Sky:'Gökyüzü',Special:'Özel'};
   function dekoKosulMetni(d){
     var k=d.kosul;
-    if(k.tip==='level') return 'Bölüm '+k.deger;
+    if(k.tip==='level') return T('bolum_n',{n:k.deger});
     if(k.tip==='stars') return k.deger+' yıldız';
     if(k.tip==='themes')return k.deger+' tema';
     return '';
@@ -4143,24 +4274,24 @@
     var bekleyen=liste.filter(function(g){ return g.tamam&&!g.alindi; });
     if(bekleyen.length){
       $('gsMetin').textContent=bekleyen[0].ad;
-      $('gsSag').textContent='Ödülü al';
+      $('gsSag').textContent=T('odulu_al');
       $('gsSag').className='gs-sag';
       e.setAttribute('aria-label','Günlük görev tamam, ödülü al');
       return;
     }
     var acik=liste.filter(function(g){ return !g.alindi; });
     if(!acik.length){
-      $('gsMetin').textContent='Bugünkü görevler bitti';
+      $('gsMetin').textContent=T('gorevler_bitti');
       $('gsSag').textContent='✓';
       $('gsSag').className='gs-sag';
       return;
     }
     acik.sort(function(a,b){ return (b.ilerleme/b.hedef)-(a.ilerleme/a.hedef); });
     var g=acik[0];
-    $('gsMetin').textContent=g.ad;
+    $('gsMetin').textContent=tad(g);
     $('gsSag').textContent=g.ilerleme+'/'+g.hedef;
     $('gsSag').className='gs-sag bekle';
-    e.setAttribute('aria-label','Günlük görev: '+g.ad+', '+g.ilerleme+' bölü '+g.hedef);
+    e.setAttribute('aria-label',T('gunluk_gorev')+': '+tad(g)+', '+g.ilerleme+'/'+g.hedef);
   }
 
   function gorevlerCiz(){
@@ -4171,8 +4302,8 @@
       el.className='gorev'+(g.tamam&&!g.alindi?' alinabilir':'')+(g.alindi?' alindi':'');
       if(el.tagName==='BUTTON')el.type='button';
       var oran=Math.round(g.ilerleme/g.hedef*100);
-      var durum=g.alindi?'Alındı':(g.tamam?'Ödülü al':'Devam ediyor');
-      el.innerHTML='<span class="gv-govde"><span class="gv-ad">'+g.ad+'</span>'+
+      var durum=g.alindi?'Alındı':(g.tamam?T('odulu_al'):'Devam ediyor');
+      el.innerHTML='<span class="gv-govde"><span class="gv-ad">'+htmlKacir(tad(g))+'</span>'+
         '<span class="gv-cubuk"><span style="width:'+oran+'%"></span></span>'+
         '<span class="gv-sayi">'+g.ilerleme+' / '+g.hedef+'</span></span>'+
         '<span class="gv-odul"><span><b class="pul">◆</b> '+g.odul+'</span>'+
@@ -4218,7 +4349,7 @@
       bas.className='bg-baslik';
       bas.innerHTML=
         '<span class="bg-ik">'+ikon(gr.ikon,20)+'</span>'+
-        '<span class="bg-ad">'+htmlKacir(gr.ad)+'</span>'+
+        '<span class="bg-ad">'+htmlKacir(tad(gr))+'</span>'+
         '<span class="bg-sayi tnum">'+acik+' / '+uyeler.length+'</span>';
       box.appendChild(bas);
 
@@ -4235,8 +4366,8 @@
         el.className='basaris'+(d.acik?' acik':'');
         var oran=Math.round(Math.min(1,d.ilerleme/d.hedef)*100);
         el.innerHTML='<span class="bs-simge">'+ikon(d.acik?'trophy':'lock',24)+'</span>'+
-          '<span class="gv-govde"><span class="gv-ad">'+htmlKacir(d.ad)+'</span>'+
-          '<span class="bs-ack">'+htmlKacir(d.aciklama)+'</span>'+
+          '<span class="gv-govde"><span class="gv-ad">'+htmlKacir(tad(d))+'</span>'+
+          '<span class="bs-ack">'+htmlKacir(tack(d))+'</span>'+
           (d.acik?'':'<span class="gv-cubuk"><span style="width:'+oran+'%"></span></span>'+
                      '<span class="gv-sayi">'+d.ilerleme+' / '+d.hedef+'</span>')+
           '</span>'+
@@ -4265,14 +4396,35 @@
       }
       var sat=document.createElement('div');
       sat.className='ayar';
-      var sol='<div><div class="ad">'+d.ad+'</div>'+
-        (d.aciklama?'<div style="font-size:.8rem;font-weight:700;color:var(--metin-soft)">'+d.aciklama+'</div>':'')+
+      var sol='<div><div class="ad">'+htmlKacir(tad(d))+'</div>'+
+        (tack(d)?'<div style="font-size:.8rem;font-weight:700;color:var(--metin-soft)">'+htmlKacir(tack(d))+'</div>':'')+
         (d.not?'<div class="not">'+d.not+'</div>':'')+'</div>';
+      if(d.tip==='dil'){
+        // Dil secici. Butun diller yan yana, secili olan vurgulu.
+        var ds='<div class="ayar-secim ayar-dil">';
+        for(var di=0; di<DIL_LISTE.length; di++){
+          var dd=DIL_LISTE[di];
+          ds+='<button type="button" data-dil="'+dd.kod+'"'+
+              (_dil===dd.kod?' class="acik"':'')+'>'+htmlKacir(dd.ad)+'</button>';
+        }
+        ds+='</div>';
+        sat.innerHTML='<div><div class="ad">'+htmlKacir(T('dil'))+'</div></div>'+ds;
+        [].forEach.call(sat.querySelectorAll('[data-dil]'),function(b){
+          b.addEventListener('click',function(){
+            dilKur(b.getAttribute('data-dil'));
+            ayarlarCiz();            // liste yeni dilde yeniden cizilir
+            titret('hafif');
+          });
+        });
+        box.appendChild(sat);
+        return;                      // bu satir bitti
+      }
       if(d.tip==='secim'){
         var sec='<div class="ayar-secim">';
         d.secenek.forEach(function(o){
+          // o[2] varsa ceviri anahtaridir, yoksa Turkce metne duser
           sec+='<button type="button" data-deger="'+o[0]+'"'+
-               (ayar(d.id)===o[0]?' class="acik"':'')+'>'+o[1]+'</button>';
+               (ayar(d.id)===o[0]?' class="acik"':'')+'>'+htmlKacir(o[2]?T(o[2]):o[1])+'</button>';
         });
         sec+='</div>';
         sat.innerHTML=sol+sec;
@@ -4284,7 +4436,7 @@
         });
       } else {
         sat.innerHTML=sol+'<button class="anahtar" type="button" aria-pressed="'+
-          (ayar(d.id)?'true':'false')+'" aria-label="'+d.ad+'"></button>';
+          (ayar(d.id)?'true':'false')+'" aria-label="'+htmlKacir(tad(d))+'"></button>';
         var sw=sat.querySelector('.anahtar');
         sw.addEventListener('click',function(){
           var yeni=!ayar(d.id);
@@ -4384,7 +4536,7 @@
           titret('basari');
           ayarlarCiz();
         }else{
-          $('gelNot').textContent='Kod yanlış.';
+          $('gelNot').textContent=T('kod_yanlis');
           $('gelKod').value='';
           titret('hata');
         }
@@ -4683,7 +4835,7 @@
   // Oyuncu hangi kaydin hangisi oldugunu buradan anlar (Kalite Kontrol 6.1).
   function bulutAciklama(){
     var y=0; for(var k in (state.stars||{})) y+=state.stars[k];
-    return 'Bölüm '+(state.enYuksek||1)+' · '+y+' yıldız';
+    return T('bolum_n',{n:(state.enYuksek||1)})+' · '+T('yildiz_n',{n:y});
   }
 
   // Buluta yazilacak paket. Oyunun TUM ilerlemesi.
@@ -4885,7 +5037,7 @@
       }
       t.setAttribute('readonly','readonly');
       kp.textContent = oldu?'Kopyalandı ✓':'Kodu elle seç ve kopyala';
-      setTimeout(function(){ kp.textContent='Kodu kopyala'; },2200);
+      setTimeout(function(){ kp.textContent=T('kod_kopyala'); },2200);
       if(oldu)titret('hafif');
     });
 
@@ -4904,7 +5056,7 @@
     var gr=$('hsGiris');
     if(gr)gr.addEventListener('click',function(){
       if(!BULUT.girisYap)return;
-      gr.disabled=true; gr.textContent='Bağlanıyor…';
+      gr.disabled=true; gr.textContent=T('baglaniyor');
       BULUT.girisYap(function(ok,hata){
         if(!ok){ hesapCiz(); hesapNot(hata||'Giriş yapılamadı.','uyari'); return; }
         // Girince buluttaki kayda bak. Daha ileriyse onu al.
@@ -5095,11 +5247,11 @@
   };
   window.__plusSonuc=function(ok, mesaj){
     var b=$('plusAl');
-    if(b){ b.disabled=false; b.textContent='Prismio Plus al'; }
+    if(b){ b.disabled=false; b.textContent=T('plus_al'); }
     if(ok){
       state.plus=true; save(); plusCiz(); rozetleriCiz();
       titret('basari');
-      kisaBildirim('Teşekkürler. Prismio Plus açıldı.');
+      kisaBildirim(T('plus_tesekkur'));
     }else if(mesaj){
       kisaBildirim(String(mesaj).slice(0,80));
     }
@@ -5142,7 +5294,7 @@
 
     if(PLUS.hazir){
       h+='<button class="btn yesil tam" id="plusAl" type="button">'+
-           'Prismio Plus al'+(PLUS.fiyat?(' · '+htmlKacir(PLUS.fiyat)):'')+'</button>'+
+           T('plus_al')+(PLUS.fiyat?(' · '+htmlKacir(PLUS.fiyat)):'')+'</button>'+
          '<button class="metin-bag tam" id="plusGeriYukle" type="button">'+
            'Daha önce aldım, geri yükle</button>'+
          '<p class="plus-not">Tek seferlik ödeme. Abonelik yok. Otomatik yenileme yok.</p>';
@@ -5155,13 +5307,13 @@
     var al=$('plusAl');
     if(al)al.addEventListener('click',function(){
       if(!(window.PrismioNative && window.PrismioNative.plusSatinAl))return;
-      al.disabled=true; al.textContent='Bağlanıyor…';
+      al.disabled=true; al.textContent=T('baglaniyor');
       try{ window.PrismioNative.plusSatinAl(); }
-      catch(e){ al.disabled=false; al.textContent='Prismio Plus al'; }
+      catch(e){ al.disabled=false; al.textContent=T('plus_al'); }
     });
     var gy=$('plusGeriYukle');
     if(gy)gy.addEventListener('click',function(){
-      plusDurumSor(); kisaBildirim('Satın alman kontrol ediliyor…');
+      plusDurumSor(); kisaBildirim(T('plus_kontrol'));
     });
   }
 
@@ -5190,7 +5342,7 @@
       var durumHtml='';
       if(d==='secili')          durumHtml='<div class="durum secili">'+ikon('check',15)+'Kullanılıyor</div>';
       else if(d==='acik')       durumHtml='<div class="durum acik">'+ikon('themes',15)+'Seçmek için dokun</div>';
-      else if(d==='kilitli')    durumHtml='<div class="durum kilit">'+ikon('lock',15)+'Bölüm '+t.lv+bolumEk(t.lv)+' açılır</div>';
+      else if(d==='kilitli')    durumHtml='<div class="durum kilit">'+ikon('lock',15)+htmlKacir(T('bolum_acilir',{n:t.lv}))+'</div>';
       else if(d==='alinabilir') durumHtml='<div class="durum alinabilir"><b class="pul">◆</b> '+t.fiyat+' · Al</div>';
       else                      durumHtml='<div class="durum pahali"><b class="pul">◆</b> '+t.fiyat+
                                           ' <small>('+(t.fiyat-state.coins)+' eksik)</small></div>';
@@ -5244,7 +5396,7 @@
         state.theme=t.id; save(); temaUygula(); magazaCiz(); temaOnizKapat(); titret('hafif');
       });
     } else if(d==='kilitli'){
-      btn('sade','Bölüm '+t.lv+bolumEk(t.lv)+' açılır',null,true);
+      btn('sade',T('bolum_acilir',{n:t.lv}),null,true);
     } else if(d==='alinabilir'){
       btn('yesil',ikon('coin',18,'#fff')+' '+t.fiyat+' ışık ver, al',function(){
         state.coins-=t.fiyat; state.unlocked[t.id]=1; state.theme=t.id;
@@ -5274,17 +5426,17 @@
   function zamanBitir(){
     zamanDur();
     var kazanc=state.tScore*8; state.coins+=kazanc; save(); rozetleriCiz();
-    $('kBaslik').textContent='Süre bitti';
+    $('kBaslik').textContent=T('sure_bitti');
     $('kAlt').textContent=state.tScore+' bölüm çözdün.';
     $('kYildiz').innerHTML=''; $('kHediye').innerHTML='';
     $('kOdulSayi').textContent=kazanc;
     var b=$('kBtnler'); b.innerHTML='';
     var t=document.createElement('button');
-    t.className='btn tam'; t.textContent='Tekrar dene';
+    t.className='btn tam'; t.textContent=T('tekrar_dene');
     t.addEventListener('click',function(){ katmanKapat(); zamanBaslat(); });
     b.appendChild(t);
     var h=document.createElement('button');
-    h.className='btn sade tam'; h.textContent='Ana menü';
+    h.className='btn sade tam'; h.textContent=T('ana_menu');
     h.addEventListener('click',function(){ katmanKapat(); git('menu'); });
     b.appendChild(h);
     $('katman').classList.add('acik');
@@ -5442,7 +5594,7 @@
     // Plus sahibi bedelsiz yeniler
     if(!state.plus){
       if((state.lives||0) < 1){
-        kisaBildirim('Can yok. Yeni tahta 1 can ister.');
+        kisaBildirim(T('can_yok_yeni'));
         titret('hata');
         setTimeout(function(){ magazaAc('can'); },600);
         return;
@@ -5451,7 +5603,7 @@
       var simdi=Date.now();
       if(simdi-_yeniSorusu > 2000){
         _yeniSorusu=simdi;
-        kisaBildirim('Yeni tahta 1 can. Onaylamak için tekrar bas.');
+        kisaBildirim(T('yeni_tahta_onay'));
         titret('uyari');
         return;
       }
@@ -5502,7 +5654,7 @@
     // Cozumde henuz konulmamis ayna kaldi mi
     var eksik=[];
     for(var k in state.solution) if(!state.mirrors[k]) eksik.push(k);
-    if(!eksik.length){ $('ipucu').textContent='Bu tahtada ipucu kalmadı.'; return; }
+    if(!eksik.length){ $('ipucu').textContent=T('ipucu_kalmadi'); return; }
 
     // Bu tahtada kacinci ipucu
     state._ipucuSayi=(state._ipucuSayi||0);
@@ -5511,7 +5663,7 @@
     if(!bedavaMi){
       if((state.lives||0) < IPUCU.bedel){
         $('ipucu').className='ipucu hata';
-        $('ipucu').textContent='Can yok. İpucu için can gerekiyor.';
+        $('ipucu').textContent=T('can_yok_ipucu');
         titret('hata');
         setTimeout(function(){ magazaAc('can'); },600);
         return;
@@ -5533,9 +5685,9 @@
     var kalanBedava = ipucuHakki() - state._ipucuSayi;
     $('ipucu').className='ipucu';
     if(kalanBedava > 0){
-      $('ipucu').textContent='İpucu verildi. Bu tahtada '+kalanBedava+' ücretsiz hakkın kaldı.';
+      $('ipucu').textContent=T('ipucu_bedava_kaldi',{n:kalanBedava});
     }else{
-      $('ipucu').textContent='İpucu verildi. 1 can harcandı.';
+      $('ipucu').textContent=T('ipucu_verildi_can');
     }
     ipucuButonuTazele();
   });
@@ -5722,7 +5874,8 @@
     gorevKontrol();
     return DAILY_TASKS.map(function(t){
       var v=state.sayac[t.sayac]||0;
-      return {id:t.id, ad:t.ad, hedef:t.hedef, odul:t.odul,
+      // tAd de tasinmali, yoksa gorev adi cevrilmez.
+      return {id:t.id, ad:t.ad, tAd:t.tAd, hedef:t.hedef, odul:t.odul,
               ilerleme:Math.min(v,t.hedef), tamam:v>=t.hedef,
               alindi:!!state.gorev.alinan[t.id]};
     });
@@ -6003,10 +6156,13 @@
   function debugKur(){}
 
   // ===================== AÇILIŞ =====================
+  // Dil SECIMI kayittan ONCE yapilir - yukleme sirasinda
+  // gosterilecek metinler dogru dilde olsun.
+  dilKur(dilSec());
   load();
   if(!state.stars)state.stars={};
   if(!state.ayar)state.ayar=varsayilanAyarlar();
-  temaUygula(); ayarUygula(); gorevKontrol(); decoTara(); basariTara(); debugKur();
+  dilUygula(); temaUygula(); ayarUygula(); gorevKontrol(); decoTara(); basariTara(); debugKur();
   kopruyuBagla();          // Android kabugu varsa Play Games baglanir
   plusDurumSor();          // satin alma durumu ve fiyat sorulur
   dunyaAcilisKontrol();   // eski kayitta kapi zaten acik olabilir
