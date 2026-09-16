@@ -64,16 +64,27 @@ jobs:
           java-version: '17'
 
       - name: Android SDK hazirla
+        # GitHub makinesinde Android SDK ZATEN kurulu.
+        # setup-android eklentisi yeni arac surumu indirip lisanslari
+        # kaybediyordu. Bu yuzden kurulu SDK'yi dogrudan kullaniyoruz.
         run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
           test -d "$SDK" || { echo "::error::Android SDK bulunamadi"; exit 1; }
           echo "ANDROID_HOME=$SDK" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$SDK" >> $GITHUB_ENV
+
+          # Lisanslari kabul et - kurulu sdkmanager ile
           SDKMAN=$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -1)
           test -n "$SDKMAN" || { echo "::error::sdkmanager yok"; exit 1; }
           echo "sdkmanager: $SDKMAN"
           yes | "$SDKMAN" --licenses > /dev/null 2>&1 || true
+
+          # Gerekli paketleri kur
           "$SDKMAN" "platforms;android-36" "build-tools;36.0.0" "platform-tools" || true
+
+          echo "--- kurulu platformlar ---"
           ls "$SDK/platforms" 2>/dev/null || true
 
       - name: Gradle kur
@@ -92,6 +103,18 @@ jobs:
           test -f settings.gradle || { echo "::error::settings.gradle yok. Dosyalar deponun KOKUNDE mi?"; exit 1; }
           test -f app/build.gradle || { echo "::error::app/build.gradle yok. Dosyalar deponun KOKUNDE mi?"; exit 1; }
           test -f app/src/main/assets/index.html || { echo "::error::Oyun dosyasi yok (app/src/main/assets/index.html)"; exit 1; }
+          echo "--- surum dosyalari ---"
+          echo "AAB icin (temiz)    : app/src/main/assets/index.html"
+          if [ -f app/src/main/assets/index_test.html ]; then
+            echo "APK icin (gelistirici): app/src/main/assets/index_test.html  VAR"
+          else
+            echo "APK icin (gelistirici): YOK - APK de temiz surumle uretilecek"
+          fi
+          # GUVENLIK: Play'e giden dosyada gelistirici modu OLMAMALI
+          if grep -q "gelistiriciAc" app/src/main/assets/index.html; then
+            echo "::error::index.html icinde GELISTIRICI MODU var. Play'e boyle bir dosya gonderilemez. Temiz surumu yukle."
+            exit 1
+          fi
 
       - name: Imza anahtarini ac
         run: |
@@ -124,12 +147,33 @@ jobs:
           PRISMIO_KEY_PASS: ${{ secrets.ANAHTAR_SIFRE }}
         run: gradle --no-daemon bundleRelease
 
+      # AAB temiz surumle uretildi. APK icin gelistirici modlu dosyaya gecilir.
+      # Boylece Play'e giden pakette gelistirici modu ASLA bulunmaz,
+      # telefonda test edilen APK'da bulunur.
+      - name: APK icin gelistirici surumune gec
+        run: |
+          if [ -f app/src/main/assets/index_test.html ]; then
+            cp app/src/main/assets/index.html /tmp/index_temiz.html
+            cp app/src/main/assets/index_test.html app/src/main/assets/index.html
+            echo "APK gelistirici modlu surumle uretilecek"
+          else
+            echo "index_test.html yok - APK de temiz surumle uretilecek"
+          fi
+
       - name: APK uret (telefonda test icin)
         env:
           PRISMIO_STORE_PASS: ${{ secrets.MAGAZA_SIFRE }}
           PRISMIO_KEY_ALIAS: prismio
           PRISMIO_KEY_PASS: ${{ secrets.ANAHTAR_SIFRE }}
         run: gradle --no-daemon assembleRelease
+
+      - name: Temiz surumu geri yukle
+        if: always()
+        run: |
+          if [ -f /tmp/index_temiz.html ]; then
+            cp /tmp/index_temiz.html app/src/main/assets/index.html
+            echo "temiz surum geri yuklendi"
+          fi
 
       - name: Sonucu topla
         run: |

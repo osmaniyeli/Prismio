@@ -1,11 +1,9 @@
 <!doctype html><html lang="tr"><head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
-<meta name="referrer" content="no-referrer">
-<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Prismio</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
   :root{
     --kirmizi:#EF4B57; --kirmizi-alt:#C6303B;
@@ -19,7 +17,7 @@
     --kabart:4px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  /*: Butonlarda cift dokunma yakinlastirmasi kapali.
+  /* Butonlarda cift dokunma yakinlastirmasi kapali.
      Hem tepki hizlanir hem kaydirma karisikligi biter. */
   button{touch-action:manipulation}
   html,body{margin:0;padding:0}
@@ -56,7 +54,7 @@
   .btn[hidden]{display:none!important}
 
   /* ---------- EKRAN YAPISI ---------- */
-  /*: Ust cubuk (saat, pil, bildirim) oyunun ustune biniyordu.
+  /* Ust cubuk (saat, pil, bildirim) oyunun ustune biniyordu.
      viewport-fit=cover ekrani centigin altina uzatiyor ama boslugu
      biz birakmak zorundayiz. Tum ekranlarin ustune guvenli bosluk. */
   .ekran{display:none;height:100dvh;flex-direction:column;overflow:hidden;
@@ -139,7 +137,7 @@
   .menu-orta.devamli #btnOyna{background:var(--yuzey);color:var(--metin);
     box-shadow:0 4px 0 var(--cizgi);font-size:1.05rem;padding:14px 22px}
   .menu-orta.devamli #btnOyna:active{box-shadow:0 0 0 var(--cizgi)}
-  /*: Alt sira ikili izgara. Dort dugme duzenli durur.
+  /* Alt sira ikili izgara. Dort dugme duzenli durur.
      Tek sayida dugme kalirsa sonuncusu tam genislik alir. */
   .menu-alt.izgara{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}
   .menu-alt.izgara .btn{width:100%;margin:0}
@@ -147,7 +145,7 @@
   /* Gizli dugme izgarada yer kaplamasin */
   .menu-alt.izgara .btn[hidden]{display:none}
 
-  /*: Zamana karsi ikincil. Sadece kucuk saat ikonu ile ayrisir. */
+  /* Zamana karsi ikincil. Sadece kucuk saat ikonu ile ayrisir. */
   .zaman-btn{gap:7px}
   .zb-ik{font-size:1.05rem;line-height:1;opacity:.75}
 
@@ -250,7 +248,7 @@
   .bolumbasI .no{font-size:1.5rem;font-weight:900;line-height:1.1}
   .bolumbasI .alt{font-size:.82rem;font-weight:700;color:var(--metin-soft)}
   .bolumbasI.buyuk .no{color:var(--sari-alt)}
-  /*: DURUM SERIDI — hedefler solda, ipucu piperi sagda.
+  /* DURUM SERIDI — hedefler solda, ipucu piperi sagda.
      Oyuncunun kaynaklari her an gorunur olmali. */
   .durum-serit{display:flex;align-items:center;justify-content:space-between;
     gap:10px;margin:10px 0 2px}
@@ -284,7 +282,7 @@
     margin-top:10px;min-height:20px}
   .ipucu.hata{color:var(--kirmizi)}
 
-  /*: Cikis uyarisi gibi kisa mesajlar. Ekranin altinda belirir,
+  /* Cikis uyarisi gibi kisa mesajlar. Ekranin altinda belirir,
      1.8 saniye sonra kaybolur. Oyuna engel olmaz. */
   .kisa-bildirim{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));
     transform:translate(-50%,14px);background:var(--metin);color:var(--zemin);
@@ -294,13 +292,13 @@
     box-shadow:0 6px 18px rgba(0,0,0,.22)}
   .kisa-bildirim.gor{opacity:1;transform:translate(-50%,0)}
 
-  /*: Ipucu bedelli hale gelince buton bunu gosterir.
+  /* Ipucu bedelli hale gelince buton bunu gosterir.
      Oyuncu basmadan once ne odeyecegini bilmeli. */
   #btnIpucu.bedelli::after,
   #btnYeni.bedelli::after{content:"1♥";font-size:.66rem;font-weight:800;
     margin-left:5px;opacity:.85;letter-spacing:-.02em}
 
-  /*: Ayna sayaci. Fazla ayna kullaninca ANINDA gorunur.
+  /* Ayna sayaci. Fazla ayna kullaninca ANINDA gorunur.
      Ceza degil farkindalik - oyuncu bitince surpriz yasamasin. */
   .ayna-sayac{font-variant-numeric:tabular-nums;font-weight:800;
     padding:1px 7px;border-radius:7px;background:var(--kart);
@@ -309,7 +307,7 @@
   .ayna-limit{font-size:.7rem;font-weight:800;letter-spacing:.04em;
     text-transform:uppercase;opacity:.75;margin-left:3px}
 
-  /*: Gelismis bolum katlanir. Normal oyuncu gormez.
+  /* Gelismis bolum katlanir. Normal oyuncu gormez.
      Kod ile yedekleme nadiren kullanilir ama Play Games girisi
      calismayan telefonlarda TEK kurtarma yolu. Silinmedi, gizlendi. */
   .hs-katla{display:flex;align-items:center;justify-content:space-between;width:100%;
@@ -631,7 +629,7 @@
   .gs-sag{flex:0 0 auto;font-size:.8rem;font-weight:900;color:var(--yesil)}
   .gs-sag.bekle{color:var(--metin-soft)}
 
-  /*: touch-action ZORUNLU.
+  /* touch-action ZORUNLU.
      Yoksa parmak bir butonun uzerindeyken kaydirma calismiyor,
      ekran kilitlenmis gibi gorunuyor. pan-y = dikey kaydirma serbest. */
   .basari-kaydir,.hakkinda-kaydir,.ayar-kaydir{flex:1;min-height:0;overflow-y:auto;
@@ -765,9 +763,9 @@
   .ayarlar{display:flex;flex-direction:column;gap:10px;margin-top:8px}
   .ayar{display:flex;align-items:center;justify-content:space-between;gap:12px;
     background:var(--yuzey);border-radius:14px;padding:13px 16px;box-shadow:0 3px 0 var(--cizgi);
-    touch-action:pan-y}   /*: satirin uzerinden kaydirmaya izin ver */
+    touch-action:pan-y}   /* satirin uzerinden kaydirmaya izin ver */
   .ayar .ad{font-weight:800;font-size:.95rem}
-  /*: Anahtar bir BUTON. Uzerinde kaydirma degil dokunma beklenir.
+  /* Anahtar bir BUTON. Uzerinde kaydirma degil dokunma beklenir.
      manipulation = cift dokunma yakinlastirmasini da kapatir, tepki hizlanir. */
   .anahtar{width:56px;height:32px;border-radius:999px;border:none;cursor:pointer;
     background:var(--cizgi);position:relative;transition:background .15s;
@@ -776,6 +774,7 @@
     border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
   .anahtar[aria-pressed="true"]{background:var(--yesil)}
   .anahtar[aria-pressed="true"]::after{transform:translateX(24px)}
+
 
 
   /* ---------- AYAR SINIFLARI ---------- */
@@ -835,14 +834,14 @@
      Cekirdek dongu her zaman en gorunur sey olmali. Zemin deseni menude
      karakter katar, tahtanin yaninda dikkat calar. */
   html.oyunda body::before{opacity:.18}
-  /*: Yuksek kontrast acikken zemin deseni kapaniyor ama
+  /* Yuksek kontrast acikken zemin deseni kapaniyor ama
      body::before hala yer kapliyor ve bazi temalarda buyuk soluk
      bir daire birakiyordu. visibility yerine tamamen kaldiriyoruz. */
   html.yuksek-kontrast body::before{content:none!important;display:none!important;
     background:none!important;opacity:0!important}
 
   html.yuksek-kontrast .tema{box-shadow:0 3px 0 var(--cizgi),0 0 0 2px var(--metin)}
-  /*: outline-offset bazi Android WebView surumlerinde kutu
+  /* outline-offset bazi Android WebView surumlerinde kutu
      olcusunu degistirip duzeni kaydiriyordu. box-shadow kaydirmaz. */
   html.yuksek-kontrast .btn{box-shadow:inset 0 0 0 2px var(--metin)}
 
@@ -1032,12 +1031,12 @@
     <div class="menu-btnler">
       <button class="btn buyuk tam" id="btnOyna">Oyna</button>
       <button class="metin-bag" id="bagHarita" type="button" hidden>Tüm bölümler ›</button>
-      <!--: Sari degil SADE. Sari buton ekranin en gurultulu ogesiydi
+      <!-- Sari degil SADE. Sari buton ekranin en gurultulu ogesiydi
            ve Devam kartini bastiriyordu - duzeltmek istedigimiz seyin ta kendisi.
            Zamana karsi ikincil bir mod, birincil eylem degil. -->
       <button class="btn sade tam zaman-btn" id="btnZaman">
         <span class="zb-ik">◷</span>Zamana karşı</button>
-      <!--: Ikili izgara. Dort dugme 2+2 dagilmis duruyordu,
+      <!-- Ikili izgara. Dort dugme 2+2 dagilmis duruyordu,
            simdi hep duzenli iki sutun. Dunyam gizliyken uc kalir,
            sonuncusu tam genislik alir (CSS :last-child:nth-child(odd)). -->
       <div class="menu-alt izgara">
@@ -1104,7 +1103,7 @@
       <div class="alt" id="bolumAlt">En iyi: 3 ayna</div>
     </div>
 
-    <!--: DURUM SERIDI
+    <!-- DURUM SERIDI
          Oyuncu her an neyi ne kadar harcadigini GORMELI.
          Solda hedef kristaller, sagda kalan ucretsiz ipucu.
          Ipucunun bedelini bastiktan SONRA ogrenmek kotu tasarimdi. -->
@@ -1209,7 +1208,7 @@
     <button class="rozet" id="rozParaBasari" type="button" aria-label="Işık"><span class="ik">◆</span><span class="tnum" id="bPara">0</span></button>
   </div>
   <div class="kap">
-    <!--: Baslik "Gorevler" idi ama menudeki dugme "Oduller" diyor.
+    <!-- Baslik "Gorevler" idi ama menudeki dugme "Oduller" diyor.
          Iki ad ayni ekrani isaret edemez - oyuncu kafasi karisir.
          Ekranin adi ODUL ODASI, iki sekmesi var. -->
     <div class="bolumbaslik">Ödül Odası</div>
@@ -1523,7 +1522,7 @@
              magaza:{},   // urun son alim zamanlari
              oynamaSn:0,  // toplam oynama suresi (saniye) - bulut kaydi icin
              dunyaAcildi:0,  // Dunyam kapisi acildi mi
-             toplamCozulen:0, //: omur boyu cozulen tahta. ASLA sifirlanmaz.
+             toplamCozulen:0, // omur boyu cozulen tahta. ASLA sifirlanmaz.
              // can + para + mod
              lives:5,livesAt:0,coins:0,mistakes:0,loopSeen:false,
              mode:'yolculuk',tLeft:0,tScore:0,tTimer:null,tTohum:0,tBaslangic:1};
@@ -1558,6 +1557,7 @@
     }
     if(!d)  { state.ayar=varsayilanAyarlar(); return; }
 
+    // --- TIP GUVENLIGI (denetim bulgusu) ---
     // Bozuk veya elle kurcalanmis kayit oyunu cokertmemeli.
     // Her alan tipi dogrulanir, bozuksa varsayilana doner.
     function sayi(v,vars,enAz,enCok){
@@ -1582,7 +1582,7 @@
     state.shapes    = (d.shapes===false)?false:true;
     state.lives     = sayi(d.lives, MAX_LIVES, 0, MAX_LIVES);
     state.livesAt   = sayi(d.livesAt, 0, 0);
-    //: UST SINIR ZORUNLU. Sinirsiz birakmak ekonomiyi kirar
+    // UST SINIR ZORUNLU. Sinirsiz birakmak ekonomiyi kirar
     // ve ekrana sigmayan sayilar uretir (1e+300 gibi).
     state.coins     = Math.max(0, sayi(d.coins, 0, 0, 9999999));
     state.stars     = nesne(d.stars,{});
@@ -1594,7 +1594,7 @@
     }
 
     // --- v2 alanlari (v1'de yoktu, varsayilanla dolar) ---
-    //: Seri. Tip ve aralik dogrulamasi diger alanlarla ayni kurala tabi.
+    // Seri. Tip ve aralik dogrulamasi diger alanlarla ayni kurala tabi.
     var _sr = nesne(d.seri, null);
     state.seri = _sr ? {
       gun:      sayi(_sr.gun, 0, 0, 999999),
@@ -1604,13 +1604,13 @@
     } : {gun:0,sayi:0,enUzun:0,toplamGun:0};
     if(state.seri.enUzun < state.seri.sayi) state.seri.enUzun = state.seri.sayi;
 
-    //: Prismio Plus. Tek seferlik satin alma durumu.
+    // Prismio Plus. Tek seferlik satin alma durumu.
     // GUVENLIK NOTU: Bu deger YEREL. Gercek dogrulama Google Play tarafinda.
     // Elle kurcalayan biri reklamsiz oynayabilir - kabul edilebilir risk.
     // Sunucu dogrulamasi icin backend gerekir, tek gelistirici icin asiri.
     state.plus = (d.plus===true);
 
-    //: Omur boyu cozulen tahta. Dunyam kapisi buna bakiyor.
+    // Omur boyu cozulen tahta. Dunyam kapisi buna bakiyor.
     state.toplamCozulen = sayi(d.toplamCozulen, 0, 0, 9999999);
 
     state.decos     = nesne(d.decos,{});
@@ -1656,7 +1656,7 @@
     return sa>0?(sa+'sa '+(dk%60)+'dk'):(dk+'dk');
   }
   function canKaybet(){
-    //: Plus sahibinin cani harcanmaz. Sinirsiz can boyle calisir -
+    // Plus sahibinin cani harcanmaz. Sinirsiz can boyle calisir -
     // sayaci buyuk bir sayiya cekmek yerine harcamayi durduruyoruz.
     // Boylece rozet hep dolu gorunur, kafa karisikligi olmaz.
     if(state.plus) return;
@@ -1802,11 +1802,11 @@
   var DUNYA_ESIK=100;
 
   // ==========================================================================
-
+  //  DUNYAM KAPISI
   //
-
+  //  HATA: dunyaAcikMi() state.sayac.cozulen'e bakiyordu.
   //  O sayac GUNLUK GOREV sayacidir ve her gece SIFIRLANIR
-  //. Sonuclari:
+  //  (bkz. gorevKontrol). Sonuclari:
   //    1. Kapi ancak 100 tahta AYNI GUN cozulurse acilirdi.
   //       Gercekte kimse bunu yapmaz -> kapi hic acilmazdi.
   //    2. Acilsa bile ertesi gun sayac sifirlaninca KAPANIRDI.
@@ -1907,7 +1907,7 @@
      kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }}
   ];
 
-  //: Basarim gruplari. Odul Odasi bunlara gore bolumlenir.
+  // Basarim gruplari. Odul Odasi bunlara gore bolumlenir.
   // Zip'te oldugu gibi her grubun kendi ilerleme cubugu var - oyuncu
   // "nerede iyiyim, nerede eksigim" sorusunu bir bakista cevaplar.
   var BASARI_GRUPLARI=[
@@ -1932,7 +1932,7 @@
     {grup:'Oynanış',   id:'animasyon', ad:'Animasyonlar',        aciklama:'Geçiş ve ödül efektleri',vars:true},
     {grup:'Oynanış',   id:'parcacik',  ad:'Parçacık efektleri',  aciklama:'Arka plan ışıkları',     vars:true},
     {grup:'Oynanış',   id:'otoGec',    ad:'Otomatik geçiş',      aciklama:'Bölüm bitince ilerle',   vars:false},
-    //: "Muzik" ve "Ortam sesi" KALDIRILDI.
+    // "Muzik" ve "Ortam sesi" KALDIRILDI.
     // Arkalarinda hicbir sey yoktu - oyuncu aciyor, hicbir sey olmuyordu.
     // Calismayan anahtar, olmayan anahtardan kotudur: oyuncu uygulamayi
     // bozuk sanir ve guveni sarsilir.
@@ -1968,9 +1968,9 @@
     back:     'M15 5l-7 7 7 7',
     reset:    'M3 12a9 9 0 109-9 M3 3v6h6',
     hint:     'M12 3a6 6 0 00-3 11v3h6v-3a6 6 0 00-3-11z M10 20h4',
-    //: Odul Odasi grup ikonlari
+    // Odul Odasi grup ikonlari
     flag:     'M6 3v18 M6 4h11l-2 4 2 4H6',
-    //: Plus fayda ikonlari
+    // Plus fayda ikonlari
     heart:    'M12 20s-7-4.6-7-9.4A4 4 0 0112 8a4 4 0 017 2.6C19 15.4 12 20 12 20z',
     noads:    'M4 5h16v11H4z M4 20h16 M5 4l14 14',
     flame:    'M12 3c0 4-4 4-4 8a4 4 0 008 0c0-2-1-3-1-3s3 1 3 5a6 6 0 01-12 0c0-6 6-6 6-10z',
@@ -2018,7 +2018,7 @@
   //  ESKI SORUN: Tahta 61. bolumde 9x9'a cikip 1000. boluma kadar orada
   //  kaliyordu. Oyuncu "bolum 200 ile bolum 800 ayni" diyordu. Hakliydi.
   //
-
+  //  YENI MERDIVEN (sahip belirledi):
   //     1-10    4x4      ogrenme. Kucuk tahta, hata yapmak ucuz.
   //     11-30   5x5
   //     31-50   6x6
@@ -2093,7 +2093,7 @@
   ];
   // Kademe basina hedef zorluk puani araligi. Uretilen tahta bu araliga girmezse
   // reddedilir. 30 kademe icin uretilir - elle yazmak hataya acik.
-  //: 30 kademe icin skor araligi. Elle yazmak hataya acik, uretiliyor.
+  // 30 kademe icin skor araligi. Elle yazmak hataya acik, uretiliyor.
   // Taban yukselir (kolay tahtalar elenir), tavan tahta alanina gore acilir.
   // 4x4 tahtada 90 puanlik tahta uretilemez - taban/tavan boyu takip etmeli.
   var TIER_SKOR=(function(){
@@ -2116,7 +2116,7 @@
   // ==========================================================================
   //  KADEME PROFILI - 1000 BOLUME KADAR
   // --------------------------------------------------------------------------
-
+  //  OLCULEN SORUN: Eski dogrusal buyume 100. bolumden sonra coktu.
   //    - duvar sayisi 59-64'e cikti (81 hucrenin 3/4'u dolu)
   //    - solucan deligi hic konmadi (delik 0)
   //    - hedef skor [244,842] gibi imkansiz hale geldi
@@ -2132,16 +2132,16 @@
   //   4. 7. kademeden sonra zorluk DONGUSEL degisir: ayni tavanda kalir
   //      ama her kademe farkli bir KARAKTER alir (duvarli / aynali / delikli).
   //      Boylece bolum 300 ile 700 ayni hissettirmez.
-  //   5. Her 50. bolum OZEL: en zor tahta.
+  //   5. Her 50. bolum OZEL: en zor tahta (bkz. buyukMilestone).
   // ==========================================================================
-  //: Tavan 9x9 -> 10x10. TIERS artik 10x10'a kadar cikiyor,
+  // Tavan 9x9 -> 10x10. TIERS artik 10x10'a kadar cikiyor,
   // tavan onu kirpmamali. 11x11 test edilmedi, bilerek acilmadi.
-  //: cry 3 -> 5. Ayristirici prizma bir kristali ikiye boluyor.
+  // cry 3 -> 5. Ayristirici prizma bir kristali ikiye boluyor.
   var TAVAN={ n:10, mir:14, cry:5, holes:4, duvarOran:0.42, srcPrism:6 };
   // Buyuk sinav (her 50. bolum) tahtasi. Normal tavanin BIR USTU.
   // Oyuncu 10x10 tahtayi gorunce "bu farkli" der. Sayilari biraz
-
-
+  // artirmak yetmiyordu (olcum: 20 bolumun sadece 11'i komsusundan zordu).
+  // DUZELTME: BUYUK_N 11 yapilmisti, olcumde bolum 500-1000 arasi
   // TUM tahtalar 11x11 cikti - kucuk telefonda hucre 31px, parmak ucu 45px ister.
   // Buyuk sinav artik boyutla degil AYNA SAYISI ve YOL UZUNLUGU ile zorlasir.
   var BUYUK_N=10;
@@ -2180,6 +2180,7 @@
     var duvarTavan=Math.floor(alan*TAVAN.duvarOran*k.duvar);
     var duvarTaban=Math.max(son.wall[0], Math.floor(duvarTavan*0.72));
 
+    // Ayna: OLCULEN tavan 12, ama 12'yi SART kosmak uretimi cokertiyor.
     // Taban 9'da durur, tavan 12. Uretici bu araliktan rahat bulur.
     var mirTaban=Math.min(9, son.mir[0]+Math.floor(f/3));
     var mirTavan=Math.min(TAVAN.mir, mirTaban+3);
@@ -2193,17 +2194,17 @@
       mir:[mirTaban, mirTavan],
       wall:[duvarTaban, duvarTavan],
       holes:delik,
-
+      // Yol: OLCULEN tavan 30. Sart 20'de durur ki ayna sartiyla cakismasin.
       path:[Math.min(20, son.path[0]+Math.floor(f/3)), 99],
       srcPrism:Math.min(TAVAN.srcPrism, son.srcPrism+Math.floor(f/3)),
-      ayristirici:1,          //: ust kademelerde her zaman var
+      ayristirici:1,          // ust kademelerde her zaman var
       karakter:k.ad
     };
   }
 
   function tierSkorAralik(tier){
     if(tier<=TIER_SKOR.length)return TIER_SKOR[tier-1].slice();
-
+    // OLCULEN GERCEK: 9x9 tahtada uretilebilen en yuksek skor ~95.
     // Eski formul [244,842] gibi imkansiz hedefler uretiyordu, bu yuzden
     // uretici her seferinde kurallari birakiyordu.
     // Artik aralik GERCEKCI bir tavanda durur. Kademe arttikca TABAN yukselir,
@@ -2254,8 +2255,8 @@
     var maxBest=Math.min(pr.mir[1], minBest+1);
     var walls=ara(pr.wall,t);
     var cry=ara(pr.cry,t);
-    //: Eskiden cryMin hep cry-1 idi. 3 kristal istenip 2 kabul
-
+    // Eskiden cryMin hep cry-1 idi. 3 kristal istenip 2 kabul
+    // ediliyordu, olcumde bolum 700'de bile 2 kristal cikti.
     // Kademe 4'ten (bolum 31) sonra 3 kristal SART.
     var cryMin = (tier>=4) ? Math.min(3,cry) : Math.max(2,cry-1);
     var minPath=ara([pr.path[0], pr.path[0]+4], t);
@@ -2265,7 +2266,7 @@
 
     // MILESTONE (her 10. bolum): kademenin en zoru + bir tik daha.
     if(milestone){
-      //: Sabit 9 yerine TAVAN.n. Merdiven 10x10'a kadar cikiyor,
+      // Sabit 9 yerine TAVAN.n. Merdiven 10x10'a kadar cikiyor,
       // milestone onu 9'a kirpmamali.
       n=Math.min(TAVAN.n, n+ (tier<=2?1:0));
       minBest=Math.min(pr.mir[1]+1, minBest+1);
@@ -2282,7 +2283,7 @@
     // Oyuncu 50, 100, 150... bolumlerini hatirlamali.
     var buyuk=buyukMilestone(level);
     if(buyuk){
-
+      // OLCULEN gercege gore ayarli. Ikisinin de tavanini ayni anda istemez.
       // Zorluk AYNA sayisindan gelir, yol sarti gevsek birakilir ki
       // uretici gercekten bulabilsin.
       // Kademe 5'ten sonra tahta BUYUR. Gorunur fark yaratir.
@@ -2312,7 +2313,7 @@
       var b=stack.pop();
       var nx=b.x+DX[b.d], ny=b.y+DY[b.d];
       if(!inb(nx,ny)){segs.push({x1:b.x,y1:b.y,x2:nx,y2:ny,c:b.c});continue;}
-      //: Anahta DERINLIK de girdi. Ayristirici prizma ayni hucreden
+      // Anahta DERINLIK de girdi. Ayristirici prizma ayni hucreden
       // farkli derinlikte isin gecirebilir; derinlik olmadan bunlar ayni
       // sayilip yanlislikla "dongu" diye patliyordu.
       var key=nx+','+ny+','+b.d+','+b.c+','+(b.dr||0);
@@ -2336,14 +2337,14 @@
         var dr=(b.dr||0);
         if(b.c==='W'){
           // BEYAZ ISIK -> UC RENK (sol / duz / sag)
-          //: geri yon kaldirildi, beyaz isinin ustunu kapatiyordu.
+          // geri yon kaldirildi, beyaz isinin ustunu kapatiyordu.
           var pc=state.prismColors||['R','G','B'];
           stack.push({x:nx,y:ny,d:(b.d+3)%4,c:pc[0],dr:dr+1});   // sol
           stack.push({x:nx,y:ny,d:b.d,      c:pc[1],dr:dr+1});   // duz
           stack.push({x:nx,y:ny,d:(b.d+1)%4,c:pc[2],dr:dr+1});   // sag
         }
         else if(cell.ayr && dr < AYRISMA_DERINLIK && AYRISMA[b.c]){
-          //: AYRISTIRICI PRIZMA. Renkli isigi IKI renge ayirir.
+          // AYRISTIRICI PRIZMA. Renkli isigi IKI renge ayirir.
           // cell.ayr bayragi olmayan prizma eski gibi gecirir - bu sayede
           // tek prizmali eski tahtalar AYNEN calisir.
           // Derinlik siniri: sonsuz agaci onler ve isin cizimini okunur tutar.
@@ -2367,7 +2368,7 @@
     // Butce tahta boyutuna gore. Buyuk tahtada arama agaci katlanarak buyuyor,
     // sabit butce 9x9'da saniyeler suruyordu.
     // Arama butcesi tahta boyutuna gore. 10x10 arama uzayi cok daha buyuk,
-
+    // butce kisilir yoksa eski telefon donar. (olcum: 693ms -> hedef <400ms)
     var budget=(state.n<=6)?45000:(state.n===7)?30000:(state.n===8)?14000:
                (state.n===9)?7000:5000;
     var seenSets={};
@@ -2431,9 +2432,9 @@
     // ongorulemez sekilde uzamaz.
     function simdi(){ return (window.performance&&performance.now)?performance.now():Date.now(); }
     if(!state._uretimBaslangic) state._uretimBaslangic=simdi();
-    //: Delik yerlestirme her denemede simulate+solvedBy cagiriyor.
-
-
+    // Delik yerlestirme her denemede simulate+solvedBy cagiriyor.
+    // Olcum: eski 420/520ms butcesiyle 29 tahtanin 23'unde delik konamadi.
+    // Butce ~%45 acildi. Olculen en yavas uretim 854ms -> hedef <1200ms.
     var toplamButce=state._genisButce ? ((state.n>=10)?900:800) : ((state.n>=10)?750:620);
     function gecenMs(){ return simdi()-state._uretimBaslangic; }
     var sureSiniri=toplamButce;
@@ -2487,7 +2488,7 @@
       //  IKINCI PRIZMA - AYRISTIRICI
       // ----------------------------------------------------------------------
       //  SORUN: Tahtada tek prizma vardi, uc renge ayiriyordu. Kristal tavani
-
+      //  3'te kilitliydi. Bolum 1 ile bolum 1000 ayni renk sayisina sahipti.
       //
       //  COZUM: Ikinci prizma RENKLI isigi IKI renge ayirir.
       //  Boylece 3 -> 5 kristal mumkun olur.
@@ -2604,12 +2605,12 @@
       // ======================================================================
       //  SOLUCAN DELIGI - KACIS KAPISI
       // ----------------------------------------------------------------------
-
+      //  ESKI HATA: Delik, isigin ZATEN GECTIGI hucreye konuyordu.
       //  Isik oraya nasilsa ulasiyordu; delik sadece yolu kisaltiyordu.
       //  Oyuncu "bu delik olmasa da olurdu" diyordu. Hakliydi.
       //
       //  ILK DENEME DE YANLISTI: Deligi hazir cozumun ustune "engel arkasina"
-
+      //  koymayi denedim. OLCUM: 29 tahtanin 29'unda delik konamadi, hepsi
       //  "cozulmedi" ile eledi. Sebep mantiksal - isik A'ya girip B'ye
       //  isinlaninca ARADAKI kristalleri atliyor. Delik cozumu kisaltmiyor,
       //  BOZUYOR.
@@ -2625,7 +2626,7 @@
       //  Goz karariyla degil, makineyle olculur (state._delikGerekli).
       //
       //  YON DEGISMEZ: Isik girdigi yonde cikar. Aynanin isi dondurmek,
-      //  deligin isi tasimak. Cikis deligine ok cizilir.
+      //  deligin isi tasimak. Cikis deligine ok cizilir (bkz. draw).
       // ======================================================================
       state.holePairs={}; state.holeList=[];
       var hCift=0, hWant=cfg.holePairs||0;
@@ -2664,7 +2665,7 @@
 
           // EK: Cikis yonu icin ONCE giris yonu denenir (duz gecis).
           // Tutmazsa DIGER yonler denenir - kristal koseye sikismis olabilir.
-
+          // OLCUM: tek yonle 29 tahtanin 17'sinde delik konamiyordu.
           var yonAdaylari=[girisYon];
           for(var yq=0; yq<4; yq++) if(yq!==girisYon) yonAdaylari.push(yq);
 
@@ -2747,7 +2748,7 @@
       if(simSon.segs.length<cfg.minPath)continue;
       // 4) Delik cifti dogru mu (istenmisse ve konulabilmisse)
       if((cfg.holePairs||0)>0 && state.holeList.length===0 && !cfg._delikGevsek)continue;
-      // 4b): Delik GERCEKTEN gerekli mi. Katı modda susten delik kabul edilmez.
+      // 4b) Delik GERCEKTEN gerekli mi. Katı modda susten delik kabul edilmez.
       // Gevsek modda kabul edilir - tahta uretilemez olmaktansa zayif delik yeg.
       if(state.holeList.length>0 && !state._delikGerekli && !cfg._delikGevsek)continue;
 
@@ -2760,6 +2761,9 @@
       state.skor=difficultyScore({n:state.n, best:state.best, path:simSon.segs.length,
                                   walls:duvarSay, holes:state.holeList.length,
                                   cry:state.crystals.length});
+      state.olcum={n:state.n, best:state.best, path:simSon.segs.length, walls:duvarSay,
+                   holes:state.holeList.length, cry:state.crystals.length,
+                   deneme:attempt+1};
       if(cfg.skor && !cfg._skorGevsek){
         if(state.skor<cfg.skor[0]||state.skor>cfg.skor[1])continue;
       }
@@ -2823,11 +2827,11 @@
 
     var sim=simulate(state.mirrors);
     var zafer = (sim.count===state.crystals.length && state.crystals.length>0);
-    //: Kilit TAM BURADA kurulur. kazandI() cizimden sonra calisiyordu,
+    // Kilit TAM BURADA kurulur. kazandI() cizimden sonra calisiyordu,
     // aradaki bosluktan tiklama geciyor ve cozulmus tahta bozulabiliyordu.
     if(zafer && state.mode==='yolculuk') state.bitti=true;
     // Zaferde isinlar kaynaktan uca dogru SIRAYLA akar. segs zaten kaynaktan baslar.
-    //: Zamana karsi modunda akis HIZLANDI. 0.45sn -> 0.26sn.
+    // Zamana karsi modunda akis HIZLANDI. 0.45sn -> 0.26sn.
     // Gerekce: yarista her saniye sayilir. Efekti seyretmek ceza gibi geliyordu.
     // Yolculuk modunda 0.45sn kalir - orada tadini cikarmak sorun degil.
     var akToplam = (state.mode==='zaman') ? 0.26 : 0.45;
@@ -2878,7 +2882,7 @@
         var cikisMi = !!(c.id && c.id.slice(-1)==='b');
         if(!cikisMi) svg.appendChild(el('circle',{cx:cx,cy:cy,r:11,fill:dc}));
 
-        //: CIKIS okunu ciz. Isik bu delikten hangi yonde cikacak,
+        // CIKIS okunu ciz. Isik bu delikten hangi yonde cikacak,
         // oyuncu tahmin etmek zorunda kalmasin. Sadece CIKIS deliginde var.
         // Giris deliginde ok yok - oradan zaten isik girer, cikmaz.
         if(c.id && c.id.slice(-1)==='b'){
@@ -2890,11 +2894,11 @@
             var odx=DX[hkayit.d], ody=DY[hkayit.d];
             var kx=-ody, ky=odx;                    // yone dik vektor
             // DUZELTME: Ok cok kucuktu (46px ofset, halka yaricapi 34)
-
+            // ve hucre kenarina siginiyordu - olcumde ekranda secilemiyordu.
             // Artik halkanin icinde, tam merkezde, KALIN bir ok cizilir.
             // Delik merkezindeki dolu daire kaldirilip yerine ok konur:
             // "bu delik CIKIS, isik su yone gider" tek bakista okunur.
-
+            // Ok merkezde, KALIN ve BUYUK. Olcum: onceki hali 22x16 birimdi,
             // 100 birimlik hucrede goze carpmiyordu. Simdi ~46x34.
             // Once koyu bir zemin dairesi cizilir - ok her temada okunur kalir.
             svg.appendChild(el('circle',{cx:cx,cy:cy,r:21,fill:T.cell,
@@ -2916,7 +2920,7 @@
         svg.appendChild(el('circle',{cx:cx,cy:cy,r:17,fill:INK(),'class':'kaynakIc'}));
       } else if(c.t===PRISM){
         if(c.ayr){
-          //: AYRISTIRICI PRIZMA. Renkli isigi iki renge ayirir.
+          // AYRISTIRICI PRIZMA. Renkli isigi iki renge ayirir.
           // GORSEL AYRIM: ana prizma UCGEN, ayristirici BAKLAVA (dondurulmus kare).
           // Sekil farki renkten once okunur - renk korlugu ayarindan bagimsiz calisir.
           svg.appendChild(el('polygon',{
@@ -3011,7 +3015,7 @@
     if(tahtaKilitli())return;     // bolum bitti, tahta kilitli
     var k=x+','+y, cur=state.mirrors[k];
 
-    //: SERT AYNA LIMITI (her 10. bolum).
+    // SERT AYNA LIMITI (her 10. bolum).
     // Sadece YENI ayna koymayi engeller. Cevirme ve kaldirma serbest -
     // oyuncu kilitlenmemeli, her zaman geri alabilmeli.
     if(!cur && aynaLimitiVarMi()){
@@ -3023,14 +3027,14 @@
       }
     }
 
-    //: Kac kristal YANIYORDU - degisimi duymak icin.
+    // Kac kristal YANIYORDU - degisimi duymak icin.
     var oncekiKristal = 0;
     try{ oncekiKristal = simulate(state.mirrors).count; }catch(e){}
 
     if(!cur)state.mirrors[k]='/'; else if(cur==='/')state.mirrors[k]='\\'; else delete state.mirrors[k];
     state._sonAyna=state.mirrors[k]?k:null;
 
-    //: GERI BILDIRIM. Oyunun en onemli etkilesimiydi ve
+    // GERI BILDIRIM. Oyunun en onemli etkilesimiydi ve
     // TAMAMEN SESSIZDI - ne ses ne titresim. Her dokunusun
     // karsilik vermesi gerekir, yoksa oyun olu hisseder.
     if(!cur)            titret('ayna');    // yeni ayna kondu
@@ -3072,8 +3076,8 @@
     if(cfg.buyuk){ tabanAyna=Math.max(tabanAyna, 8); tabanYol=Math.max(tabanYol, 14); }
 
     var adimlar=[
-      //: Delik sarti ARTIK GEC birakilir. Eskiden 3. adimda birakiliyordu,
-
+      // Delik sarti ARTIK GEC birakilir. Eskiden 3. adimda birakiliyordu,
+      // olcumde 29 tahtanin 29'unda delik konamadi. Once yol ve ayna gevsetilir,
       // delik en son birakilir - delikli tahta uretme sansi artar.
       {},                                             // 1) tam sart
       {_skorGevsek:1},                                // 2) zorluk puanini birak
@@ -3096,7 +3100,7 @@
     }
     // Butce dolduysa SON CARE tekrar denenir, bu kez GENIS butceyle
     // ve en gevsek sartlarla. Bolum mutlaka uretilmeli, ama sonsuza
-
+    // kadar da beklenemez. (olcum: butcesiz hali 1.4sn surebiliyordu)
     state.gevsetme=adimlar.length-1;
     state._uretimBaslangic=(window.performance&&performance.now)?performance.now():Date.now();
     state._genisButce=1;
@@ -3122,7 +3126,7 @@
     }
     state.justWon=false; state.mistakes=0; state.loopSeen=false; state.paid=false;
     state.bitti=false;
-    state._ipucuSayi=0;              //: her tahtada bedava ipucu yeniden baslar
+    state._ipucuSayi=0;              // her tahtada bedava ipucu yeniden baslar
     if(!buildRelaxed(state.cfg)){
       document.getElementById('ipucu').textContent='Tahta üretilemedi. "Yeni tahta"ya bas.';
       return;
@@ -3146,14 +3150,14 @@
     for(var k in EKRANLAR) document.getElementById(EKRANLAR[k]).classList.toggle('acik', k===ad);
     aktifEkran=ad; window.scrollTo(0,0);
     if(ad==='harita')haritaCiz();
-    // Oyun ekraninda zemin deseni kisilir
+    // Oyun ekraninda zemin deseni kisilir (bkz. CSS .oyunda)
     document.documentElement.classList.toggle('oyunda', ad==='oyun');
     if(ad==='menu')devamKartiCiz();
     if(ad==='magaza')magazaCiz();
     if(ad==='dunya')dunyaCiz();
     if(ad==='basari'){
       basariEkraniCiz();
-      //: Nereden gelindiyse o sekme acilir.
+      // Nereden gelindiyse o sekme acilir.
       // Seri seridinden -> Basarilar (seri kilometre taslari orada).
       // Menu dugmesinden -> Gunluk gorev.
       if(state._odulSekme){ bSekmeAc(state._odulSekme); state._odulSekme=null; }
@@ -3336,7 +3340,7 @@
   function rozetleriCiz(){
     canYenile();
     reklamGoster();                              //
-    //: Plus'ta can rozeti sonsuz isareti gosterir.
+    // Plus'ta can rozeti sonsuz isareti gosterir.
     var c = state.plus ? '∞' : state.lives;
     var p=state.coins, sure = state.plus ? 0 : canKalanSure();
     var canDegisti=(_sonCan!==null&&_sonCan!==c), paraDegisti=(_sonPara!==null&&_sonPara!==p);
@@ -3350,10 +3354,10 @@
   // ==========================================================================
   //  AYNA EKONOMISI
   // --------------------------------------------------------------------------
-
+  //  SORUN (sahip bildirdi): Oyuncu dusunmeden ayna serpistirip cozebiliyordu.
   //  3 aynalik tahtayi 6 ayna ile gecmek serbestti.
   //
-
+  //  SAHIP ISTEGI: Fazla ayna kullanan tahtayi GECEMESIN.
   //  GELISTIRICI ITIRAZI: Isik kristale ulastiysa oyuncu cozmustur.
   //  Reddetmek haksiz gelir, ustelik ceza aynayi KOYARKEN degil BITINCE
   //  geliyor - geri donus yok. Yeni oyuncu ilk 10 tahtada deneyerek ogrenir.
@@ -3387,7 +3391,7 @@
     if(fazla<=0)return 3;
     if(fazla===1)return 2;
     if(fazla<=3)return 1;
-    return 0;        //: 4+ fazla ayna = odul yok
+    return 0;        // 4+ fazla ayna = odul yok
   }
   function yildizSVG(dolu){
     return '<span class="y'+(dolu?' dolu':'')+'"><svg viewBox="0 0 24 24">'+
@@ -3528,7 +3532,7 @@
     var mile=state.cfg&&state.cfg.milestone;
     $('bolumNo').textContent = (state.mode==='zaman')?'Zamana karşı':('Bölüm '+state.level);
     $('bolumBas').className='bolumbasI'+(mile?' buyuk':'');
-    //: AYNA SAYACI. Duz metin yerine "4 / 3" formati.
+    // AYNA SAYACI. Duz metin yerine "4 / 3" formati.
     // Fazlaysa kirmizi olur. Oyuncu tahtaya bakarken bile kenardan gorur.
     // Ceza degil FARKINDALIK - bitince surpriz olmasin.
     var limitVar=aynaLimitiVarMi(), limit=aynaLimiti();
@@ -3573,7 +3577,7 @@
     var y=yildizSayisi(kullanilan,state.best);
     yildizKaydet(state.level,y);
 
-    //: 0 yildiz = odul yok. Sonuc kartinda "Yildiz yok" yaziyor,
+    // 0 yildiz = odul yok. Sonuc kartinda "Yildiz yok" yaziyor,
     // isik vermek o mesajla celisirdi. Tahta yine de GECILIR -
     // oyuncu ilerlemesini kaybetmez, sadece odulunu kaybeder.
     var kazanc=(y===3?12:(y===2?7:(y===1?4:0)));
@@ -3598,7 +3602,7 @@
     var yeniDeko=dunyaYeni||decoTara(), yeniBasari=basariTara();
     state._dunyaAcildiSimdi=!!dunyaYeni;
     state._sonOdul={deko:yeniDeko, basari:yeniBasari};
-    //: Eskiden desen (TITRESIM.bitis) geciliyordu - ses calmiyordu.
+    // Eskiden desen (TITRESIM.bitis) geciliyordu - ses calmiyordu.
     // Isimle cagirinca hem titresim hem yukselen arpej calisir.
     titret('bitis');
     save(); rozetleriCiz();
@@ -3609,7 +3613,7 @@
       // Zaman modunda zorluk YAVASCA artar. Her 3 cozumde bir basamak.
       // Boylece 180 saniye boyunca ayni seviyede kalmaz, ama kopmaz da.
       state.level = state.tBaslangic + Math.floor(state.tScore/3);
-      //: 900ms -> 480ms. Efekt bitince hemen yeni tahta gelsin.
+      // 900ms -> 480ms. Efekt bitince hemen yeni tahta gelsin.
       setTimeout(function(){ if(state.tLeft>0)loadLevel(); },480);
       return;
     }
@@ -3625,7 +3629,7 @@
   // ===================== SONUÇ KARTI =====================
   function sonucKart(y,kullanilan,kazanc,hediye,mile){
     $('kBaslik').textContent = mile?'Büyük bölüm bitti':'Çözdün';
-    //: 0 yildiz durumu eklendi. Tahta gecilir ama odul yok.
+    // 0 yildiz durumu eklendi. Tahta gecilir ama odul yok.
     // Metin sucluyor degil, yol gosteriyor: "tekrar dene" butonu zaten altta.
     $('kAlt').textContent = (y===3)?'En iyi çözüm. Bundan azı yok.'
                           : (y===2)?('Bir ayna fazla. '+state.best+' aynayla da olur.')
@@ -3740,7 +3744,7 @@
       btn.disabled=true;
       var eski=btn.querySelector('.sag').textContent;
       btn.querySelector('.sag').textContent='...';
-
+      // TODO: gercek reklam SDK'si buraya baglanacak (AdMob rewarded)
       setTimeout(function(){
         urunOdulVer(u); magazaCiz(); titret('basari');
         magazaNotYaz(urunOdulMetni(u)+' kazandın.','iyi');
@@ -4021,7 +4025,7 @@
   //  serit var. Serit "bugun ne yapmali" sorusunu tek satirda cevaplar.
   //  Ayrinti isteyen serite dokunur.
   //
-
+  //  Gorev ve basari verisi Faz 1'de hazirdi (DAILY_TASKS, ACHIEVEMENTS).
   //  Burada sadece ARAYUZ var. Mantik degismedi.
   // ==========================================================================
 
@@ -4189,8 +4193,150 @@
       }
       box.appendChild(sat);
     });
+    /* GEL-CAGRI */ if(typeof gelistiriciCiz==='function') gelistiriciCiz();
   }
 
+  // ===== GELISTIRICI MODU BASLANGIC =====
+  // ==========================================================================
+  //  GELISTIRICI MODU  (D-121, sahip istegi)
+  // --------------------------------------------------------------------------
+  //  AMAC: Sahip her bolumu tek tek gecmeden istedigi bolume gidebilsin.
+  //  1000 bolumlu bir oyunda bolum 700'u elle test etmek imkansiz.
+  //
+  //  GUVENLIK: Bu blok YAYIN SURUMUNDE TAMAMEN SILINIR.
+  //  _yayin_yap.py "GELISTIRICI MODU BASLANGIC" ve "GELISTIRICI MODU BITIS"
+  //  isaretleri arasindaki her seyi cikarir. Play'e giden dosyada bu kod
+  //  BULUNMAZ - sifre de bulunmaz, kilit acma da bulunmaz.
+  //
+  //  NEDEN SILINIYOR: Sifre dort haneli. Yayin surumunde kalsa biri
+  //  kaynak koda bakip bulur, tum bolumleri acar. Oyunun ilerleme
+  //  sistemi coker. Sifreyi uzatmak cozum degil - kod okunabilir
+  //  oldugu surece her sifre bulunur. Dogru cozum kodu hic koymamak.
+  //
+  //  KALICI DEGIL: Acilan kilit KAYDA YAZILMAZ. Uygulama kapanip
+  //  acilinca gecerli ilerlemeye doner. Boylece test verisi gercek
+  //  ilerlemeyi kalici olarak bozmaz.
+  // ==========================================================================
+  var GELISTIRICI = { sifre:'2137', acik:false };
+
+  function gelistiriciAc(girilen){
+    if(String(girilen).trim() !== GELISTIRICI.sifre) return false;
+    GELISTIRICI.acik = true;
+    return true;
+  }
+
+  function gelistiriciGit(hedef){
+    var n = parseInt(hedef,10);
+    if(!isFinite(n) || n < 1) return 'Geçersiz bölüm numarası.';
+    if(n > 1000) return 'En yüksek bölüm 1000.';
+
+    // OLCUM NOTU: Ilk yazdigim halde "kayda yazilmaz" demistim ama
+    // bolumBaslat() icinde save() cagriliyordu. Test bunu yakaladi:
+    // sayfa yenilendikten sonra enYuksek 500'de kalmisti.
+    // Cozum: gercek ilerlemeyi yedekle, bolum acildiktan SONRA geri yaz.
+    var gercekEnYuksek = state.enYuksek;
+
+    if(state.enYuksek < n) state.enYuksek = n;
+    state.level = n;
+    bolumBaslat(n);
+
+    // Kilidi geri kapat - kayitta gercek ilerleme kalsin.
+    // Oturum boyunca haritada acik gorunmez ama gelistirici paneli
+    // her bolume dogrudan gidebilir, bu yeterli.
+    state.enYuksek = gercekEnYuksek;
+    save();
+    return null;
+  }
+
+  function gelistiriciCiz(){
+    var box=$('ayarListe'); if(!box)return;
+
+    var g=document.createElement('div');
+    g.className='ayar-grup'; g.textContent='Geliştirici';
+    box.appendChild(g);
+
+    var sat=document.createElement('div');
+    sat.className='ayar';
+    sat.style.display='block';
+
+    if(!GELISTIRICI.acik){
+      sat.innerHTML =
+        '<div class="ad">Geliştirici kodu</div>'+
+        '<div style="font-size:.8rem;font-weight:700;color:var(--metin-soft);margin-bottom:8px">'+
+        'Test amaçlıdır. Yayın sürümünde bulunmaz.</div>'+
+        '<div style="display:flex;gap:8px">'+
+        '<input id="gelKod" type="tel" inputmode="numeric" maxlength="8" '+
+        'placeholder="••••" style="flex:1;min-width:0;padding:10px 12px;'+
+        'border-radius:10px;border:2px solid var(--cizgi);background:var(--kart);'+
+        'color:var(--metin);font:inherit;font-weight:800;letter-spacing:.3em;'+
+        'text-align:center">'+
+        '<button class="btn sade" id="gelGir" type="button" style="flex:0 0 auto">Aç</button>'+
+        '</div>'+
+        '<div id="gelNot" class="not" style="margin-top:6px"></div>';
+      box.appendChild(sat);
+
+      var gir=function(){
+        var v=$('gelKod').value;
+        if(gelistiriciAc(v)){
+          titret('basari');
+          ayarlarCiz();
+        }else{
+          $('gelNot').textContent='Kod yanlış.';
+          $('gelKod').value='';
+          titret('hata');
+        }
+      };
+      $('gelGir').addEventListener('click',gir);
+      $('gelKod').addEventListener('keydown',function(e){ if(e.key==='Enter')gir(); });
+
+    } else {
+      sat.innerHTML =
+        '<div class="ad">Bölüme git</div>'+
+        '<div style="font-size:.8rem;font-weight:700;color:var(--metin-soft);margin-bottom:8px">'+
+        'Kilitler geçici olarak açık. Uygulamayı kapatınca eski hâline döner.</div>'+
+        '<div style="display:flex;gap:8px">'+
+        '<input id="gelBolum" type="tel" inputmode="numeric" maxlength="4" '+
+        'placeholder="1-1000" style="flex:1;min-width:0;padding:10px 12px;'+
+        'border-radius:10px;border:2px solid var(--cizgi);background:var(--kart);'+
+        'color:var(--metin);font:inherit;font-weight:800;text-align:center">'+
+        '<button class="btn sade" id="gelGit" type="button" style="flex:0 0 auto">Git</button>'+
+        '</div>'+
+        '<div id="gelNot2" class="not" style="margin-top:6px"></div>'+
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+
+        [1,10,31,61,101,151,201,301,500,1000].map(function(n){
+          return '<button class="btn sade gel-hizli" type="button" data-n="'+n+'" '+
+                 'style="flex:0 0 auto;padding:7px 12px;font-size:.8rem">'+n+'</button>';
+        }).join('')+
+        '</div>'+
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+
+        '<button class="btn sade" id="gelIsik" type="button" style="flex:1;padding:8px;font-size:.8rem">+1000 ışık</button>'+
+        '<button class="btn sade" id="gelCan" type="button" style="flex:1;padding:8px;font-size:.8rem">Canları doldur</button>'+
+        '</div>';
+      box.appendChild(sat);
+
+      // NOT: 'git' zaten ekran gecis fonksiyonu. Burada ADI FARKLI olmali,
+      // yoksa ust kapsamdaki git() golgelenir ve ekran gecisi kirilir.
+      var bolumeGit=function(n){
+        var hata=gelistiriciGit(n);
+        if(hata){ $('gelNot2').textContent=hata; titret('hata'); return; }
+        titret('basari');
+        git('oyun');              // ekran gecis fonksiyonu
+      };
+
+      $('gelGit').addEventListener('click',function(){ bolumeGit($('gelBolum').value); });
+      $('gelBolum').addEventListener('keydown',function(e){ if(e.key==='Enter')bolumeGit($('gelBolum').value); });
+      [].forEach.call(sat.querySelectorAll('.gel-hizli'),function(b){
+        b.addEventListener('click',function(){ bolumeGit(b.getAttribute('data-n')); });
+      });
+      $('gelIsik').addEventListener('click',function(){
+        state.coins=Math.min(9999999,(state.coins||0)+1000); save(); rozetleriCiz(); titret('basari');
+      });
+      $('gelCan').addEventListener('click',function(){
+        state.lives=MAX_LIVES; state.livesAt=Date.now(); save(); rozetleriCiz(); titret('basari');
+      });
+    }
+  }
+  // ===== GELISTIRICI MODU BITIS =====
 
   // ==========================================================================
   //  HAKKINDA
@@ -4506,7 +4652,7 @@
     try{ localStorage.setItem(SAVE_KEY+'_yedek', localStorage.getItem(SAVE_KEY)||''); }catch(e){}
 
     // ------------------------------------------------------------------
-    //: TIP DOGRULAMASI ICE AKTARIMDA DA CALISIR
+    // TIP DOGRULAMASI ICE AKTARIMDA DA CALISIR
     //
     //  ESKIDEN: alanlar dogrudan state'e kopyalaniyordu. Elle duzenlenmis
     //  bir kod state.level'a metin, state.stars'a dizi koyabiliyordu.
@@ -4584,7 +4730,7 @@
           'Hesabı değiştirmek için telefonun <b>Play Oyunlar</b> uygulamasını kullan.</p>'
         : '')+
 
-      // 3) Elle yedekleme -: KATLANIR, kapali gelir.
+      // 3) Elle yedekleme - KATLANIR, kapali gelir.
       // Normal oyuncu goremez. Sorun yasayan oyuncu acar.
       '<button class="hs-katla" type="button" id="hsGelismisAc">'+
         '<span>Gelişmiş: kodla yedekleme</span><span class="ok">›</span></button>'+
@@ -4613,7 +4759,7 @@
       '<p class="hk-tesekkur">Kaydın telefonunda saklanıyor ve '+
         'Google hesabına yedekleniyor.</p>';
 
-    //: Gelismis bolumu ac/kapa
+    // Gelismis bolumu ac/kapa
     var ga=$('hsGelismisAc');
     if(ga)ga.addEventListener('click',function(){
       var b=$('hsGelismis'); if(!b)return;
@@ -4789,8 +4935,8 @@
   //  KILITLI    -> seviye yetmiyor
   //  ALINABILIR -> seviye yetiyor, para yetiyor
   //  PAHALI     -> seviye yetiyor, para yetmiyor
-
-
+  //  ACIK       -> sahip, secili degil
+  //  SECILI     -> sahip, kullaniliyor
   function temaDurum(t){
     if(state.unlocked[t.id]) return (state.theme===t.id)?'secili':'acik';
     if(state.enYuksek < t.lv) return 'kilitli';
@@ -5151,14 +5297,14 @@
 
   // ===================== OLAY BAĞLARI =====================
   $('btnOyna').addEventListener('click',function(){ git('harita'); });
-  //: Metin bagi da haritaya gider. Buyuk buton gizliyken bu kullanilir.
+  // Metin bagi da haritaya gider. Buyuk buton gizliyken bu kullanilir.
   (function(){ var b=$('bagHarita'); if(b)b.addEventListener('click',function(){ git('harita'); }); })();
-  //: Seri seridi Odul Odasi'ni acar - kilometre taslari orada.
+  // Seri seridi Odul Odasi'ni acar - kilometre taslari orada.
   (function(){ var b=$('seriSerit'); if(b)b.addEventListener('click',function(){
     state._odulSekme='basari';    // seri kilometre taslarina git
     git('basari');
   }); })();
-  //: Odul Odasi kisayolu
+  // Odul Odasi kisayolu
   (function(){ var b=$('btnOdul'); if(b)b.addEventListener('click',function(){
     state._odulSekme='gunluk'; git('basari');
   }); })();
@@ -5231,7 +5377,7 @@
   //  Ipucunun bedeli "biraz bekle" olmali, "biraz biriktir" degil.
   //  Boylece cok ipucu kullanan oyuncu oyunu birakmaz, yavaslar.
   // ==========================================================================
-
+  // DENGE NOTU (sahip karari): Bedava ipucu KALDIRILDI.
   // Gerekce: 2 bedava ipucu ard arda basilarak tahtanin yarisi aciliyordu.
   // Artik HER ipucu 1 can. Plus sahibi tahta basina 1 bedava alir -
   // bu Plus'in somut bir faydasi olur.
@@ -5279,7 +5425,7 @@
     titret('hafif');
     draw();
 
-    //: Bedava ipucu kaldirildi. Her ipucu 1 can.
+    // Bedava ipucu kaldirildi. Her ipucu 1 can.
     // Plus sahibinin tahta basina 1 bedava hakki var.
     var kalanBedava = ipucuHakki() - state._ipucuSayi;
     $('ipucu').className='ipucu';
@@ -5304,7 +5450,7 @@
         : 'İpucu, 1 cana mal olur');
     }
 
-    //: Yeni tahta butonu da bedelini gosterir. Plus sahibinde bedel yok.
+    // Yeni tahta butonu da bedelini gosterir. Plus sahibinde bedel yok.
     var by=$('btnYeni');
     if(by){
       by.classList.toggle('bedelli', !state.plus);
@@ -5313,7 +5459,7 @@
         : 'Yeni tahta, 1 cana mal olur');
     }
 
-    //: Pipler. Dolu = kullanilabilir, bos = harcanmis.
+    // Pipler. Dolu = kullanilabilir, bos = harcanmis.
     // Oyuncu tahtaya bakarken bile kenardan gorur.
     var pip=$('hudPipler');
     if(pip){
@@ -5326,6 +5472,7 @@
     if(hi) hi.setAttribute('aria-label', kalan>0
       ? (kalan+' ücretsiz ipucu kaldı') : 'Ücretsiz ipucu bitti, sonraki 1 can');
   }
+
 
 
   // ==========================================================================
@@ -5488,8 +5635,8 @@
   // Bolum bitince cagrilir, sayaclari isler
   function sayacIsle(yildiz,mod){
     gorevKontrol();
-    state._yeniSeri = seriIsle();        //: gunun ilk cozumuyse seri artar
-    //: Omur boyu sayac. state.sayac GUNLUK ve sifirlaniyor,
+    state._yeniSeri = seriIsle();        // gunun ilk cozumuyse seri artar
+    // Omur boyu sayac. state.sayac GUNLUK ve sifirlaniyor,
     // bu yuzden kalici ilerleme icin ayri bir sayac sart.
     state.toplamCozulen = (state.toplamCozulen||0) + 1;
     state.sayac.cozulen=(state.sayac.cozulen||0)+1;
@@ -5510,7 +5657,7 @@
     save();
   }
   // Ayarlarin gorsel etkisini <html> uzerinde toplar. CSS bunlara bakar.
-  //: Plus sahibine reklam GOSTERILMEZ.
+  // Plus sahibine reklam GOSTERILMEZ.
   // Banner kutulari DOM'dan kaldirilmaz, gizlenir - Plus iptal
   // edilirse (iade) tekrar gorunur. Tek yerden yonetilir.
   function reklamGoster(){
@@ -5523,7 +5670,7 @@
 
   function ayarUygula(){
     var r=document.documentElement;
-    reklamGoster();                 //: Plus durumu her ayar uygulamada tazelenir
+    reklamGoster();                 // Plus durumu her ayar uygulamada tazelenir
     r.classList.toggle('az-hareket', !ayar('animasyon') || !!ayar('azHareket'));
     r.classList.toggle('parcacik-yok', !ayar('parcacik'));
     r.classList.toggle('yuksek-kontrast', !!ayar('kontrast'));
@@ -5620,7 +5767,7 @@
       acilis:  function(){ nota(N.Cd, .18, 'sine', 0,  .5);
                            nota(N.Gd, .18, 'sine', .1, .5);
                            nota(N.C,  .30, 'sine', .2, .6); },
-
+      // Hata: dusen iki nota. Sert degil - oyuncuyu azarlamiyoruz.
       hata:    function(){ nota(N.D, .10, 'triangle', 0,   .55);
                            nota(N.Cd,.16, 'triangle', .08, .5); },
       uyari:   function(){ nota(N.A, .09, 'triangle', 0, .5); }
@@ -5656,7 +5803,7 @@
   //  titret('ayna')  -> TITRESIM.ayna
   //  titret(25)      -> dogrudan
   // Bilinmeyen isim sessizce gecer, hata vermez.
-  //: Bu fonksiyon artik HEM titresim HEM ses verir.
+  // Bu fonksiyon artik HEM titresim HEM ses verir.
   // Adi 'titret' kaldi cunku 22 cagri yeri var ve ikisi hep birlikte
   // kullaniliyor - ayirmak iki kat cagri demek olurdu.
   // Iki ayar BAGIMSIZ: titresim kapali ses acik olabilir, tersi de.
@@ -5672,8 +5819,81 @@
 
   // ==========================================================================
   //  GELISTIRICI / TEST ARACLARI
-
+  //  Uretimde kaldirilacak. Konsoldan cagrilir.
   // ==========================================================================
+  function analyzeLevel(level){
+    var t0=(window.performance&&performance.now)?performance.now():Date.now();
+    var eskiLv=state.level, eskiKarma=state._karma;
+    state.level=level; state._karma=0;
+    var cfg=curve(level);
+    tohumla(level*7919);
+    var ok=buildRelaxed(cfg);
+    var t1=(window.performance&&performance.now)?performance.now():Date.now();
+    var sim=ok?simulate(state.solution):null;
+    var r={
+      level:level,
+      tier:getDifficultyTier(level),
+      milestone:(level%10===0),
+      boardSize:ok?state.n:null,
+      crystals:ok?state.crystals.length:0,
+      walls:ok?(state.olcum?state.olcum.walls:0):0,
+      holes:ok?state.holeList.length:0,
+      optimalMirrors:ok?state.best:null,
+      pathLength:sim?sim.segs.length:0,
+      difficultyScore:ok?state.skor:null,
+      hedefSkor:cfg.skor,
+      generationAttempts:ok&&state.olcum?state.olcum.deneme:null,
+      gevsetmeAdimi:state.gevsetme,
+      isSolvable:!!(ok&&sim&&sim.count===state.crystals.length),
+      ms:Math.round(t1-t0)
+    };
+    state.level=eskiLv; state._karma=eskiKarma;
+    return r;
+  }
+
+  function analyzeDifficultyRange(bas,son){
+    var hepsi=[],hata=0;
+    for(var lv=bas;lv<=son;lv++){
+      var a=analyzeLevel(lv);
+      if(!a.isSolvable)hata++;
+      hepsi.push(a);
+    }
+    function ort(k){ var v=hepsi.filter(function(x){return x[k]!=null;});
+      return v.length? +(v.reduce(function(a,c){return a+c[k];},0)/v.length).toFixed(2):0; }
+    function enaz(k){ var v=hepsi.map(function(x){return x[k];}).filter(function(x){return x!=null;});
+      return v.length?Math.min.apply(null,v):null; }
+    function encok(k){ var v=hepsi.map(function(x){return x[k];}).filter(function(x){return x!=null;});
+      return v.length?Math.max.apply(null,v):null; }
+    var boyutlar={}; hepsi.forEach(function(x){ if(x.boardSize)boyutlar[x.boardSize]=(boyutlar[x.boardSize]||0)+1; });
+    // Kademe bazli ozet
+    var kademe={};
+    hepsi.forEach(function(x){
+      var k=kademe[x.tier]=kademe[x.tier]||{n:0,skor:0,mir:0,path:0,wall:0,hole:0,cry:0,araliktaMi:0};
+      k.n++; k.skor+=x.difficultyScore||0; k.mir+=x.optimalMirrors||0;
+      k.path+=x.pathLength; k.wall+=x.walls; k.hole+=x.holes; k.cry+=x.crystals;
+      if(x.hedefSkor&&x.difficultyScore>=x.hedefSkor[0]&&x.difficultyScore<=x.hedefSkor[1])k.araliktaMi++;
+    });
+    Object.keys(kademe).forEach(function(t){
+      var k=kademe[t];
+      kademe[t]={bolum:k.n, ortSkor:+(k.skor/k.n).toFixed(1), ortAyna:+(k.mir/k.n).toFixed(1),
+                 ortYol:+(k.path/k.n).toFixed(1), ortDuvar:+(k.wall/k.n).toFixed(1),
+                 ortDelik:+(k.hole/k.n).toFixed(1), ortKristal:+(k.cry/k.n).toFixed(1),
+                 skorTutturma:Math.round(k.araliktaMi/k.n*100)+'%'};
+    });
+    return {
+      aralik:bas+'-'+son, bolumSayisi:hepsi.length,
+      averageDifficulty:ort('difficultyScore'),
+      minDifficulty:enaz('difficultyScore'), maxDifficulty:encok('difficultyScore'),
+      averageMirrors:ort('optimalMirrors'), averageWalls:ort('walls'),
+      averageCrystals:ort('crystals'), averageHoles:ort('holes'),
+      averagePath:ort('pathLength'),
+      boardSizes:boyutlar,
+      generationFailureRate:Math.round(hata/hepsi.length*100)+'%',
+      ortalamaMs:ort('ms'), enYavasMs:encok('ms'),
+      kademeler:kademe,
+      detay:hepsi
+    };
+  }
 
   // ---------- DEBUG API (uretimde PR_DEBUG=false ile kapanir) ----------
   var PR_DEBUG=false;
@@ -5685,7 +5905,7 @@
   if(!state.ayar)state.ayar=varsayilanAyarlar();
   temaUygula(); ayarUygula(); gorevKontrol(); decoTara(); basariTara(); debugKur();
   kopruyuBagla();          // Android kabugu varsa Play Games baglanir
-  plusDurumSor();          //: satin alma durumu ve fiyat sorulur
+  plusDurumSor();          // satin alma durumu ve fiyat sorulur
   dunyaAcilisKontrol();   // eski kayitta kapi zaten acik olabilir
   canYenile();
   rozetleriCiz();
