@@ -109,5 +109,5 @@ dependencies {
 
     // D-107: Google Play Faturalandirma (tek seferlik satin alma)
     // Surum sabit. Play Billing 7+ eski API'leri kaldirdi, 6.x kararli.
-    implementation 'com.android.billingclient:billing:7.1.1'
+    implementation 'com.android.billingclient:billing:8.0.0'
 }

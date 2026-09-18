@@ -12,7 +12,9 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.QueryProductDetailsResult;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
@@ -87,7 +89,7 @@ public class Odeme {
 
         istemci = BillingClient.newBuilder(etkinlik)
                 .setListener(this::satinAlmaGuncellendi)
-                .enablePendingPurchases()
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
                 .build();
 
         baglan();
@@ -130,7 +132,9 @@ public class Odeme {
                 .setProductList(Collections.singletonList(p))
                 .build();
 
-        istemci.queryProductDetailsAsync(istek, (sonuc, liste) -> {
+        istemci.queryProductDetailsAsync(istek, (sonuc, detaySonuc) -> {
+            java.util.List<ProductDetails> liste =
+                    (detaySonuc == null) ? null : detaySonuc.getProductDetailsList();
             if (sonuc.getResponseCode() == BillingClient.BillingResponseCode.OK
                     && liste != null && !liste.isEmpty()) {
                 urun = liste.get(0);
