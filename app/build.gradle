@@ -110,4 +110,9 @@ dependencies {
     // D-107: Google Play Faturalandirma (tek seferlik satin alma)
     // Surum sabit. Play Billing 7+ eski API'leri kaldirdi, 6.x kararli.
     implementation 'com.android.billingclient:billing:8.0.0'
+
+    // D-129: AdMob odullu reklam.
+    // Reklam birimi kimlikleri Reklam.java icinde; bos oldukca
+    // hicbir reklam istegi yapilmaz, oyun etkilenmez.
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
 }

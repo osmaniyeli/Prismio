@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         // Bkz. shouldInterceptRequest: her dis istek engelleniyor.
         kopru = new OyunKopru(this, web, getString(R.string.kayit_dosya_adi));
         kopru.odemeyiBagla();     // D-107: Prismio Plus satin alma
+        kopru.reklamiBagla();     // D-129: odullu reklam (kimlik bossa hicbir sey yapmaz)
         web.addJavascriptInterface(kopru, "PrismioNative");
 
         web.setWebViewClient(new WebViewClient() {

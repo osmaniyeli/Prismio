@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.games.AuthenticationResult;
 import com.google.android.gms.games.GamesSignInClient;
+import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
@@ -50,10 +51,30 @@ public class OyunKopru {
      *  "yakinda" der ve satin alma butonu GOSTERILMEZ. */
     private Odeme odeme;
 
+    /** D-129: Odullu reklam. Kimlik bos oldukca hazirMi() false doner
+     *  ve JS tarafi reklamla ilgili HICBIR SEY gostermez. */
+    private Reklam reklam;
+
     public OyunKopru(Activity etkinlik, WebView web, String kayitAdi) {
         this.etkinlik = etkinlik;
         this.web = web;
         this.kayitAdi = kayitAdi;
+    }
+
+    /** MainActivity reklam sistemini burada baglar. */
+    public void reklamiBagla() {
+        if (reklam != null) return;
+        reklam = new Reklam(etkinlik, new Reklam.Geri() {
+            @Override
+            public void bitti(boolean tamam) {
+                jsCagir("window.__reklamSonuc && window.__reklamSonuc(" + tamam + ")");
+            }
+            @Override
+            public void durumDegisti() {
+                jsCagir("window.__reklamDurum && window.__reklamDurum()");
+            }
+        });
+        reklam.basla();
     }
 
     /** MainActivity satin alma sistemini burada baglar. */
@@ -274,5 +295,93 @@ public class OyunKopru {
     @JavascriptInterface
     public void cikis() {
         etkinlik.runOnUiThread(etkinlik::finish);
+    }
+
+    // ======================================================================
+    //  DUNYA SIRALAMASI  (D-128)
+    //
+    //  Rutbe merdiveni CEVRIMDISI calisir ve tek basina yeterlidir.
+    //  Siralama EKSTRADIR: giris yapan oyuncu dunya listesinde gorunur.
+    //  Giris yoksa hicbir sey bozulmaz - JS tarafi zaten kontrol ediyor.
+    //
+    //  YAYINDAN ONCE YAPILACAK:
+    //  Play Console > Oyun hizmetleri > Siralamalar bolumunden
+    //  "Toplam isik" adinda bir siralama olustur. Aldigin kimligi
+    //  asagidaki SIRALAMA_ID sabitine yapistir. Kimlik yoksa
+    //  metodlar sessizce hicbir sey yapmaz, oyun etkilenmez.
+    // ======================================================================
+    private static final String SIRALAMA_ID = "";   // <-- Play Console'dan gelecek
+    private static final int ISTEK_SIRALAMA = 9101;
+
+    // ======================================================================
+    //  ODULLU REKLAM  (D-129)
+    //  JS tarafi once reklamHazir() sorar. false ise reklamla ilgili
+    //  hicbir arayuz gostermez - bos kutu da, calismayan dugme de yok.
+    // ======================================================================
+
+    /** Gosterilmeye hazir bir reklam var mi? */
+    @JavascriptInterface
+    public boolean reklamHazir() {
+        return reklam != null && reklam.hazirMi();
+    }
+
+    /** Odullu reklami gosterir. Sonuc __reklamSonuc ile doner. */
+    @JavascriptInterface
+    public void reklamGoster() {
+        if (reklam == null) {
+            jsCagir("window.__reklamSonuc && window.__reklamSonuc(false)");
+            return;
+        }
+        etkinlik.runOnUiThread(() -> reklam.goster());
+    }
+
+    /**
+     * Siralama GERCEKTEN kurulu mu?
+     * JS tarafi buna bakar: false ise siralama dugmesi hic gosterilmez.
+     * Calismayan bir dugme gostermek oyuncuyu kandirmaktir.
+     */
+    @JavascriptInterface
+    public boolean siralamaHazir() {
+        return !SIRALAMA_ID.isEmpty();
+    }
+
+    /** Omur boyu kazanilan isigi siralamaya yazar. Sessiz calisir. */
+    @JavascriptInterface
+    public void siralamaGonder(final long puan) {
+        if (SIRALAMA_ID.isEmpty() || puan < 0) return;
+        etkinlik.runOnUiThread(() -> {
+            try {
+                LeaderboardsClient istemci = PlayGames.getLeaderboardsClient(etkinlik);
+                istemci.submitScore(SIRALAMA_ID, puan);
+            } catch (Throwable t) {
+                // Giris yoksa veya Play Hizmetleri eskiyse buraya duser.
+                // Siralama SUS bir ozellik - oyunu durdurmaz.
+                Log.w(ETIKET, "siralama gonderilemedi", t);
+            }
+        });
+    }
+
+    /** Siralama ekranini acar. Giris yoksa once girisi ister. */
+    @JavascriptInterface
+    public void siralamaAc() {
+        if (SIRALAMA_ID.isEmpty()) return;
+        etkinlik.runOnUiThread(() -> {
+            try {
+                PlayGames.getLeaderboardsClient(etkinlik)
+                        .getLeaderboardIntent(SIRALAMA_ID)
+                        .addOnSuccessListener(niyet ->
+                                etkinlik.startActivityForResult(niyet, ISTEK_SIRALAMA))
+                        .addOnFailureListener(hata -> {
+                            Log.w(ETIKET, "siralama ekrani acilamadi", hata);
+                            // Muhtemelen giris yok. Girisi baslat.
+                            try {
+                                GamesSignInClient g = PlayGames.getGamesSignInClient(etkinlik);
+                                g.signIn();
+                            } catch (Throwable ignored) { }
+                        });
+            } catch (Throwable t) {
+                Log.w(ETIKET, "siralama acilamadi", t);
+            }
+        });
     }
 }

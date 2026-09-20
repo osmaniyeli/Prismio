@@ -27,6 +27,33 @@
         android:largeHeap="false"
         android:supportsRtl="false">
 
+        <!-- =================================================================
+             ADMOB  (D-129)
+
+             DIKKAT - BU SATIR ZORUNLU:
+             play-services-ads SDK'si acilista kendi saglayicisini calistirir
+             ve APPLICATION_ID meta-data'sini ARAR. Yoksa uygulama ACILISTA
+             COKER. Reklam kullanmasak bile bu satir bulunmali.
+
+             Simdilik Google'in RESMI TEST kimligi yazili. Boylece:
+               - uygulama cokmez
+               - gercek reklam istenmez (Reklam.java'daki BIRIM_ID bos)
+
+             YAYINDAN ONCE: kendi AdMob uygulama kimliginle DEGISTIR.
+             Test kimligiyle yayina cikmak AdMob hesabini askiya aldirir.
+
+             DELAY_APP_MEASUREMENT_INIT: olcum/veri toplama, biz
+             MobileAds.initialize() cagirana kadar BASLAMAZ. Reklam
+             kapaliyken hicbir veri toplanmaz - Play "Veri guvenligi"
+             beyaniyla tutarli kalir.
+             ================================================================= -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true" />
+
         <!-- Google Play Games Services proje kimligi.
              Play Console'da oyun olusturunca verilen sayi buraya yazilir. -->
         <meta-data
