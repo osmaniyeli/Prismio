@@ -1,6 +1,8 @@
 package com.prismio.app;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,6 +22,8 @@ import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -87,9 +91,9 @@ public class OyunKopru {
         if (odeme != null) return;
         odeme = new Odeme(etkinlik, new Odeme.Geri() {
             @Override
-            public void durum(boolean sahip, String fiyat, boolean hazir) {
+            public void durum(boolean sahip, String fiyat, boolean hazir, boolean dogrulandi) {
                 jsCagir("window.__plusDurum && window.__plusDurum("
-                        + sahip + "," + metinKacir(fiyat) + "," + hazir + ")");
+                        + sahip + "," + metinKacir(fiyat) + "," + hazir + "," + dogrulandi + ")");
             }
             @Override
             public void sonuc(boolean basarili, String mesaj) {
@@ -113,10 +117,16 @@ public class OyunKopru {
         });
     }
 
+    /**
+     * Java metnini JavaScript'e GUVENLI metin olarak verir.
+     * Eskiden sadece \\ " \\n \\r kaciriliyordu; oyuncu adi Google'dan gelir ve
+     * her karakteri icerebilir (U+2028, </script>, kontrol karakteri...).
+     * JSONObject.quote hepsini kacirir; sonuc her zaman tek bir JS metin sabitidir.
+     */
     private static String metinKacir(String s) {
         if (s == null) return "null";
-        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"")
-                       .replace("\n", "\\n").replace("\r", "") + "\"";
+        // U+2028/2029 metin icinde ES2019'dan beri gecerli; WebView (Chrome 66+) sorun cikarmaz.
+        return JSONObject.quote(s);
     }
 
     /**
@@ -364,6 +374,36 @@ public class OyunKopru {
                 Log.w(ETIKET, "baglanti acacak uygulama yok", e);
             }
         });
+    }
+
+    // ======================================================================
+    //  KAYIT AYNASI
+    //
+    //  Oyun kaydi WebView localStorage'inda durur (app_webview klasoru).
+    //  Android'in otomatik yedegi o klasoru ALMIYOR - yedek kurallari
+    //  sadece files / databases / shared_prefs'i kapsiyor. Yani "telefon
+    //  degistirirsen ilerlemen geri gelir" vaadi tutmuyordu.
+    //
+    //  Cozum: her kayitta ayni JSON burada SharedPreferences'a da yazilir
+    //  (yedege dahil). Yeni telefonda localStorage bossa oyun buradan okur.
+    // ======================================================================
+    private static final int KAYIT_SINIR = 1_000_000;   // 1 MB - normal kayit ~20 KB
+
+    private SharedPreferences kayitDeposu() {
+        return etkinlik.getSharedPreferences("prismio_kayit", Context.MODE_PRIVATE);
+    }
+
+    @JavascriptInterface
+    public void kayitYaz(final String json) {
+        if (json == null || json.isEmpty() || json.length() > KAYIT_SINIR) return;
+        if (json.charAt(0) != '{') return;               // sadece JSON nesnesi
+        kayitDeposu().edit().putString("kayit", json).apply();
+    }
+
+    @JavascriptInterface
+    public String kayitOku() {
+        try { return kayitDeposu().getString("kayit", null); }
+        catch (Throwable t) { return null; }
     }
 
     /** Play Games kullanilabilir mi? (SDK varsa her zaman true) */

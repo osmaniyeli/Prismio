@@ -11,6 +11,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- D-107: Google Play Faturalandirma. Tek seferlik satin alma icin. -->
     <uses-permission android:name="com.android.vending.BILLING" />
+    <!-- Ayarlar > Titresim. WebView'da navigator.vibrate() bu izin olmadan
+         sessizce hicbir sey yapmaz. Normal izin: kullaniciya sorulmaz. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".PrismioApp"

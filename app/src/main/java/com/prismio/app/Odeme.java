@@ -66,11 +66,17 @@ public class Odeme {
     private ProductDetails urun;
     private boolean bagli = false;
     private boolean sahip = false;
+    private boolean dogrulandi = false;
 
     /** Oyun tarafina haber vermek icin. */
     public interface Geri {
-        /** durum degisti: sahip mi, fiyat metni, satin alma hazir mi */
-        void durum(boolean sahip, String fiyat, boolean hazir);
+        /**
+         * durum degisti: sahip mi, fiyat metni, satin alma hazir mi,
+         * dogrulandi = Google Play sorgusu BASARIYLA cevap verdi.
+         * "sahip=false" ancak dogrulandi=true iken kesindir (iade / ters ibraz).
+         * Internet yokken sorgu basarisiz olur; o zaman Plus geri ALINMAZ.
+         */
+        void durum(boolean sahip, String fiyat, boolean hazir, boolean dogrulandi);
         /** satin alma sonucu */
         void sonuc(boolean basarili, String mesaj);
     }
@@ -158,6 +164,13 @@ public class Odeme {
                 .build();
 
         istemci.queryPurchasesAsync(istek, (sonuc, liste) -> {
+            // Sorgu basarisizsa (ag yok, Play guncelleniyor...) eski durumu
+            // DEGISTIRME: yanlislikla "sahip degil" demek odeyen oyuncuyu cezalandirir.
+            if (sonuc.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                dogrulandi = false;
+                haberVer();
+                return;
+            }
             boolean bulundu = false;
             if (liste != null) {
                 for (Purchase sa : liste) {
@@ -168,6 +181,7 @@ public class Odeme {
                 }
             }
             sahip = bulundu;
+            dogrulandi = true;
             haberVer();
         });
     }
@@ -276,7 +290,7 @@ public class Odeme {
         if (urun != null && urun.getOneTimePurchaseOfferDetails() != null) {
             fiyat = urun.getOneTimePurchaseOfferDetails().getFormattedPrice();
         }
-        geri.durum(sahip, fiyat, bagli && urun != null);
+        geri.durum(sahip, fiyat, bagli && urun != null, dogrulandi);
     }
 
     public void kapat() {

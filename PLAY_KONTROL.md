@@ -34,7 +34,7 @@ Kaynaklar:
 | 10 başarı | TAMAM | 10 adet |
 | 4 başarı ilk saatte alınabilir | TAMAM | Doğrulandı |
 | Otomatik yedekleme | TAMAM | allowBackup=true |
-| İzin listesi | TAMAM | INTERNET, NETWORK_STATE, BILLING; AdMob SDK'sı AD_ID iznini ekler |
+| İzin listesi | TAMAM | INTERNET, NETWORK_STATE, BILLING, VIBRATE (titreşim ayarı); AdMob SDK'sı AD_ID iznini ekler |
 | usesCleartextTraffic=false | TAMAM | Şifresiz trafik yasak |
 | WebView güvenlik kısıtları | TAMAM | MainActivity.java |
 | Gizlilik politikası metni | TAMAM | GIZLILIK.md |
