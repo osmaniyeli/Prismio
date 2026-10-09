@@ -1,213 +1,205 @@
 # ============================================================================
-#  ADIM 2 — AAB VE APK URET
+#  DERLE VE YAYINLA  (otomatik)
 #
-#  Iki sekilde calisir:
-#   1. Elle: Actions sekmesi -> bu is akisi -> "Run workflow"
-#   2. Surum etiketi: git tag v1.0 atip yukleyince otomatik calisir
-#      ve GitHub Releases'e koyar
+#  NE ZAMAN CALISIR:
+#   - main dalina her push'ta (sadece belge degisikligi degilse)
+#   - Elle: Actions -> bu is akisi -> "Run workflow"
+#   - Surum etiketi: git tag v1.0.0 && git push origin v1.0.0
+#     (etiket ayrica GitHub Releases'e konur)
 #
-#  URETTIKLERI:
-#   app-release.aab  -> Google Play'e yuklenecek dosya
-#   app-release.apk  -> kendi telefonuna kurup test edeceksin
+#  NE YAPAR:
+#   1. Kalite kapisi: oyun dosyasinda gelistirici modu var mi, JS soz dizimi
+#      dogru mu. Biri bozuksa derleme HIC baslamaz.
+#   2. Surum kodu kendiliginden: 1000 + calisma numarasi. Elle artirmak yok.
+#   3. Imzali AAB (Play icin, temiz surum) + APK (telefonda test, gelistirici modlu)
+#   4. PLAY_SERVICE_ACCOUNT_JSON tanimliysa AAB'yi Play Console
+#      "Dahili test" kanalina YUKLER. Uretime gecis Console'dan elle.
 #
-#  GEREKLI GIZLI DEGERLER (Settings -> Secrets -> Actions):
-#   IMZA_ANAHTARI, MAGAZA_SIFRE, ANAHTAR_SIFRE
-#   Bunlar yoksa is akisi durur ve ne yapman gerektigini soyler.
+#  HIZ: Gradle bagimliliklari ve derleme ciktisi onbellekte tutulur.
+#  Ilk calisma ~6-8 dk, sonrakiler ~2-3 dk.
+#
+#  GIZLI DEGERLER (Settings -> Secrets and variables -> Actions):
+#   IMZA_ANAHTARI, MAGAZA_SIFRE, ANAHTAR_SIFRE   (zorunlu - imza)
+#   PLAY_SERVICE_ACCOUNT_JSON                    (istege bagli - Play'e otomatik yukleme)
 # ============================================================================
-name: 2 - AAB ve APK uret
+name: 2 - Derle ve yayinla
 
 on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
   workflow_dispatch:
     inputs:
       surum_adi:
-        description: 'Surum adi (ornek 0.9.0)'
+        description: 'Surum adi (bos = build.gradle icindeki)'
         required: false
-        default: '0.9.0'
-      surum_kodu:
-        description: 'Surum kodu - her yuklemede ARTMALI (ornek 1, 2, 3)'
-        required: false
-        default: '1'
-  push:
-    tags:
-      - 'v*'            # v1.0, v0.9.1 gibi etiketler
+        default: ''
+
+# Ayni anda iki derleme Play'e yarisarak yukleme yapmasin
+concurrency:
+  group: play-yayin
+  cancel-in-progress: false
+
+permissions:
+  contents: write          # etiket derlemesinde Releases'e yazmak icin
 
 jobs:
   derle:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PLAY_VAR: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+      IMZA_VAR: ${{ secrets.IMZA_ANAHTARI != '' }}
 
     steps:
       - name: Kodu al
         uses: actions/checkout@v4
 
-      - name: Gizli degerleri kontrol et
+      # ---------------- KALITE KAPISI ----------------
+      - name: Oyun dosyasini denetle
         run: |
-          eksik=""
-          [ -z "${{ secrets.IMZA_ANAHTARI }}" ] && eksik="$eksik IMZA_ANAHTARI"
-          [ -z "${{ secrets.MAGAZA_SIFRE }}" ]  && eksik="$eksik MAGAZA_SIFRE"
-          [ -z "${{ secrets.ANAHTAR_SIFRE }}" ] && eksik="$eksik ANAHTAR_SIFRE"
-          if [ -n "$eksik" ]; then
-            echo "::error::Eksik gizli deger:$eksik"
-            echo ""
-            echo "YAPMAN GEREKEN:"
-            echo "  1. Once '1 - Imza anahtari uret' is akisini calistir"
-            echo "  2. Cikan dosyayi indir, icindeki OKU-ONEMLI.txt'yi oku"
-            echo "  3. Settings -> Secrets and variables -> Actions bolumune"
-            echo "     uc gizli degeri ekle"
+          F=app/src/main/assets/index.html
+          test -f "$F" || { echo "::error::$F yok"; exit 1; }
+          # Play'e giden dosyada gelistirici modu OLMAMALI
+          if grep -q "gelistiriciAc\|2137" "$F"; then
+            echo "::error::index.html icinde GELISTIRICI MODU var. _yayin_yap.py ile temiz surumu uret."
             exit 1
           fi
-          echo "Gizli degerler tamam."
+          # Gomulu JavaScript'in soz dizimi: bozuk bir virgul tum oyunu bos ekran yapar
+          for H in app/src/main/assets/index.html app/src/main/assets/index_test.html; do
+            [ -f "$H" ] || continue
+            python3 - "$H" > /tmp/oyun.js <<'PY'
+          import re, sys
+          s = open(sys.argv[1], encoding='utf-8').read()
+          print('\n;\n'.join(re.findall(r'<script>(.*?)</script>', s, re.S)))
+          PY
+            node --check /tmp/oyun.js || { echo "::error::$H icindeki JavaScript bozuk"; exit 1; }
+            echo "$H: JavaScript tamam"
+          done
 
-      - name: Java kur
+      # ---------------- ORTAM ----------------
+      - name: Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Android SDK hazirla
-        # GitHub makinesinde Android SDK ZATEN kurulu.
-        # setup-android eklentisi yeni arac surumu indirip lisanslari
-        # kaybediyordu. Bu yuzden kurulu SDK'yi dogrudan kullaniyoruz.
-        run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
-          test -d "$SDK" || { echo "::error::Android SDK bulunamadi"; exit 1; }
-          echo "ANDROID_HOME=$SDK" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$SDK" >> $GITHUB_ENV
-
-          # Lisanslari kabul et - kurulu sdkmanager ile
-          SDKMAN=$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -1)
-          test -n "$SDKMAN" || { echo "::error::sdkmanager yok"; exit 1; }
-          echo "sdkmanager: $SDKMAN"
-          yes | "$SDKMAN" --licenses > /dev/null 2>&1 || true
-
-          # Gerekli paketleri kur
-          "$SDKMAN" "platforms;android-36" "build-tools;36.0.0" "platform-tools" || true
-
-          echo "--- kurulu platformlar ---"
-          ls "$SDK/platforms" 2>/dev/null || true
-
-      - name: Gradle kur
-        # Bu projede gradle-wrapper.jar YOK (kapali ortamda uretilemedi).
-        # Bu yuzden gradle surumu ACIKCA kurulur. Boylece her derleme
-        # ayni surumle yapilir - ongorulebilir olur.
+      - name: Gradle (onbellekli)
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.13'      # AGP 8.11 en az 8.13 ister
+          gradle-version: '8.13'          # AGP 8.11 en az 8.13 ister
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Gradle calisiyor mu
+      - name: Android SDK
         run: |
-          gradle --version
-          echo "--- proje yapisi ---"
-          ls -la
-          test -f settings.gradle || { echo "::error::settings.gradle yok. Dosyalar deponun KOKUNDE mi?"; exit 1; }
-          test -f app/build.gradle || { echo "::error::app/build.gradle yok. Dosyalar deponun KOKUNDE mi?"; exit 1; }
-          test -f app/src/main/assets/index.html || { echo "::error::Oyun dosyasi yok (app/src/main/assets/index.html)"; exit 1; }
-          echo "--- surum dosyalari ---"
-          echo "AAB icin (temiz)    : app/src/main/assets/index.html"
-          if [ -f app/src/main/assets/index_test.html ]; then
-            echo "APK icin (gelistirici): app/src/main/assets/index_test.html  VAR"
-          else
-            echo "APK icin (gelistirici): YOK - APK de temiz surumle uretilecek"
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          echo "ANDROID_HOME=$SDK" >> $GITHUB_ENV
+          # Makinede zaten kuruluysa indirme yapma (zaman kazanir)
+          if [ -d "$SDK/platforms/android-36" ] && [ -d "$SDK/build-tools/36.0.0" ]; then
+            echo "SDK hazir"; exit 0
           fi
-          # GUVENLIK: Play'e giden dosyada gelistirici modu OLMAMALI
-          if grep -q "gelistiriciAc" app/src/main/assets/index.html; then
-            echo "::error::index.html icinde GELISTIRICI MODU var. Play'e boyle bir dosya gonderilemez. Temiz surumu yukle."
-            exit 1
-          fi
+          SDKMAN=$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager | head -1)
+          yes | "$SDKMAN" --licenses > /dev/null 2>&1 || true
+          "$SDKMAN" "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Imza anahtarini ac
+      # ---------------- SURUM ----------------
+      - name: Surum numarasi
+        id: surum
+        run: |
+          AD="${{ github.event.inputs.surum_adi }}"
+          if [ "${{ github.ref_type }}" = "tag" ]; then AD="${GITHUB_REF_NAME#v}"; fi
+          if [ -z "$AD" ]; then
+            AD=$(grep -oP 'PRISMIO_VERSION_NAME"\) \?: "\K[^"]+' app/build.gradle)
+          fi
+          KOD=$((1000 + ${{ github.run_number }}))
+          echo "ad=$AD"   >> "$GITHUB_OUTPUT"
+          echo "kod=$KOD" >> "$GITHUB_OUTPUT"
+          echo "PRISMIO_VERSION_NAME=$AD"  >> $GITHUB_ENV
+          echo "PRISMIO_VERSION_CODE=$KOD" >> $GITHUB_ENV
+          echo "Surum: $AD (kod $KOD)"
+
+      # ---------------- IMZA ----------------
+      - name: Imza anahtari
+        if: env.IMZA_VAR == 'true'
         run: |
           echo "${{ secrets.IMZA_ANAHTARI }}" | base64 -d > prismio.jks
-          if [ ! -s prismio.jks ]; then
-            echo "::error::Imza anahtari cozulemedi. IMZA_ANAHTARI degerini kontrol et."
-            exit 1
-          fi
-          echo "Anahtar hazir ($(stat -c%s prismio.jks) bayt)"
+          test -s prismio.jks || { echo "::error::IMZA_ANAHTARI cozulemedi"; exit 1; }
 
-      - name: Surum numarasini ayarla
+      - name: Imza yoksa uyar
+        if: env.IMZA_VAR != 'true'
         run: |
-          # Etiketle geldiyse etiketten al, elle baslatildiysa girilen degeri kullan
-          if [ "${{ github.ref_type }}" = "tag" ]; then
-            SURUM_ADI="${GITHUB_REF_NAME#v}"
-            SURUM_KODU="${{ github.run_number }}"
-          else
-            SURUM_ADI="${{ github.event.inputs.surum_adi }}"
-            SURUM_KODU="${{ github.event.inputs.surum_kodu }}"
-          fi
-          echo "Surum: $SURUM_ADI (kod $SURUM_KODU)"
-          sed -i "s/versionCode 1/versionCode $SURUM_KODU/" app/build.gradle
-          sed -i "s/versionName \"0.9.0\"/versionName \"$SURUM_ADI\"/" app/build.gradle
-          grep -n "versionCode\|versionName" app/build.gradle
+          echo "::warning::Imza anahtari secret'i yok. Sadece debug APK uretilecek, Play'e yukleme yapilmayacak."
+          echo "Once '1 - Imza anahtari uret' is akisini calistir, sonra 3 secret'i ekle."
 
-      - name: AAB uret
+      # ---------------- DERLEME ----------------
+      - name: AAB (Play - temiz surum)
+        if: env.IMZA_VAR == 'true'
         env:
           PRISMIO_STORE_PASS: ${{ secrets.MAGAZA_SIFRE }}
           PRISMIO_KEY_ALIAS: prismio
           PRISMIO_KEY_PASS: ${{ secrets.ANAHTAR_SIFRE }}
-        run: gradle --no-daemon bundleRelease
+        run: gradle bundleRelease
 
-      # AAB temiz surumle uretildi. APK icin gelistirici modlu dosyaya gecilir.
-      # Boylece Play'e giden pakette gelistirici modu ASLA bulunmaz,
-      # telefonda test edilen APK'da bulunur.
-      - name: APK icin gelistirici surumune gec
-        run: |
-          if [ -f app/src/main/assets/index_test.html ]; then
-            cp app/src/main/assets/index.html /tmp/index_temiz.html
-            cp app/src/main/assets/index_test.html app/src/main/assets/index.html
-            echo "APK gelistirici modlu surumle uretilecek"
-          else
-            echo "index_test.html yok - APK de temiz surumle uretilecek"
-          fi
-
-      - name: APK uret (telefonda test icin)
+      # APK telefonda test icindir: gelistirici modlu dosya kullanilir.
+      # AAB yukarida temiz dosyayla uretildi; Play'e giden pakette gelistirici modu ASLA olmaz.
+      - name: APK (test - gelistirici modlu)
         env:
           PRISMIO_STORE_PASS: ${{ secrets.MAGAZA_SIFRE }}
           PRISMIO_KEY_ALIAS: prismio
           PRISMIO_KEY_PASS: ${{ secrets.ANAHTAR_SIFRE }}
-        run: gradle --no-daemon assembleRelease
-
-      - name: Temiz surumu geri yukle
-        if: always()
         run: |
-          if [ -f /tmp/index_temiz.html ]; then
-            cp /tmp/index_temiz.html app/src/main/assets/index.html
-            echo "temiz surum geri yuklendi"
-          fi
+          A=app/src/main/assets
+          if [ -f $A/index_test.html ]; then cp $A/index.html /tmp/temiz.html; cp $A/index_test.html $A/index.html; fi
+          if [ "$IMZA_VAR" = "true" ]; then gradle assembleRelease; else gradle assembleDebug; fi
+          if [ -f /tmp/temiz.html ]; then cp /tmp/temiz.html $A/index.html; fi
 
-      - name: Sonucu topla
+      - name: Ciktilari topla
         run: |
           mkdir -p cikti
           cp app/build/outputs/bundle/release/*.aab cikti/ 2>/dev/null || true
           cp app/build/outputs/apk/release/*.apk    cikti/ 2>/dev/null || true
-
-          # Parmak izini de ver - Play Console'a gerekiyor
-          keytool -list -v -keystore prismio.jks -alias prismio \
-            -storepass "${{ secrets.MAGAZA_SIFRE }}" \
-            | grep -E "SHA1|SHA256" > cikti/parmak-izi.txt || true
-
-          echo "--- URETILENLER ---"
-          ls -lh cikti/
-
-          if ! ls cikti/*.aab >/dev/null 2>&1; then
-            echo "::error::AAB uretilemedi"
-            exit 1
+          cp app/build/outputs/apk/debug/*.apk      cikti/ 2>/dev/null || true
+          if [ -f prismio.jks ]; then
+            keytool -list -v -keystore prismio.jks -alias prismio \
+              -storepass "${{ secrets.MAGAZA_SIFRE }}" | grep -E "SHA1|SHA256" > cikti/parmak-izi.txt || true
           fi
+          ls -lh cikti/
+          ls cikti/*.apk >/dev/null 2>&1 || { echo "::error::APK uretilemedi"; exit 1; }
 
-      - name: Dosyalari indirilebilir yap
+      - name: Indirilebilir yap
         uses: actions/upload-artifact@v4
         with:
-          name: Prismio-AAB-APK
+          name: Prismio-v${{ steps.surum.outputs.ad }}-kod${{ steps.surum.outputs.kod }}
           path: cikti/
+          if-no-files-found: error
           retention-days: 30
 
-      - name: Surum etiketiyse Releases'e koy
+      # ---------------- PLAY CONSOLE ----------------
+      # Dahili test kanalina yukler. Kosul: imzali + servis hesabi secret'i var.
+      # NOT: Google, uygulamanin ILK AAB'sinin Console'dan ELLE yuklenmesini ister.
+      # Ilk yuklemeden sonra bu adim her push'ta kendiliginden calisir.
+      - name: Google Play'e yukle (Dahili test)
+        if: env.IMZA_VAR == 'true' && env.PLAY_VAR == 'true'
+        uses: r0adkll/upload-google-play@v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.prismio.app
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          releaseName: ${{ steps.surum.outputs.ad }} (${{ steps.surum.outputs.kod }})
+          track: internal
+          status: completed
+          whatsNewDirectory: distribution/whatsnew
+
+      - name: Etiketse Releases'e koy
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           files: cikti/*
           body: |
-            Prismio ${{ github.ref_name }}
+            Prismio ${{ github.ref_name }} (kod ${{ steps.surum.outputs.kod }})
 
             - `app-release.aab` — Google Play'e yuklenecek dosya
             - `app-release.apk` — telefona kurup test etmek icin

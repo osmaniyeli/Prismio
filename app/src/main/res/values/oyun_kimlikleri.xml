@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  PLAY GAMES KIMLIKLERI
+
+  Play Console -> Play Games Services -> Kurulum ve yonetim ->
+  Basarilar / Siralamalar bolumunde her ogenin bir kimligi vardir
+  (ornek: CgkI9tKf3IgYEAIQAQ). O kimligi asagidaki ilgili satira yapistir.
+
+  BOS BIRAKILAN satir sessizce atlanir: oyun bozulmaz, sadece o basari
+  Play Games'e gitmez. Hepsi bossa basari dugmesi hic gosterilmez.
+
+  Sol taraftaki ad oyundaki basari kimligidir (Prismio.html ACHIEVEMENTS).
+  Play Console'da basarilari "standart" (artimli degil) olustur.
+  Onerilen ad ve aciklamalar PLAY_GAMES_KURULUM.md icinde.
+-->
+<resources>
+    <!-- Siralama: "Toplam isik" (yuksek puan iyi) -->
+    <string name="pg_siralama_toplam_isik" translatable="false"></string>
+
+    <!-- Bolum basarilari -->
+    <string name="pg_a_ilk" translatable="false"></string>
+    <string name="pg_a_bes" translatable="false"></string>
+    <string name="pg_a_mile" translatable="false"></string>
+    <string name="pg_a_gezgin" translatable="false"></string>
+    <string name="pg_a_200" translatable="false"></string>
+    <string name="pg_a_500" translatable="false"></string>
+    <string name="pg_a_1000" translatable="false"></string>
+
+    <!-- Ustalik -->
+    <string name="pg_a_ilkuc" translatable="false"></string>
+    <string name="pg_a_usta" translatable="false"></string>
+    <string name="pg_a_mukem" translatable="false"></string>
+    <string name="pg_a_y100" translatable="false"></string>
+    <string name="pg_a_zaman" translatable="false"></string>
+    <string name="pg_a_buyuk" translatable="false"></string>
+
+    <!-- Seri -->
+    <string name="pg_s_3" translatable="false"></string>
+    <string name="pg_s_7" translatable="false"></string>
+    <string name="pg_s_30" translatable="false"></string>
+    <string name="pg_s_100" translatable="false"></string>
+
+    <!-- Koleksiyon -->
+    <string name="pg_a_kolek" translatable="false"></string>
+    <string name="pg_a_temaall" translatable="false"></string>
+    <string name="pg_a_deko" translatable="false"></string>
+    <string name="pg_a_dekoall" translatable="false"></string>
+</resources>

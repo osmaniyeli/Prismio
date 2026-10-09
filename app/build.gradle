@@ -13,8 +13,10 @@ android {
         // API 36 (Android 16) istiyor. Daha dusugu REDDEDILIR.
         // Kaynak: developer.android.com/google/play/requirements/target-sdk
         targetSdk 36
-        versionCode 1
-        versionName "0.9.0"
+        // CI surum kodunu kendisi verir (1000 + calisma numarasi): her derlemede
+        // artar, Play ayni kodu iki kez reddetmez. Yerelde 1 kalir.
+        versionCode((System.getenv("PRISMIO_VERSION_CODE") ?: "1") as int)
+        versionName(System.getenv("PRISMIO_VERSION_NAME") ?: "0.9.0")
     }
 
     // --- IMZA ---

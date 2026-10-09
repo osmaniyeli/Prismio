@@ -12,6 +12,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -122,21 +123,32 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         web.loadUrl("file:///android_asset/index.html");
+        geriTusunuBagla();
     }
 
-    /** Geri tusu: oyun icinde geri git, menudeyse uygulamadan cik. */
-    @Override
-    public void onBackPressed() {
+    /**
+     * Geri tusu: oyun icinde geri git, menudeyse uygulamadan cik.
+     * targetSdk 36 (Android 16) ile sistem onBackPressed()'i ARTIK CAGIRMIYOR
+     * (ongorulu geri hareketi). Eski override o surumde hic calismaz,
+     * geri tusu oyunu dogrudan kapatirdi. OnBackPressedDispatcher her
+     * surumde calisir.
+     */
+    private void geriTusunuBagla() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() { geriBasildi(); }
+        });
+    }
+
+    private void geriBasildi() {
+        if (web == null) { finish(); return; }
+        // Butun geri mantigi oyunda (geriGit): acik pencereyi kapatir, ust
+        // ekrana doner, menude "cikmak icin tekrar dokun" der ve ikinci
+        // basista PrismioNative.cikis() ile kapatir. Sayfa yuklenmediyse cik.
         web.evaluateJavascript(
-            "(function(){var g=document.querySelector('.ekran.acik .geri');" +
-            "if(g){g.click();return 'ic';}" +
-            "var k=document.getElementById('katman');" +
-            "if(k&&k.classList.contains('acik')){return 'kart';}" +
-            "return 'cik';})()",
+            "(window.__geriTus ? window.__geriTus() : 'cik')",
             deger -> {
-                if (deger != null && deger.contains("cik")) {
-                    finish();
-                }
+                if (deger == null || deger.contains("cik")) finish();
             });
     }
 

@@ -26,6 +26,7 @@ kurmana gerek yok.
 |---|---|
 | [GITHUB.md](GITHUB.md) | AAB ve APK üretme, adım adım |
 | [PLAY_KONTROL.md](PLAY_KONTROL.md) | Google Play uyum listesi |
+| [PLAY_GAMES_KURULUM.md](PLAY_GAMES_KURULUM.md) | Play Games girişi, başarılar, otomatik Play yüklemesi |
 | [GIZLILIK.md](GIZLILIK.md) | Gizlilik politikası metni |
 | [OKU.md](OKU.md) | Kendi bilgisayarında derleme |
 

@@ -1,6 +1,9 @@
 package com.prismio.app;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
@@ -9,7 +12,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.games.AuthenticationResult;
+import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
@@ -20,6 +23,8 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * OYUN ILE PLAY GAMES ARASINDAKI KOPRU
@@ -34,7 +39,7 @@ import java.nio.charset.StandardCharsets;
  *   Burada tehlike YOK cunku:
  *    1. WebView'a SADECE kendi dosyamiz yukleniyor (file:///android_asset).
  *       Her dis istek MainActivity'de engelleniyor.
- *    2. Koprude sadece DORT metot var, hicbiri dosya/sistem erisimi vermiyor.
+ *    2. Koprudeki metotlarin hicbiri dosya/sistem erisimi vermiyor.
  *    3. Gelen veri sadece metin olarak kayit dosyasina yaziliyor,
  *       kod olarak calistirilmiyor.
  *    4. minSdk 23 -> @JavascriptInterface zorunlu, eski API 16 acigi yok.
@@ -114,28 +119,77 @@ public class OyunKopru {
                        .replace("\n", "\\n").replace("\r", "") + "\"";
     }
 
-    /** Oyun aciliyor: zaten giris yapilmis mi? */
+    /**
+     * Oyun aciliyor: zaten giris yapilmis mi?
+     * Play Games v2 acilista kendiliginden sessiz giris dener;
+     * isAuthenticated() o denemenin sonucunu bekler.
+     * Cevap: __pgDurum(girisli, oyuncuAdi)
+     */
     @JavascriptInterface
     public void durumSor() {
-        GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
-        istemci.isAuthenticated().addOnCompleteListener(gorev -> {
-            boolean girisli = gorev.isSuccessful()
-                    && gorev.getResult() != null
-                    && gorev.getResult().isAuthenticated();
-            jsCagir("window.__pgDurum && window.__pgDurum(" + girisli + ")");
+        etkinlik.runOnUiThread(() -> {
+            try {
+                GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
+                istemci.isAuthenticated().addOnCompleteListener(gorev -> {
+                    boolean girisli = gorev.isSuccessful()
+                            && gorev.getResult() != null
+                            && gorev.getResult().isAuthenticated();
+                    if (!gorev.isSuccessful()) Log.w(ETIKET, "giris durumu alinamadi", gorev.getException());
+                    if (girisli) oyuncuAdiyla(ad -> jsCagir("window.__pgDurum && window.__pgDurum(true," + metinKacir(ad) + ")"));
+                    else jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
+                });
+            } catch (Throwable t) {
+                Log.w(ETIKET, "durumSor hatasi", t);
+                jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
+            }
         });
     }
 
-    /** Oyuncu "Giris yap" dedi. */
+    /**
+     * Oyuncu "Giris yap" dedi. Play Games giris penceresi acilir.
+     * signIn() arayuz actigi icin ANA IS PARCACIGINDA cagrilmali -
+     * JavascriptInterface metotlari ise ayri bir is parcaciginda calisir.
+     * Cevap: __pgGiris(ok, oyuncuAdi)
+     */
     @JavascriptInterface
     public void girisYap() {
-        GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
-        istemci.signIn().addOnCompleteListener(gorev -> {
-            boolean ok = gorev.isSuccessful()
-                    && gorev.getResult() != null
-                    && gorev.getResult().isAuthenticated();
-            jsCagir("window.__pgGiris && window.__pgGiris(" + ok + ")");
+        etkinlik.runOnUiThread(() -> {
+            try {
+                GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
+                istemci.signIn().addOnCompleteListener(gorev -> {
+                    boolean ok = gorev.isSuccessful()
+                            && gorev.getResult() != null
+                            && gorev.getResult().isAuthenticated();
+                    if (!ok) {
+                        // En sik sebep: Play Console'da OAuth istemcisi / SHA-1 eksik
+                        // ya da hesap test kullanicisi degil. Bkz. PLAY_GAMES_KURULUM.md
+                        Log.w(ETIKET, "giris basarisiz", gorev.getException());
+                        jsCagir("window.__pgGiris && window.__pgGiris(false,null)");
+                        return;
+                    }
+                    oyuncuAdiyla(ad -> jsCagir("window.__pgGiris && window.__pgGiris(true," + metinKacir(ad) + ")"));
+                });
+            } catch (Throwable t) {
+                Log.w(ETIKET, "girisYap hatasi", t);
+                jsCagir("window.__pgGiris && window.__pgGiris(false,null)");
+            }
         });
+    }
+
+    private interface AdGeri { void ad(String ad); }
+
+    /** Girisli oyuncunun Play Games adini alir. Alinamazsa null verir, giris yine gecerlidir. */
+    private void oyuncuAdiyla(final AdGeri geri) {
+        try {
+            PlayGames.getPlayersClient(etkinlik).getCurrentPlayer().addOnCompleteListener(g -> {
+                String ad = null;
+                if (g.isSuccessful() && g.getResult() != null) ad = g.getResult().getDisplayName();
+                geri.ad(ad);
+            });
+        } catch (Throwable t) {
+            Log.w(ETIKET, "oyuncu adi alinamadi", t);
+            geri.ad(null);
+        }
     }
 
     /**
@@ -152,17 +206,51 @@ public class OyunKopru {
             jsCagir("window.__pgYedek && window.__pgYedek(false)");
             return;
         }
+        // Ayni kayit dosyasi ayni anda iki kez acilamaz. Ust uste hizli
+        // bolum bitince ikinci yedek "zaten acik" hatasiyla dusuyordu.
+        // Yedek suruyorsa en son veriyi sakla, bitince onu yaz.
+        synchronized (this) {
+            if (yedekSuruyor) {
+                bekleyenVeri = veri; bekleyenAciklama = aciklama; bekleyenSn = oynamaSn;
+                return;
+            }
+            yedekSuruyor = true;
+        }
+        etkinlik.runOnUiThread(() -> {
+            try { yedekYaz(veri, aciklama, oynamaSn); }
+            catch (Throwable t) { Log.w(ETIKET, "yedek baslatilamadi", t); yedekBitti(false); }
+        });
+    }
+
+    private boolean yedekSuruyor = false;
+    private String bekleyenVeri, bekleyenAciklama;
+    private long bekleyenSn;
+
+    /** Bir yedek bitti: sonucu JS'e bildir, bekleyen varsa onu yaz. */
+    private void yedekBitti(boolean ok) {
+        jsCagir("window.__pgYedek && window.__pgYedek(" + ok + ")");
+        String v, a; long sn;
+        synchronized (this) {
+            if (bekleyenVeri == null) { yedekSuruyor = false; return; }
+            v = bekleyenVeri; a = bekleyenAciklama; sn = bekleyenSn;
+            bekleyenVeri = null; bekleyenAciklama = null;
+        }
+        try { yedekYaz(v, a, sn); }
+        catch (Throwable t) { Log.w(ETIKET, "bekleyen yedek yazilamadi", t); yedekBitti(false); }
+    }
+
+    private void yedekYaz(final String veri, final String aciklama, final long oynamaSn) {
         SnapshotsClient istemci = PlayGames.getSnapshotsClient(etkinlik);
         istemci.open(kayitAdi, true, SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED)
             .addOnCompleteListener(acmaGorevi -> {
                 if (!acmaGorevi.isSuccessful() || acmaGorevi.getResult() == null) {
-                    jsCagir("window.__pgYedek && window.__pgYedek(false)");
+                    yedekBitti(false);
                     return;
                 }
                 try {
                     Snapshot anlik = acmaGorevi.getResult().getData();
                     if (anlik == null) {
-                        jsCagir("window.__pgYedek && window.__pgYedek(false)");
+                        yedekBitti(false);
                         return;
                     }
                     anlik.getSnapshotContents()
@@ -182,12 +270,13 @@ public class OyunKopru {
                     SnapshotMetadataChange degisim = yapici.build();
 
                     istemci.commitAndClose(anlik, degisim)
-                        .addOnCompleteListener(yazma ->
-                            jsCagir("window.__pgYedek && window.__pgYedek("
-                                    + yazma.isSuccessful() + ")"));
+                        .addOnCompleteListener(yazma -> {
+                            if (!yazma.isSuccessful()) Log.w(ETIKET, "kayit yazilamadi", yazma.getException());
+                            yedekBitti(yazma.isSuccessful());
+                        });
                 } catch (Exception e) {
                     Log.w(ETIKET, "yedekleme hatasi", e);
-                    jsCagir("window.__pgYedek && window.__pgYedek(false)");
+                    yedekBitti(false);
                 }
             });
     }
@@ -195,10 +284,15 @@ public class OyunKopru {
     /** Buluttaki ilerlemeyi oku. */
     @JavascriptInterface
     public void indir() {
+        etkinlik.runOnUiThread(this::indirBasla);
+    }
+
+    private void indirBasla() {
         SnapshotsClient istemci = PlayGames.getSnapshotsClient(etkinlik);
         istemci.open(kayitAdi, true, SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED)
             .addOnCompleteListener(gorev -> {
                 if (!gorev.isSuccessful() || gorev.getResult() == null) {
+                    Log.w(ETIKET, "kayit acilamadi", gorev.getException());
                     jsCagir("window.__pgIndir && window.__pgIndir(null)");
                     return;
                 }
@@ -246,6 +340,30 @@ public class OyunKopru {
             Log.w(ETIKET, "kapak cekilemedi", t);
             return null;   // kapak olmazsa kayit yine de yazilir
         }
+    }
+
+    /**
+     * DIS BAGLANTI: gizlilik politikasi, destek e-postasi.
+     * WebView kendi icinde hicbir sayfaya gitmez; adres telefonun
+     * tarayicisinda / e-posta uygulamasinda acilir.
+     * Yalnizca https ve mailto kabul edilir - sayfa baska bir sey
+     * (intent://, file://, javascript:) isteyemez.
+     */
+    @JavascriptInterface
+    public void disariAc(final String adres) {
+        if (adres == null) return;
+        final String a = adres.trim();
+        String kucuk = a.toLowerCase(java.util.Locale.ROOT);
+        if (!kucuk.startsWith("https://") && !kucuk.startsWith("mailto:")) return;
+        etkinlik.runOnUiThread(() -> {
+            try {
+                Intent niyet = new Intent(Intent.ACTION_VIEW, Uri.parse(a));
+                niyet.addCategory(Intent.CATEGORY_BROWSABLE);
+                etkinlik.startActivity(niyet);
+            } catch (ActivityNotFoundException e) {
+                Log.w(ETIKET, "baglanti acacak uygulama yok", e);
+            }
+        });
     }
 
     /** Play Games kullanilabilir mi? (SDK varsa her zaman true) */
@@ -307,11 +425,18 @@ public class OyunKopru {
     //  YAYINDAN ONCE YAPILACAK:
     //  Play Console > Oyun hizmetleri > Siralamalar bolumunden
     //  "Toplam isik" adinda bir siralama olustur. Aldigin kimligi
-    //  asagidaki SIRALAMA_ID sabitine yapistir. Kimlik yoksa
-    //  metodlar sessizce hicbir sey yapmaz, oyun etkilenmez.
+    //  res/values/oyun_kimlikleri.xml icindeki pg_siralama_toplam_isik
+    //  satirina yapistir. Kimlik yoksa metodlar sessizce hicbir sey
+    //  yapmaz, oyun etkilenmez.
     // ======================================================================
-    private static final String SIRALAMA_ID = "";   // <-- Play Console'dan gelecek
+    private String siralamaId() { return kimlik(R.string.pg_siralama_toplam_isik); }
     private static final int ISTEK_SIRALAMA = 9101;
+    private static final int ISTEK_BASARI = 9102;
+
+    private String kimlik(int kaynak) {
+        try { return etkinlik.getString(kaynak).trim(); }
+        catch (Throwable t) { return ""; }
+    }
 
     // ======================================================================
     //  ODULLU REKLAM  (D-129)
@@ -342,17 +467,17 @@ public class OyunKopru {
      */
     @JavascriptInterface
     public boolean siralamaHazir() {
-        return !SIRALAMA_ID.isEmpty();
+        return !siralamaId().isEmpty();
     }
 
     /** Omur boyu kazanilan isigi siralamaya yazar. Sessiz calisir. */
     @JavascriptInterface
     public void siralamaGonder(final long puan) {
-        if (SIRALAMA_ID.isEmpty() || puan < 0) return;
+        if (siralamaId().isEmpty() || puan < 0) return;
         etkinlik.runOnUiThread(() -> {
             try {
                 LeaderboardsClient istemci = PlayGames.getLeaderboardsClient(etkinlik);
-                istemci.submitScore(SIRALAMA_ID, puan);
+                istemci.submitScore(siralamaId(), puan);
             } catch (Throwable t) {
                 // Giris yoksa veya Play Hizmetleri eskiyse buraya duser.
                 // Siralama SUS bir ozellik - oyunu durdurmaz.
@@ -364,11 +489,11 @@ public class OyunKopru {
     /** Siralama ekranini acar. Giris yoksa once girisi ister. */
     @JavascriptInterface
     public void siralamaAc() {
-        if (SIRALAMA_ID.isEmpty()) return;
+        if (siralamaId().isEmpty()) return;
         etkinlik.runOnUiThread(() -> {
             try {
                 PlayGames.getLeaderboardsClient(etkinlik)
-                        .getLeaderboardIntent(SIRALAMA_ID)
+                        .getLeaderboardIntent(siralamaId())
                         .addOnSuccessListener(niyet ->
                                 etkinlik.startActivityForResult(niyet, ISTEK_SIRALAMA))
                         .addOnFailureListener(hata -> {
@@ -381,6 +506,90 @@ public class OyunKopru {
                         });
             } catch (Throwable t) {
                 Log.w(ETIKET, "siralama acilamadi", t);
+            }
+        });
+    }
+
+    // ======================================================================
+    //  BASARILAR
+    //
+    //  Oyun kendi basarilarini CEVRIMDISI tutar (Odul Odasi). Giris yapan
+    //  oyuncunun acilan basarilari Play Games'e de yazilir.
+    //  unlock() ayni basari icin tekrar cagrilirsa zararsizdir; bu yuzden
+    //  giris sonrasi JS tarafi butun acik basarilari bir kez gonderir -
+    //  giristen once kazanilanlar da Play Games'e gecer.
+    //  Kimlikler res/values/oyun_kimlikleri.xml icinde. Bos olan atlanir.
+    // ======================================================================
+    private static final Map<String, Integer> BASARI_KAYNAK = new HashMap<>();
+    static {
+        BASARI_KAYNAK.put("a-ilk",     R.string.pg_a_ilk);
+        BASARI_KAYNAK.put("a-bes",     R.string.pg_a_bes);
+        BASARI_KAYNAK.put("a-mile",    R.string.pg_a_mile);
+        BASARI_KAYNAK.put("a-gezgin",  R.string.pg_a_gezgin);
+        BASARI_KAYNAK.put("a-200",     R.string.pg_a_200);
+        BASARI_KAYNAK.put("a-500",     R.string.pg_a_500);
+        BASARI_KAYNAK.put("a-1000",    R.string.pg_a_1000);
+        BASARI_KAYNAK.put("a-ilkuc",   R.string.pg_a_ilkuc);
+        BASARI_KAYNAK.put("a-usta",    R.string.pg_a_usta);
+        BASARI_KAYNAK.put("a-mukem",   R.string.pg_a_mukem);
+        BASARI_KAYNAK.put("a-y100",    R.string.pg_a_y100);
+        BASARI_KAYNAK.put("a-zaman",   R.string.pg_a_zaman);
+        BASARI_KAYNAK.put("a-buyuk",   R.string.pg_a_buyuk);
+        BASARI_KAYNAK.put("s-3",       R.string.pg_s_3);
+        BASARI_KAYNAK.put("s-7",       R.string.pg_s_7);
+        BASARI_KAYNAK.put("s-30",      R.string.pg_s_30);
+        BASARI_KAYNAK.put("s-100",     R.string.pg_s_100);
+        BASARI_KAYNAK.put("a-kolek",   R.string.pg_a_kolek);
+        BASARI_KAYNAK.put("a-temaall", R.string.pg_a_temaall);
+        BASARI_KAYNAK.put("a-deko",    R.string.pg_a_deko);
+        BASARI_KAYNAK.put("a-dekoall", R.string.pg_a_dekoall);
+    }
+
+    /** En az bir basari kimligi girilmis mi? false ise JS dugmeyi gostermez. */
+    @JavascriptInterface
+    public boolean basariHazir() {
+        for (Integer k : BASARI_KAYNAK.values()) if (!kimlik(k).isEmpty()) return true;
+        return false;
+    }
+
+    /**
+     * Oyundaki basari kimliklerini (virgulle ayrilmis, ornek "a-ilk,s-3")
+     * Play Games'te acar. Giris yoksa SDK sessizce reddeder - oyun etkilenmez.
+     */
+    @JavascriptInterface
+    public void basariAc(final String oyunIdleri) {
+        if (oyunIdleri == null || oyunIdleri.isEmpty()) return;
+        etkinlik.runOnUiThread(() -> {
+            try {
+                AchievementsClient istemci = PlayGames.getAchievementsClient(etkinlik);
+                for (String id : oyunIdleri.split(",")) {
+                    Integer k = BASARI_KAYNAK.get(id.trim());
+                    if (k == null) continue;
+                    String pg = kimlik(k);
+                    if (!pg.isEmpty()) istemci.unlock(pg);
+                }
+            } catch (Throwable t) {
+                Log.w(ETIKET, "basari gonderilemedi", t);
+            }
+        });
+    }
+
+    /** Play Games basari ekranini acar. Giris yoksa once girisi baslatir. */
+    @JavascriptInterface
+    public void basarilarAc() {
+        etkinlik.runOnUiThread(() -> {
+            try {
+                PlayGames.getAchievementsClient(etkinlik)
+                        .getAchievementsIntent()
+                        .addOnSuccessListener(niyet ->
+                                etkinlik.startActivityForResult(niyet, ISTEK_BASARI))
+                        .addOnFailureListener(hata -> {
+                            Log.w(ETIKET, "basari ekrani acilamadi", hata);
+                            try { PlayGames.getGamesSignInClient(etkinlik).signIn(); }
+                            catch (Throwable ignored) { }
+                        });
+            } catch (Throwable t) {
+                Log.w(ETIKET, "basarilar acilamadi", t);
             }
         });
     }

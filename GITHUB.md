@@ -107,34 +107,37 @@ unutma.
 
 ---
 
-## ADIM 3 — AAB ÜRET
+## ADIM 3 — AAB ÜRET (otomatik)
 
-1. **Actions** → **"2 - AAB ve APK uret"** → **Run workflow**
-2. İki alan soracak:
-   - **Surum adi:** `0.9.0` (oyuncunun gördüğü)
-   - **Surum kodu:** `1` (Google'ın gördüğü, her yüklemede ARTMALI)
-3. Yeşil tik çıkınca **"Prismio-AAB-APK"** dosyasını indir
+Artık elle başlatmaya gerek yok. `main` dalına her push'ta
+**"2 - Derle ve yayinla"** kendiliğinden çalışır:
 
-İçinde:
+1. Kalite kontrolü (geliştirici modu sızmış mı, JavaScript bozuk mu)
+2. Sürüm kodu kendiliğinden: **1000 + çalışma numarası**
+3. İmzalı AAB + test APK'sı
+4. `PLAY_SERVICE_ACCOUNT_JSON` tanımlıysa Play **Dahili test** kanalına yükleme
+   (kurulum: `PLAY_GAMES_KURULUM.md`)
+
+Elle çalıştırmak istersen: Actions → **2 - Derle ve yayinla** → Run workflow.
+Sürüm adı alanı boşsa `app/build.gradle`'daki ad kullanılır.
+
+Çıktı: **Prismio-v0.9.0-kodNNNN** dosyası
 - `app-release.aab` → Google Play'e yükleyeceğin
 - `app-release.apk` → **kendi telefonuna kurup test edeceğin**
 - `parmak-izi.txt` → Play Console'a gireceğin SHA-1
 
-İlk derleme 5-10 dakika sürer. Sonrakiler daha hızlı.
+İlk derleme 6-8 dakika, sonrakiler önbellek sayesinde 2-3 dakika.
 
 ---
 
 ## SÜRÜM ETİKETİYLE ÜRETME
 
-Elle başlatmak yerine etiket de atabilirsin:
-
 ```
-git tag v1.0
-git push origin v1.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
-Bu, otomatik derler ve **Releases** bölümüne koyar. Yayın sürümleri
-için daha düzenli bir yöntem.
+Bu, sürüm adını etiketten alır ve dosyaları **Releases** bölümüne de koyar.
 
 ---
 
@@ -149,17 +152,10 @@ kurulan her uygulamada çıkar.
 
 ---
 
-## SÜRÜM KODU — ÖNEMLİ
+## SÜRÜM KODU
 
-Google aynı sürüm kodunu iki kez kabul etmez.
-
-| Yükleme | Sürüm kodu | Sürüm adı |
-|---|---|---|
-| İlk | 1 | 0.9.0 |
-| İkinci | 2 | 0.9.1 |
-| Üçüncü | 3 | 1.0.0 |
-
-Sürüm adı serbest, sürüm kodu hep artmalı.
+Elle artırmana gerek yok. CI her derlemede 1000 + çalışma numarası verir;
+Google'ın "aynı kod iki kez olmaz" kuralı kendiliğinden sağlanır.
 
 ---
 
