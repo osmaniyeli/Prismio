@@ -34,7 +34,7 @@ Kaynaklar:
 | 10 başarı | TAMAM | 10 adet |
 | 4 başarı ilk saatte alınabilir | TAMAM | Doğrulandı |
 | Otomatik yedekleme | TAMAM | allowBackup=true |
-| İzin listesi minimum | TAMAM | Sadece INTERNET + NETWORK_STATE |
+| İzin listesi | TAMAM | INTERNET, NETWORK_STATE, BILLING; AdMob SDK'sı AD_ID iznini ekler |
 | usesCleartextTraffic=false | TAMAM | Şifresiz trafik yasak |
 | WebView güvenlik kısıtları | TAMAM | MainActivity.java |
 | Gizlilik politikası metni | TAMAM | GIZLILIK.md |
@@ -69,7 +69,8 @@ devlet uygulamaları için. Oyun bunlara girmiyor.
 | Form | Cevap |
 |---|---|
 | Gizlilik politikası URL | GIZLILIK.md'yi bir yere koy, adresini yaz |
-| Reklam içeriyor mu | **HAYIR** (şu an reklam yok) |
+| Reklam içeriyor mu | **HAYIR** — gerçek reklam birimi girilene kadar. Girilince **EVET** yap |
+| Reklam kimliği beyanı | **EVET**, amaç: Reklam. AdMob SDK'sı pakette olduğu için AD_ID izni var; "Hayır" demek reddedilme sebebi |
 | İçerik derecelendirme anketi | Doldur — oyun her yaşa uygun |
 | Hedef kitle | 13+ öner. Çocuk seçersen Aile Politikası şartları gelir |
 | Devlet uygulaması mı | Hayır |
@@ -161,7 +162,7 @@ Uzatma istersen 1 Kasım 2026'ya kadar süre alınabiliyor, ama gerek yok.
 
 | Konu | Durum |
 |---|---|
-| Liderlik tabloları | Yok. Zorunlu değil. |
+| Liderlik tabloları | Kod hazır. Console'da oluşturulup oyun_kimlikleri.xml'e yazılacak. |
 | Arkadaş listesi | Yok. Zorunlu değil (Kalite Kontrol 4.1 isteğe bağlı). |
-| Reklam SDK | Yok. Eklenirse "Reklam içerir" işaretlenecek ve gizlilik politikası güncellenecek. |
-| Ses sistemi | Yok. Ayarlar hazır. |
+| Reklam SDK | AdMob pakette, birim kimliği BOŞ (reklam istenmez). Gerçek kimlik girilince "Reklam içerir" + veri güvenliği formu güncellenmeli. |
+
