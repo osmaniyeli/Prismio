@@ -21,7 +21,7 @@ Kaynaklar:
 | AGP 8.11.1 (compileSdk 36 en az 8.9 ister) | TAMAM | build.gradle |
 | Gradle 8.13 (AGP 8.11 en az 8.13 ister) | TAMAM | iş akışı + wrapper |
 | JDK 17 | TAMAM | iş akışı |
-| minSdk 23 (Play Games en az 19 ister) | TAMAM | app/build.gradle |
+| minSdk 24 (Play otomatik koruma en az 24 ister) | TAMAM | app/build.gradle |
 | AAB formatı (APK değil) | TAMAM | bundleRelease görevi |
 | Play Games SDK v2 | TAMAM | play-services-games-v2:20.1.2 |
 | PlayGamesSdk.initialize() | TAMAM | PrismioApp.java |

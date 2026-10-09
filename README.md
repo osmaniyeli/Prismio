@@ -39,7 +39,7 @@ kurmana gerek yok.
 | Oyun | Tek dosya HTML + CSS + JavaScript + SVG |
 | Kabuk | Android WebView |
 | Bölüm sayısı | 1000 (yordamsal üretim, tohumlu) |
-| minSdk | 23 (Android 6.0) |
+| minSdk | 24 (Android 7.0) |
 | targetSdk | 36 (Android 16) |
 | Bulut kayıt | Google Play Games |
 

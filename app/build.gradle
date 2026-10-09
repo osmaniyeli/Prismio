@@ -8,7 +8,8 @@ android {
 
     defaultConfig {
         applicationId "com.prismio.app"
-        minSdk 23                 // Android 6.0 - eski telefonlari da kapsar
+        // 24 (Android 7.0): Play "otomatik koruma" en az 24 ister, 23 ile AAB reddedilir.
+        minSdk 24
         // ZORUNLU: Google Play 31 Agustos 2026'dan beri YENI uygulamalar icin
         // API 36 (Android 16) istiyor. Daha dusugu REDDEDILIR.
         // Kaynak: developer.android.com/google/play/requirements/target-sdk
