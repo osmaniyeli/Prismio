@@ -12,7 +12,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+
 import androidx.activity.OnBackPressedCallback;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -124,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
         web.loadUrl("file:///android_asset/index.html");
         geriTusunuBagla();
+        // Bildirim izni: oyun ekrani gorundukten kisa sure sonra, sadece ilk kez sorulur.
+        web.postDelayed(this::bildirimIzniIlkSefer, 1800);
     }
 
     /**
@@ -150,6 +157,45 @@ public class MainActivity extends AppCompatActivity {
             deger -> {
                 if (deger == null || deger.contains("cik")) finish();
             });
+    }
+
+    // ======================================================================
+    //  BILDIRIM IZNI (Android 13+). Ilk acilista bir kez sorulur; reddedilirse
+    //  tekrar tekrar sorulmaz. Ayarlardan "Gunluk hatirlatma" acilinca yeniden istenir.
+    // ======================================================================
+    static final int ISTEK_BILDIRIM = 7001;
+
+    boolean bildirimIzniVar() {
+        return Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void bildirimIzniIlkSefer() {
+        android.content.SharedPreferences d = getSharedPreferences("prismio_hatirlatma", MODE_PRIVATE);
+        if (d.getBoolean("izinSoruldu", false) || bildirimIzniVar()) return;
+        d.edit().putBoolean("izinSoruldu", true).apply();
+        bildirimIzniIste();
+    }
+
+    void bildirimIzniIste() {
+        if (bildirimIzniVar()) { izinSonucu(true); return; }
+        if (Build.VERSION.SDK_INT >= 33) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, ISTEK_BILDIRIM);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int istek, String[] izinler, int[] sonuclar) {
+        super.onRequestPermissionsResult(istek, izinler, sonuclar);
+        if (istek == ISTEK_BILDIRIM) {
+            boolean ok = sonuclar.length > 0 && sonuclar[0] == PackageManager.PERMISSION_GRANTED;
+            izinSonucu(ok);
+        }
+    }
+
+    private void izinSonucu(boolean ok) {
+        if (web != null) web.evaluateJavascript("window.__bildirimIzni && window.__bildirimIzni(" + ok + ")", null);
     }
 
     @Override protected void onPause()  { super.onPause();  web.onPause();  }

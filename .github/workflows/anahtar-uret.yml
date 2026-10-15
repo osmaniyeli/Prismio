@@ -37,7 +37,7 @@ jobs:
             -keyalg RSA -keysize 2048 -validity 10000 \
             -storepass "$MAGAZA_SIFRE" \
             -keypass "$ANAHTAR_SIFRE" \
-            -dname "CN=Prismio, OU=Oyun, O=Osmaniyeli Abdullah, L=Istanbul, C=TR"
+            -dname "CN=Prismio, OU=Oyun, O=Prismio, L=TR, C=TR"
 
           # Base64: metin haline getir, kopyalanabilsin
           base64 -w 0 prismio.jks > prismio.jks.base64

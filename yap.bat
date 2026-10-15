@@ -20,7 +20,7 @@ if not exist prismio.jks (
   keytool -genkeypair -v -keystore prismio.jks -alias prismio ^
     -keyalg RSA -keysize 2048 -validity 10000 ^
     -storepass prismio123 -keypass prismio123 ^
-    -dname "CN=Prismio, OU=Oyun, O=Osmaniyeli Abdullah, L=Istanbul, C=TR"
+    -dname "CN=Prismio, OU=Oyun, O=Prismio, L=TR, C=TR"
 )
 
 echo.

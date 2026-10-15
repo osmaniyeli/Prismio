@@ -100,6 +100,20 @@ public class OyunKopru {
                 jsCagir("window.__plusSonuc && window.__plusSonuc("
                         + basarili + "," + metinKacir(mesaj) + ")");
             }
+            @Override
+            public void fiyatlar(String json) {
+                jsCagir("window.__fiyatlar && window.__fiyatlar(" + metinKacir(json) + ")");
+            }
+            @Override
+            public void teslim(String urunId, String anahtar) {
+                jsCagir("window.__urunTeslim && window.__urunTeslim("
+                        + metinKacir(urunId) + "," + metinKacir(anahtar) + ")");
+            }
+            @Override
+            public void urunSonuc(String urunId, boolean basarili, String mesaj) {
+                jsCagir("window.__urunSonuc && window.__urunSonuc("
+                        + metinKacir(urunId) + "," + basarili + "," + metinKacir(mesaj) + ")");
+            }
         });
         odeme.basla();
     }
@@ -404,6 +418,59 @@ public class OyunKopru {
     public String kayitOku() {
         try { return kayitDeposu().getString("kayit", null); }
         catch (Throwable t) { return null; }
+    }
+
+    // ======================================================================
+    //  UYGULAMA ICI URUNLER (isik paketleri, can) - bkz. Odeme
+    // ======================================================================
+    @JavascriptInterface
+    public void urunSatinAl(final String urunId) {
+        if (odeme == null || urunId == null) {
+            jsCagir("window.__urunSonuc && window.__urunSonuc(" + metinKacir(urunId) + ",false,null)");
+            return;
+        }
+        etkinlik.runOnUiThread(() -> odeme.satinAl(urunId));
+    }
+
+    /** Oyun odulu verip kaydetti: satin alma tuketilir. */
+    @JavascriptInterface
+    public void teslimEdildi(final String anahtar) {
+        if (odeme == null || anahtar == null) return;
+        etkinlik.runOnUiThread(() -> odeme.teslimEdildi(anahtar));
+    }
+
+    // ======================================================================
+    //  GUNLUK HATIRLATMA - bkz. Hatirlatma
+    // ======================================================================
+    @JavascriptInterface
+    public void hatirlatmaAyarla(boolean aktif, String baslik, String metin, String bittiGun) {
+        try { Hatirlatma.ayarla(etkinlik.getApplicationContext(), aktif, baslik, metin, bittiGun); }
+        catch (Throwable t) { Log.w(ETIKET, "hatirlatma ayarlanamadi", t); }
+    }
+
+    /** "var" / "yok" */
+    @JavascriptInterface
+    public String bildirimIzni() {
+        return (etkinlik instanceof MainActivity && !((MainActivity) etkinlik).bildirimIzniVar()) ? "yok" : "var";
+    }
+
+    @JavascriptInterface
+    public void bildirimIzniIste() {
+        if (etkinlik instanceof MainActivity)
+            etkinlik.runOnUiThread(() -> ((MainActivity) etkinlik).bildirimIzniIste());
+    }
+
+    /** Hakkinda ekrani icin GERCEK surum: "0.9.3 (1023)". */
+    @JavascriptInterface
+    public String uygulamaSurumu() {
+        try {
+            android.content.pm.PackageInfo pi = etkinlik.getPackageManager()
+                    .getPackageInfo(etkinlik.getPackageName(), 0);
+            long kod = (android.os.Build.VERSION.SDK_INT >= 28) ? pi.getLongVersionCode() : pi.versionCode;
+            return pi.versionName + " (" + kod + ")";
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     /** Play Games kullanilabilir mi? (SDK varsa her zaman true) */

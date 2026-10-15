@@ -14,6 +14,10 @@
     <!-- Ayarlar > Titresim. WebView'da navigator.vibrate() bu izin olmadan
          sessizce hicbir sey yapmaz. Normal izin: kullaniciya sorulmaz. -->
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Gunluk gorev hatirlatmasi. Android 13+ izni acilista kullaniciya sorulur. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Telefon yeniden baslayinca hatirlatma alarmi yeniden kurulur. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".PrismioApp"
@@ -79,5 +83,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Gunluk gorev hatirlatmasi: alarm + yeniden baslatma -->
+        <receiver android:name=".Hatirlatma" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -54,4 +54,4 @@ Play Games girişi için kullanılır.
 
 ---
 
-Tasarım ve yapım: Osmaniyeli Abdullah
+Prismio

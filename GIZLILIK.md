@@ -1,9 +1,10 @@
+> Güncel ve tam metin: https://osmaniyeli.github.io/Prismio/ (5. sürüm, 15 Ekim 2026). Bu dosya eski bir kopyadır; yayındaki sayfa esastır.
+
 # PRISMIO — GİZLİLİK POLİTİKASI
 
 **Son güncelleme:** 15 Eylül 2026 (4. sürüm)
 **Uygulama:** Prismio
-**Geliştirici:** Abdullah Yeşildemir
-**İletişim:** osmaniyeliabdullah@gmail.com
+**İletişim:** pulcratechnology@gmail.com
 
 ---
 
@@ -164,7 +165,7 @@ Faturalandırma kullanılıyor. Ödeme bilgileri bize gelmiyor.
 
 ## İLETİŞİM
 
-Sorularınız için: osmaniyeliabdullah@gmail.com
+Sorularınız için: pulcratechnology@gmail.com
 
 ---
 
