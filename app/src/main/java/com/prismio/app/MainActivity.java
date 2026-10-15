@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView web;
     private OyunKopru kopru;
+    private android.widget.FrameLayout bannerKutu;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -45,7 +46,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(kayit);
 
         web = new WebView(this);
-        setContentView(web);
+        // Yerlesim: ustte oyun, en altta banner seridi (reklam yokken GONE).
+        // Banner oyunun ustunu KAPATMAZ; oyun alani onun kadar kisalir.
+        android.widget.LinearLayout kok = new android.widget.LinearLayout(this);
+        kok.setOrientation(android.widget.LinearLayout.VERTICAL);
+        kok.setBackgroundColor(Color.parseColor("#F2EDE4"));
+        kok.addView(web, new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+        bannerKutu = new android.widget.FrameLayout(this);
+        bannerKutu.setVisibility(View.GONE);
+        kok.addView(bannerKutu, new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+        // Android 15+ uygulamayi ekranin tamamina cizer: banner gezinme
+        // cubugunun altinda kalmasin diye alt bosluk eklenir.
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(bannerKutu, (v, ic) -> {
+            int alt = ic.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).bottom;
+            v.setPadding(0, 0, 0, alt);
+            return ic;
+        });
+        setContentView(kok);
 
         WebSettings a = web.getSettings();
 
@@ -95,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         // Bkz. shouldInterceptRequest: her dis istek engelleniyor.
         kopru = new OyunKopru(this, web, getString(R.string.kayit_dosya_adi));
         kopru.odemeyiBagla();     // D-107: Prismio Plus satin alma
-        kopru.reklamiBagla();     // D-129: odullu reklam (kimlik bossa hicbir sey yapmaz)
+        kopru.reklamiBagla(bannerKutu);     // D-129: odullu reklam (kimlik bossa hicbir sey yapmaz)
         web.addJavascriptInterface(kopru, "PrismioNative");
 
         web.setWebViewClient(new WebViewClient() {
@@ -198,11 +218,12 @@ public class MainActivity extends AppCompatActivity {
         if (web != null) web.evaluateJavascript("window.__bildirimIzni && window.__bildirimIzni(" + ok + ")", null);
     }
 
-    @Override protected void onPause()  { super.onPause();  web.onPause();  }
+    @Override protected void onPause()  { super.onPause();  web.onPause(); if (kopru != null) kopru.reklamDuraklat(true); }
     @Override
     protected void onResume() {
         super.onResume();
         web.onResume();
+        if (kopru != null) kopru.reklamDuraklat(false);
         // D-107: Her one gelisinde satin alma durumu tazelenir.
         // Oyuncu Play'den iade aldiysa veya baska cihazda satin aldiysa
         // burada yakalanir. Play Billing bunu SART kosuyor.
@@ -211,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (kopru != null) kopru.odemeyiKapat();   // D-107: baglantiyi sizdirma
+        if (kopru != null) { kopru.odemeyiKapat(); kopru.reklamKapat(); }   // D-107: baglantiyi sizdirma
         if (web != null) { web.destroy(); web = null; }
         super.onDestroy();
     }

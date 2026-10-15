@@ -71,7 +71,7 @@ public class OyunKopru {
     }
 
     /** MainActivity reklam sistemini burada baglar. */
-    public void reklamiBagla() {
+    public void reklamiBagla(android.widget.FrameLayout bannerKutu) {
         if (reklam != null) return;
         reklam = new Reklam(etkinlik, new Reklam.Geri() {
             @Override
@@ -83,7 +83,31 @@ public class OyunKopru {
                 jsCagir("window.__reklamDurum && window.__reklamDurum()");
             }
         });
+        reklam.bannerKutusu(bannerKutu);
         reklam.basla();
+    }
+
+    public void reklamDuraklat(boolean dur) { if (reklam != null) { if (dur) reklam.duraklat(); else reklam.devam(); } }
+    public void reklamKapat() { if (reklam != null) reklam.kapat(); }
+
+    /** Banner bu ekranda gosterilsin mi (JS: menu evet, oyun hayir, Plus hayir). */
+    @JavascriptInterface
+    public void bannerGoster(final boolean goster) {
+        if (reklam == null) return;
+        etkinlik.runOnUiThread(() -> reklam.banner(goster));
+    }
+
+    @JavascriptInterface
+    public boolean bannerVar() { return reklam != null && reklam.bannerVar(); }
+
+    /** AB/BK: oyuncu reklam onayini degistirebilmeli (Hakkinda > Gizlilik secenekleri). */
+    @JavascriptInterface
+    public boolean gizlilikSecenekleriGerekli() { return reklam != null && reklam.gizlilikGerekli(); }
+
+    @JavascriptInterface
+    public void gizlilikSecenekleriAc() {
+        if (reklam == null) return;
+        etkinlik.runOnUiThread(() -> reklam.gizlilikAc());
     }
 
     /** MainActivity satin alma sistemini burada baglar. */

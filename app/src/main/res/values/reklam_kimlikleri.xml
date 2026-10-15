@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADMOB KIMLIKLERI  (admob.google.com > Uygulamalar)
+
+  admob_app_id   : Uygulama kimligi, "~" iceren:  ca-app-pub-1234567890123456~1234567890
+  reklam_odullu  : "Odullu" reklam birimi, "/" iceren: ca-app-pub-1234567890123456/1111111111
+  reklam_banner  : "Banner" reklam birimi:             ca-app-pub-1234567890123456/2222222222
+
+  Birim kimlikleri BOSKEN hicbir reklam istenmez ve oyun reklamsiz calisir.
+  admob_app_id BOS BIRAKILAMAZ (SDK acilista arar, yoksa uygulama coker);
+  gercegi girilene kadar Google'in RESMI TEST uygulama kimligi duruyor.
+  Test kimligiyle canliya cikilmaz - birim kimlikleri bos oldugu surece reklam zaten istenmez.
+-->
+<resources>
+    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="reklam_odullu" translatable="false"></string>
+    <string name="reklam_banner" translatable="false"></string>
+</resources>

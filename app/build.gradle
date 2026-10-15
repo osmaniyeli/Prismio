@@ -118,4 +118,7 @@ dependencies {
     // Reklam birimi kimlikleri Reklam.java icinde; bos oldukca
     // hicbir reklam istegi yapilmaz, oyun etkilenmez.
     implementation 'com.google.android.gms:play-services-ads:23.6.0'
+    // Avrupa (GDPR) icin reklam onayi: AdMob'un Kullanici Mesajlasma Platformu.
+    // AB/BK kullanicisina reklamdan ONCE izin penceresi gosterilmesi zorunlu.
+    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
 }
