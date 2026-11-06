@@ -181,6 +181,11 @@ jobs:
       # Dahili test kanalina yukler. Kosul: imzali + servis hesabi secret'i var.
       # NOT: Google, uygulamanin ILK AAB'sinin Console'dan ELLE yuklenmesini ister.
       # Ilk yuklemeden sonra bu adim her push'ta kendiliginden calisir.
+      - name: Play yuklemesi atlandi mi?
+        if: env.PLAY_VAR != 'true'
+        run: |
+          echo "::warning::PLAY_SERVICE_ACCOUNT_JSON secret'i bos ya da yok: AAB Play'e YUKLENMEDI. Settings > Secrets and variables > Actions altina ekle."
+
       - name: Google Play'e yukle (Dahili test)
         if: env.IMZA_VAR == 'true' && env.PLAY_VAR == 'true'
         uses: r0adkll/upload-google-play@v1.1.5
