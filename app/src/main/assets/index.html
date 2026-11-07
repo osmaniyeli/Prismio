@@ -1205,8 +1205,7 @@
   #ek-menu .ust .rozet,#ek-menu .ust .rutbe-roz{height:44px;min-height:44px;padding:0 11px;
     border:3px solid var(--f-ink);border-radius:99px;box-shadow:0 3px 6px rgba(38,34,30,.08);
     justify-content:center;gap:7px;background:var(--f-kart);color:var(--f-ink);
-    font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    font-weight:600;font-size:13px}
+    font-weight:900;font-size:.95rem}
   #ek-menu .ust .rutbe-roz{background:var(--f-nane);flex:1 1 auto;max-width:132px}
   #ek-menu .ust #rozParaMenu{background:var(--f-sari)}
   #ek-menu .ust .rozet small{display:none}
@@ -1214,9 +1213,9 @@
     justify-content:flex-start;gap:0}
   #ek-menu .logo{margin:10px 0 0}
   #ek-menu .logo svg{width:200px;height:100px;animation:none}
-  #ek-menu .oyunadi{text-transform:lowercase;font-size:56px;font-weight:900;letter-spacing:-3px;
+  #ek-menu .oyunadi{font-size:clamp(2.6rem,13vw,3.4rem);font-weight:900;letter-spacing:-.02em;
     line-height:1.05;margin:0;color:var(--f-ink)}
-  #ek-menu .slogan{font-size:14px;font-weight:600;letter-spacing:.3px;color:var(--f-soluk);margin:0 0 20px}
+  #ek-menu .slogan{font-size:.9rem;font-weight:700;color:var(--f-soluk);margin:0 0 20px}
   #ek-menu .seri-serit,#ek-menu .devam-kart,#ek-menu .gorev-serit,#ek-menu .menu-btnler{max-width:none}
 
   /* Devam karti: yesil, murekkep cerceve, sert golge */
@@ -1279,7 +1278,7 @@
   #ek-menu.sik3 .devam-kart{padding:12px 14px}
   @media (max-height:720px){
     #ek-menu .logo svg{width:150px;height:75px}
-    #ek-menu .oyunadi{font-size:44px;letter-spacing:-2px}
+    #ek-menu .oyunadi{font-size:2.5rem}
     #ek-menu .slogan{margin-bottom:12px}
     #ek-menu .devam-kart,#ek-menu .seri-serit,#ek-menu .gorev-serit{margin-bottom:12px}
     #ek-menu .devam-kart{padding:14px 16px}
@@ -1289,6 +1288,158 @@
     #ek-menu .slogan{display:none}
     #ek-menu .oyunadi{font-size:34px;margin-bottom:8px}
   }
+
+  /* Kucuk ekran: menuSigdir() kademeleri Figma olculerine gore sikistirir */
+  #ek-menu.sik3 .menu-orta{padding-left:16px;padding-right:16px}
+  #ek-menu.sik3 .seri-serit{min-height:46px;padding:0 12px;margin-bottom:10px}
+  #ek-menu.sik3 .devam-kart{padding:12px 14px;margin-bottom:10px;row-gap:6px}
+  #ek-menu.sik3 .gorev-serit{margin-bottom:8px}
+  #ek-menu.sik3 .menu-btnler{gap:8px}
+  #ek-menu.sik3 .menu-alt.izgara{gap:8px}
+  #ek-menu.sik3 .menu-btnler .btn.sade{min-height:46px;padding:7px 11px}
+  #ek-menu.sik3 .menu-btnler .menu-yardimci .btn.sade{min-height:34px}
+  #ek-menu.sik3 .dk-baslik{font-size:19px}
+  #ek-menu.sik3 .dk-sag{width:46px;height:46px}
+  #ek-menu.sik3 .devam-kart{grid-template-columns:46px 1fr}
+  #ek-menu.sik3 .menu-alt .btn::before,#ek-menu.sik3 .zaman-btn::before{flex-basis:26px;width:26px;height:26px;background-size:16px}
+  #ek-menu.sik4 .metin-bag{display:none}
+  #ek-menu.sik4 .menu-btnler .btn.sade{min-height:42px}
+  #ek-menu.sik4 .seri-serit{min-height:40px}
+  #ek-menu.sik4 .ust{padding-top:4px;padding-bottom:4px}
+  #ek-menu .sr-ack{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
+  #ek-menu .seri-serit{padding-top:8px;padding-bottom:8px}
+  #ek-menu.sik2 .logo{display:block;margin-top:2px}
+  #ek-menu.sik2 .logo svg{width:110px;height:55px}
+  #ek-menu.sik2 .oyunadi{font-size:2.1rem;margin-bottom:8px}
+  #ek-menu.sik3 .logo{display:none}
+
+  /* ==========================================================================
+     ILK ACILIS SINEMATIGI + ETKILESIMLI OGRETICI
+     Taban stil = SON durum. Hareket azaltilinca (animasyon-yok / az-hareket)
+     animasyonlar kapanir ama her sey okunur kalir.
+     ========================================================================== */
+  #sinema{position:fixed;inset:0;z-index:99999;background:#0b0a09;color:#F5F1E8;overflow:hidden;
+    opacity:0;transition:opacity .5s ease;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+  #sinema[hidden]{display:none}
+  #sinema.acik{opacity:1}
+  #sinema.kapan{opacity:0}
+  #sinema .sn{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;pointer-events:none}
+  #sinema .sn.on{opacity:1}
+  #sinema svg.sahne{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #sinema .sn-vin{position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 44%,transparent 42%,rgba(0,0,0,.72) 100%)}
+  #sinema .sn-tane{position:absolute;inset:-60%;z-index:6;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:snTane .7s steps(5) infinite}
+  #sinema .sn-bar{position:absolute;left:0;right:0;height:11%;background:#000;z-index:5;pointer-events:none;
+    transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+  #sinema .sn-bar.u{top:0;transform:translateY(-100%)}
+  #sinema .sn-bar.a{bottom:0;transform:translateY(100%)}
+  #sinema.acik .sn-bar{transform:none}
+  #sinema .sn-yazi{position:absolute;left:26px;right:26px;bottom:calc(11% + 42px);margin:0;text-align:center;z-index:7;
+    font-size:1.3rem;font-weight:800;line-height:1.38;letter-spacing:.01em;color:#FBF7EE;
+    text-shadow:0 2px 22px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}
+  #sinema .sn.on .sn-yazi{animation:snYazi 1.1s cubic-bezier(.2,.8,.2,1) .55s both}
+  #sinema .sn-atla{position:absolute;top:calc(11% + 12px);right:14px;z-index:9;border:1.5px solid rgba(255,255,255,.35);
+    background:rgba(0,0,0,.35);color:#F5F1E8;font:inherit;font-weight:800;font-size:.82rem;
+    padding:8px 15px;border-radius:999px;cursor:pointer;animation:snGir .7s ease 1.2s both;min-height:36px}
+  #sinema .sn-atla:active{transform:scale(.96)}
+  #sinema .sn-nokta{position:absolute;left:0;right:0;bottom:calc(11% + 18px);z-index:8;display:flex;
+    justify-content:center;gap:7px;pointer-events:none}
+  #sinema .sn-nokta i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .4s,transform .4s}
+  #sinema .sn-nokta i.on{background:#F5C93F;transform:scale(1.35)}
+
+  /* Sahne 1: karanlik, sonuk kristaller, toz */
+  #sinema .kr-sonuk{animation:snNefes 3.2s ease-in-out infinite alternate}
+  #sinema .toz circle{animation:snToz var(--d,9s) ease-in-out infinite alternate;opacity:.55}
+  #sinema .sn.on .ay-isik{animation:snGir 2.4s ease both}
+
+  /* Sahne 2: tek isik dogar */
+  #sinema .sn.on .k-yatay{transform-box:fill-box;transform-origin:left center;animation:snX 1.5s cubic-bezier(.25,.7,.2,1) .35s both}
+  #sinema .sn.on .parilti{animation:snParilti 2.6s ease-out .3s both}
+
+  /* Sahne 3: prizma, uc renk */
+  #sinema .sn.on .kamera{transform-box:view-box;transform-origin:50% 50%;animation:snKamera 4.2s ease-out both}
+  #sinema .sn.on .k-beyaz{transform-box:fill-box;transform-origin:left center;animation:snX 1.0s cubic-bezier(.25,.7,.2,1) .2s both}
+  #sinema .sn.on .prizma-cam{animation:snPrizma 1.4s ease-out 1.0s both}
+  #sinema .sn.on .demet{animation:snCiz 1.1s cubic-bezier(.25,.7,.2,1) both}
+  #sinema .sn.on .demet.r{animation-delay:1.25s}
+  #sinema .sn.on .demet.y{animation-delay:1.45s}
+  #sinema .sn.on .demet.g{animation-delay:1.65s}
+
+  /* Sahne 4: ayna ve kristal */
+  #sinema .sn.on .yol-a{animation:snCiz .95s cubic-bezier(.3,.6,.3,1) .25s both}
+  #sinema .sn.on .yol-b{animation:snCiz .8s cubic-bezier(.3,.6,.3,1) 1.15s both}
+  #sinema .sn.on .ayna-kutu{animation:snAyna .5s cubic-bezier(.3,1.6,.5,1) 1.0s both}
+  #sinema .sn.on .kr-yan{animation:snYan 1.1s ease-out 1.9s both}
+  #sinema .sn.on .kr-halka{transform-box:fill-box;transform-origin:center;animation:snHalka 1.4s ease-out 1.95s both}
+  #sinema .sn.on .kivilcim{transform-box:fill-box;transform-origin:center;animation:snKivilcim 1.1s ease-out 1.95s both}
+
+  /* Sahne 5: baslik */
+  #sinema .sn-son{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:2px;padding:0 24px 8%;text-align:center}
+  #sinema .sn-son svg{width:230px;height:115px;display:block}
+  #sinema .sn.on .sn-son svg{animation:snGel 1.3s cubic-bezier(.2,.8,.2,1) .2s both}
+  #sinema .sn-son h1{margin:4px 0 0;font-size:clamp(2.9rem,15vw,3.8rem);font-weight:900;letter-spacing:-.02em;line-height:1.05;
+    color:#FBF7EE;text-shadow:0 0 36px rgba(245,201,63,.35)}
+  #sinema .sn.on .sn-son h1{animation:snGel 1.2s cubic-bezier(.2,.8,.2,1) .7s both}
+  #sinema .sn-son p{margin:0 0 26px;font-size:.95rem;font-weight:700;color:#B9AE9B}
+  #sinema .sn.on .sn-son p{animation:snGel 1.1s ease 1.1s both}
+  #sinema .sn-basla{pointer-events:auto;border:0;background:#2E9E6B;color:#fff;font:inherit;font-weight:900;font-size:1.15rem;
+    padding:14px 44px;border-radius:18px;box-shadow:0 5px 0 #237A52;cursor:pointer;min-height:52px}
+  #sinema .sn-basla:active{transform:translateY(4px);box-shadow:0 1px 0 #237A52}
+  #sinema .sn.on .sn-basla{animation:snGel 1s ease 1.6s both,snDarbe 2s ease-in-out 3s infinite}
+  #sinema .sn-son-yaz{display:none}
+
+  @keyframes snTane{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+  @keyframes snYazi{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+  @keyframes snGir{from{opacity:0}to{opacity:1}}
+  @keyframes snGel{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes snNefes{from{opacity:.22}to{opacity:.5}}
+  @keyframes snToz{from{transform:translate(0,0)}to{transform:translate(var(--dx,10px),var(--dy,-24px))}}
+  @keyframes snX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes snCiz{from{stroke-dasharray:1;stroke-dashoffset:1}to{stroke-dasharray:1;stroke-dashoffset:0}}
+  @keyframes snParilti{0%{opacity:0;transform:scale(.4)}35%{opacity:1}100%{opacity:.55;transform:scale(1)}}
+  @keyframes snKamera{from{transform:scale(1)}to{transform:scale(1.09)}}
+  @keyframes snPrizma{0%{opacity:.25}55%{opacity:1}100%{opacity:.8}}
+  @keyframes snAyna{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+  @keyframes snYan{from{opacity:0}to{opacity:1}}
+  @keyframes snHalka{from{opacity:.9;transform:scale(.3)}to{opacity:0;transform:scale(2.4)}}
+  @keyframes snKivilcim{from{opacity:1;transform:scale(.2)}to{opacity:0;transform:scale(1.8)}}
+  @keyframes snDarbe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+  html.animasyon-yok #sinema *,html.az-hareket #sinema *{animation:none!important;transition:none!important}
+
+  /* ---- Etkilesimli ogretici (1. bolum) ---- */
+  .tahtakutu{position:relative}
+  .ogr-katman{position:absolute;inset:0;pointer-events:none;z-index:6;border-radius:inherit}
+  .ogr-katman[hidden]{display:none}
+  .ogr-halka{position:absolute;border-radius:14px;border:3px solid var(--sari,#F5C93F);
+    box-shadow:0 0 0 4px rgba(245,201,63,.28),0 0 22px rgba(245,201,63,.55);
+    animation:ogrDarbe 1.3s ease-in-out infinite;transform:translate(-50%,-50%)}
+  .ogr-el{position:absolute;width:44px;height:44px;margin:-6px 0 0 -14px;
+    filter:drop-shadow(0 3px 4px rgba(38,34,30,.45));animation:ogrDokun 1.3s ease-in-out infinite}
+  @keyframes ogrDarbe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.95}50%{transform:translate(-50%,-50%) scale(1.12);opacity:.6}}
+  @keyframes ogrDokun{0%,100%{transform:translate(0,0)}45%{transform:translate(-3px,-5px)}65%{transform:translate(0,3px)}}
+  html.animasyon-yok .ogr-halka,html.animasyon-yok .ogr-el,html.az-hareket .ogr-halka,html.az-hareket .ogr-el{animation:none}
+  .ogr-ust{margin:6px auto 0;max-width:340px;font-size:.84rem;font-weight:700;line-height:1.35;color:var(--metin-soft);text-align:center}
+  .ogr-ust[hidden]{display:none}
+  .ipucu.ogr-ipucu{font-size:1rem;font-weight:900;color:var(--metin);background:var(--yuzey);
+    border-radius:14px;padding:10px 14px;box-shadow:0 3px 0 var(--cizgi);margin-left:auto;margin-right:auto;max-width:360px}
+  html.ogr #btnIpucu,html.ogr #btnYeni{display:none}
+  html.ogr .oyunalt{justify-content:center}
+  html.ogr .oyunalt .btn{flex:0 1 220px}
+  .ogr-bravo{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;
+    padding:24px;background:rgba(20,17,14,.55);animation:snGir .35s ease both}
+  .ogr-bravo[hidden]{display:none}
+  .ogr-bravo .kart{width:100%;max-width:340px;background:var(--yuzey);border-radius:24px;padding:26px 22px 22px;
+    text-align:center;box-shadow:0 6px 0 var(--cizgi),0 24px 60px rgba(0,0,0,.35);animation:snGel .5s cubic-bezier(.2,.9,.3,1.2) both}
+  .ogr-bravo h2{margin:0 0 8px;font-size:1.7rem;font-weight:900;color:var(--yesil)}
+  .ogr-bravo p{margin:0 0 20px;font-size:.98rem;font-weight:700;color:var(--metin-soft);line-height:1.4}
+  .ogr-bravo .btn{width:100%}
+
+  #ek-menu .menu-alt.izgara{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  #ek-menu .menu-alt .btn{min-width:0;line-height:1.15;overflow-wrap:anywhere;hyphens:auto}
+  #ek-menu.sik3 .menu-alt .btn{font-size:.9rem;padding-left:9px;padding-right:9px}
 </style>
 </head><body>
 
@@ -1448,6 +1599,10 @@
   <div style="height:12px"></div>
 </div>
 
+<!-- ================= ILK ACILIS SINEMATIGI + OGRETICI ================= -->
+<div id="sinema" hidden aria-label="Prismio"></div>
+<div class="ogr-bravo" id="ogrBravo" hidden><div class="kart"><h2 id="ogrBravoBaslik"></h2><p id="ogrBravoAck"></p><button class="btn yesil tam" id="ogrBravoDevam" type="button"></button></div></div>
+
 <!-- ================= OYUN ================= -->
 <div class="ekran" id="ek-oyun">
   <div class="ust">
@@ -1466,6 +1621,7 @@
     <div class="bolumbasI" id="bolumBas">
       <div class="no" id="bolumNo">Bölüm 1</div>
       <div class="alt" id="bolumAlt">En iyi: 3 ayna</div>
+      <div class="ogr-ust" id="ogrUst" hidden></div>
     </div>
 
     <!--: DURUM SERIDI
@@ -1650,6 +1806,7 @@
     <div class="kap">
       <div class="bolumbaslik" data-t="nasil_oynanir">Nasıl oynanır</div>
       <div id="nasilListe"></div>
+      <button class="btn sade tam" id="nasilSinema" type="button" data-t="sin_izle" style="margin-bottom:10px">Giriş filmini izle</button>
       <button class="btn tam no-kapat" id="nasilTamam" data-t="anladim">Anladım</button>
       <div style="height:10px"></div>
     </div>
@@ -1757,9 +1914,32 @@
   DILLER.ja={"oyna": "プレイ", "tum_bolumler": "すべてのステージ ›", "zamana_karsi": "タイムアタック", "temalar": "テーマ", "oduller": "報酬", "odul_odasi": "報酬の間", "dunyam": "私の世界", "ayarlar": "設定", "hakkinda": "概要", "hesap": "アカウント", "hesap_yedek": "アカウントとバックアップ", "magaza": "ショップ", "basarilar": "実績", "gunluk_gorev": "デイリー任務", "ana_menu": "メインメニュー", "haritaya_don": "マップに戻る", "magazaya_git": "ショップへ", "kaldigin_yer": "前回の続き", "yolculuk": "旅", "bolum": "ステージ", "sifirla": "リセット", "ipucu": "ヒント", "yeni_tahta": "新しいパズル", "ayna": "枚の鏡", "sinir": "上限", "can": "ライフ", "isik": "光", "isik_kucuk": "光", "gun": "日", "baslangic_ipucu": "鏡を置き、光をクリスタルへ運ぼう。", "kristal_kaldi": "クリスタル {n} 個が暗いまま。", "kristal_kaldi_1": "クリスタル {n} 個が暗いまま。", "hepsi_yandi": "クリスタルが灯った。", "hepsi_yandi_eniyi": "クリスタルが灯った。最善の解。", "dongu_hatasi": "光が自分に閉じた。鏡を回すか外して。", "ipucu_kalmadi": "このステージのヒントは残っていない。", "ipucu_verildi_can": "ヒント配置。ライフ1消費。", "ipucu_bedava_kaldi": "ヒント配置。このステージで無料あと {n} 回。", "can_yok_ipucu": "ライフがない。ヒントはライフ1。", "can_yok_yeni": "ライフがない。新しいパズルはライフ1。", "yeni_tahta_onay": "新しいパズルはライフ1。もう一度タップで確定。", "ayna_siniri": "鏡の上限：{n}。1枚外して。", "tahta_uretilemedi": "パズルを作れなかった。「新しいパズル」を。", "cikmak_tekrar": "もう一度タップで退出", "cozdun": "完成。", "buyuk_bitti": "大ステージクリア", "en_iyi_cozum": "最少の鏡。これ以上ない。", "bir_ayna_fazla": "鏡が1枚多い。{n} 枚でも解ける。", "ayna_fazla": "鏡が {f} 枚多い。最善は {n}。", "yildiz_yok": "鏡が多すぎ。星なし。最善は {n}。", "sonraki_bolum": "次のステージ →", "daha_az_dene": "もっと少ない鏡で挑戦", "tekrar_dene": "もう一度", "yeniden_dene": "再挑戦", "tema_acildi": "テーマ「{ad}」が解放された", "sure_bitti": "時間切れ", "canin_bitti": "ライフがない。", "yeni_can": "新しいライフ", "reklam_can": "短い広告 · +1 ライフ", "reklam_oynatiliyor": "広告を再生中…", "plus_al": "Prismio Plus を購入", "plus_geri_yukle": "購入済み、復元する", "plus_kontrol": "購入を確認中…", "plus_tesekkur": "ありがとう。Prismio Plus が有効になった。", "tema": "テーマ", "plus": "Plus", "baglaniyor": "接続中…", "kod_kopyala": "コードをコピー", "kod_yanlis": "コードが違う。", "odulu_al": "受け取る", "gorevler_bitti": "今日のタスク完了", "seri_basla": "今日1ステージ解いて連続記録を始めよう", "dil": "言語", "gelistirici": "開発者", "tahta_kaldi": "あと {n} ステージ", "aciliyor": "解放中…", "reklam_alani": "広告スペース", "slogan": "解こう。そして、もっとうまく。", "b_ilk_isik": "最初の光", "b_usta": "十の完璧", "b_koleksiyon": "三つの色", "b_gezgin": "旅人", "b_bolge_usta": "地域の達人", "b_mukemmel": "達人の解", "b_dunya_kur": "最初の石", "b_isinma": "最初の一歩", "b_temiz_is": "綺麗な解", "b_hizli_dusun": "素早い一瞥", "b_uc_gun": "三日", "b_bir_hafta": "七つの夜", "b_bir_ay": "満月", "b_yuz_gun": "百日", "b_uzun_yol": "長い道", "b_yari_yol": "道半ば", "b_isigin_sonu": "光の果て", "b_kusursuz": "完璧な百", "b_buyuk_sinav": "大いなる境", "b_tam_kolek": "フルパレット", "b_dunya_tamam": "すべての風景", "g_bolumler": "ステージ", "g_ustalik": "熟練", "g_seri": "連続", "g_koleksiyon": "収集", "a_titresim": "振動", "a_titresim_a": "タッチ振動", "a_animasyon": "アニメーション", "a_animasyon_a": "画面と報酬の演出", "a_parcacik": "パーティクル効果", "a_parcacik_a": "背景の光の粒", "a_otogec": "自動で進む", "a_otogec_a": "解いたら進む", "a_efekt": "効果音", "a_efekt_a": "鏡とクリスタルの音", "a_shapes": "形マーカー", "a_shapes_a": "クリスタルに記号を付ける", "a_kontrast": "ハイコントラスト", "a_kontrast_a": "線を目立たせる", "a_azhareket": "動きを減らす", "a_azhareket_a": "演出の動きを減らす", "a_kalite": "画質", "a_kalite_a": "低 / 中 / 高", "a_dusuk": "低", "a_orta": "中", "a_yuksek": "高", "d_fidan": "若木", "d_tas": "石の群れ", "d_cali": "低木", "d_sutun": "柱", "d_kemer": "アーチ", "d_heykel": "彫像", "d_kristal": "水晶群", "d_dev_prizma": "巨大プリズム", "d_fener": "灯籠", "d_asma_lamba": "吊りランプ", "d_yildiz": "星", "d_bulut": "雲", "d_cesme": "噴水", "d_isik_kapisi": "光の門", "gv_3bolum": "ステージを 3 つ解く", "gv_2yildiz": "2 ステージで星 3 つ", "gv_zaman5": "タイムアタックで 5 ステージ", "bolum_n": "ステージ {n}", "bolum_acilir": "ステージ {n} で解放", "yildiz_n": "星 {n} 個", "buyuk_bolum": "大ステージ", "bolge_0": "象牙の庭", "bolge_1": "真鍮の天文台", "bolge_2": "インクの部屋", "bolge_3": "ステンドグラスの大聖堂", "bolge_4": "紙の工房", "bolge_5": "石灰の中庭", "bolge_6": "銅の塔", "bolge_7": "夜の図書館", "bolge_8": "色の窓", "bolge_9": "折りたたむ広間", "bolge_10": "塩のテラス", "bolge_11": "時計塔", "bolge_12": "暗室", "bolge_13": "ガラス窯", "bolge_14": "折り紙の庭", "bolge_15": "大理石の回廊", "bolge_16": "望遠鏡のバルコニー", "bolge_17": "影の通路", "bolge_18": "モザイクの池", "bolge_19": "手帳の塔", "bolge_20": "螺鈿の間", "bolge_21": "アストロラーベの間", "bolge_22": "星図", "bolge_23": "色の水車", "bolge_24": "封筒の工房", "bolge_25": "石膏の画廊", "bolge_26": "コンパス広場", "bolge_27": "月光の貯水池", "bolge_28": "すりガラスの一式", "bolge_29": "鉛筆の森", "bolge_30": "白い弧", "bolge_31": "歯車の地下室", "bolge_32": "静かな井戸", "bolge_33": "光を割る場所", "bolge_34": "折られた階段", "bolge_35": "砂時計の部屋", "bolge_36": "青銅の天文台", "bolge_37": "夜の番", "bolge_38": "色の井戸", "bolge_39": "羊皮紙の広間", "bolge_40": "磁器のテラス", "bolge_41": "車輪の庭", "bolge_42": "暗い運河", "bolge_43": "炎のガラス", "bolge_44": "折り目の工房", "bolge_45": "アラバスターの広間", "bolge_46": "六分儀の塔", "bolge_47": "眠る図書館", "bolge_48": "薔薇窓", "bolge_49": "手紙の塔", "bolge_50": "真珠の宮殿", "bolge_51": "クロノメーターの部屋", "bolge_52": "死角", "bolge_53": "割れガラスの街", "bolge_54": "しわの広間", "bolge_55": "アラバスターの円蓋", "bolge_56": "星の車輪", "bolge_57": "灯籠の井戸", "bolge_58": "光の円蓋", "bolge_59": "翼の工房", "bolge_60": "霧の中庭", "bolge_61": "振り子の広間", "bolge_62": "夜の埠頭", "bolge_63": "ガラスの橋", "bolge_64": "紙のランタン", "bolge_65": "雪花石の間", "bolge_66": "天球儀", "bolge_67": "深い闇", "bolge_68": "色の円蓋", "bolge_69": "曲がる塔", "bolge_70": "チョークの街", "bolge_71": "文字盤の庭", "bolge_72": "こだまの部屋", "bolge_73": "プリズムの市", "bolge_74": "重なる屋根", "bolge_75": "乳白ガラスの広間", "bolge_76": "天頂のテラス", "bolge_77": "満月の部屋", "bolge_78": "光のトンネル", "bolge_79": "封筒の塔", "bolge_80": "雪の中庭", "bolge_81": "星の時計", "bolge_82": "夜の谷", "bolge_83": "ルビーの窓", "bolge_84": "屈折の工房", "bolge_85": "霜の画廊", "bolge_86": "子午線の塔", "bolge_87": "遠い闇", "bolge_88": "虹の広間", "bolge_89": "蝶番の部屋", "bolge_90": "氷河の宮殿", "bolge_91": "果てなき文字盤", "bolge_92": "最後の闇", "bolge_93": "光の冠", "bolge_94": "折りたたむ空", "bolge_95": "水晶の頂", "bolge_96": "大いなるレンズ", "bolge_97": "静かな星", "bolge_98": "最後のプリズム", "bolge_99": "光の果て", "tema_fildisi": "象牙", "tema_fildisi_o": "素朴で温かい石の感触。", "tema_pirinc": "真鍮", "tema_pirinc_o": "歯車と天文台の静けさ。", "tema_murekkep": "インク", "tema_murekkep_o": "暗い地に光る線。", "tema_vitray": "ステンドグラス", "tema_vitray_o": "色ガラス越しの聖堂の光。", "tema_kagit": "紙", "tema_kagit_o": "柔らかな折り目と綺麗な線。", "tema_bakir": "銅", "tema_bakir_o": "古い金属と時の緑の跡。", "tema_deniz": "深い水", "tema_deniz_o": "深い水の静けさ。光が差し込む。", "tema_orman": "森", "tema_orman_o": "湿った影と静かな緑。", "tema_kum": "砂", "tema_kum_o": "硬い影と温かい土。", "tema_kuzey": "オーロラ", "tema_kuzey_o": "暗い空に緑の波。", "koleksiyon": "コレクション", "tema_sayi": "{a} / {b} テーマ", "kullaniliyor": "使用中", "secmek_dokun": "タップして選択", "al_buton": "購入", "eksik_isik": "あと {n}", "tema_secildi": "「{ad}」を選びました。", "tema_alindi": "「{ad}」を解放して選びました。", "zaten_kullaniliyor": "すでに使用中", "temayi_kullan": "テーマを使う", "isik_ver_al": "光 {n} で解放", "isik_daha_lazim": "光があと {n} 必要", "kapat": "閉じる", "oniz_harita": "マップ", "oniz_tahta": "ボード", "oniz_parca": "パーツ", "ba_ilk": "最初のステージをクリア。", "ba_usta": "10 ステージを星3で。", "ba_kolek": "テーマを3つ解放。", "ba_gezgin": "50 ステージを解く。", "ba_bolge": "最初の地域をクリア。", "ba_mukemmel": "20 ステージを最善手で。", "ba_dunya": "パーツを5個置く。", "ba_isinma": "5 ステージを解く。", "ba_temiz": "1 ステージを星3で。", "ba_hizli": "タイムアタックで3ステージ。", "ba_3gun": "3日連続でプレイ。", "ba_hafta": "7日連続でプレイ。", "ba_ay": "30日連続でプレイ。", "ba_yuzgun": "100日連続でプレイ。", "ba_uzunyol": "200 ステージをクリア。", "ba_yariyol": "500 ステージをクリア。", "ba_son": "1000 ステージをクリア。", "ba_kusursuz": "100 ステージを星3で。", "ba_sinav": "大ステージを10クリア。", "ba_tamkolek": "すべてのテーマを解放。", "ba_dunyatam": "すべての世界のパーツを集める。", "u_reklam_izle": "広告を見る", "u_isik_reklam_ack": "短い広告で光15。", "u_gunluk_isik": "デイリーライト", "u_gunluk_ack": "1日1回、光10をプレゼント。", "u_can_reklam_ack": "短い広告でライフ1。", "u_can_doldur": "ライフを満タンに", "u_can_doldur_ack": "短い広告でライフ回復。", "can_zaten_dolu": "ライフはもう満タン。", "kazandin": "{n} を獲得。", "n_isik": "光 {n}", "tum_canlar": "ライフ全部", "n_can": "ライフ {n}", "odul_kelime": "報酬", "seri_devam": "連続記録が続いてる。今日解かないと途切れる", "seri_basladi": "連続記録開始。明日また来て", "gunluk_seri": "{n} 日連続。", "dunya_bos": "ここはまだ空っぽ。", "dunya_bos2": "ここにパーツを置けます。", "dunyanda": "あなたの世界に", "n_parca": "{n} パーツ", "dunya_kur_bas": "自分の世界を作ろう", "dunya_kur_1": "100 ステージで開く。", "dunya_kur_2": "ステージを解くとパーツが集まる。", "kat_doga": "自然", "kat_yapi": "建築", "kat_kristal": "クリスタル", "kat_isik": "光", "kat_gokyuzu": "空", "kat_ozel": "特別", "gorev_odul_al": "タスク完了、光を受け取る", "alindi": "受取済み", "gorev_ack": "タスクは毎日更新。ステージを解くと進む。光を忘れずに。", "acik_durum": "解放済み", "ipucu_bedava_var": "ヒント、無料であと {n} 回", "ipucu_bir_can": "ヒントはライフ1", "yeni_tahta_bedava": "新しいパズル、無料", "yeni_tahta_can": "新しいパズルはライフ1", "bedava_ipucu_kaldi": "無料ヒントが {n} 回ある。", "bedava_ipucu_bitti": "無料ヒント終了。次はライフ1。", "plus_reklam_yok": "広告なし", "plus_reklam_yok_a": "ゲーム内広告は表示されない。", "plus_sinirsiz_can": "ライフ無制限", "plus_sinirsiz_can_a": "ライフ待ちなし。いつでも遊べる。", "plus_ipucu": "無料ヒント4回", "plus_acik": "Prismio Plus 有効", "plus_acik_ack": "Prismio Plus 有効。広告なし、ライフ無制限、ステージごとにヒント4回。", "plus_bir_kez": "一度の支払いで永久に。", "plus_not": "一度の支払い。定期購入も自動課金もなし。", "plus_yakinda": "このビルドでは購入停止中。近日対応。", "ayna_kullandin": "鏡を {k} 枚設置。最善は {e}。", "bu_bolumde_sinir": "このステージの上限は {n}", "yeni_can_sonra": "{s} 後に新しいライフ。", "n_bolum": "{n} レベル", "n_bolum_cozdun": "{n} ステージを解いた。", "n_yildiz_kelime": "星 {n}", "gizli": "非表示", "n_tema": "テーマ {n}", "en_uzun_seri": "最長連続記録は {n} 日", "parca_koleksiyon": "{a} / {b} パーツ", "devam_ediyor": "進行中", "plus_ipucu_a": "ステージごとにヒント2回が4回に。", "nasil_oynanir": "遊び方", "no_amac": "目的", "no_amac_a": "光を導いてクリスタルを灯す。", "no_ayna": "鏡", "no_ayna_a": "マスをタップで鏡を置く。もう一度で回転。光を90度曲げる。", "no_kristal": "クリスタル", "no_kristal_a": "自分の色でしか光らない。赤い水晶は赤い光を。", "no_duvar": "壁", "no_duvar_a": "光は壁を通れない。鏡で回り込もう。", "no_prizma": "プリズム", "no_prizma_a": "白い光を三色に分ける：赤、緑、青。", "no_ayristirici": "スプリッター", "no_ayristirici_a": "入る色を二つに分ける。赤い光は黄とマゼンタに。", "no_delik": "ワームホール", "no_delik_a": "光を壁の向こうへ移す。矢印が出口を示す。", "no_yildiz": "星", "no_yildiz_a": "どのステージにも最少の鏡数がある。合わせれば星3。", "no_sekil": "形", "no_sekil_a": "色ごとに形がある。色が見分けにくければ形を見る。", "no_ipucu_bas": "詰まったら", "no_ipucu_a": "鏡を1枚正しい位置に置く。ヒント1回でライフ1。", "anladim": "わかった", "senin_cozumun": "あなたの配置", "en_iyi_cozum_bu": "最善の解", "en_iyi_goster": "最善の解を見る", "cozumu_gizle": "自分の配置に戻る", "n_ayna_kelime": "鏡 {n} 枚", "cozumun_yok": "このステージの記録がない。", "r_kivilcim": "火花", "r_mum": "ろうそく", "r_fener": "ランタン", "r_mesale": "たいまつ", "r_denizfeneri": "灯台", "r_safak": "夜明け", "r_yildiz": "星", "r_gunes": "太陽", "lig": "リーグ", "rutbe": "ランク", "toplam_isik": "累計の光", "sonraki_rutbe": "次のランク", "en_ust_rutbe": "頂点にいる。これより上はない。", "isik_kaldi_rutbe": "あと光 {n} で{ad}", "lig_ack": "光を得るほどランクが上がる。使った光では下がらない。", "siralamayi_ac": "光ランキング", "siralama_giris": "Play ゲームを連携してランキングに参加。", "rutbe_yukseldi": "新しいランク：{ad}", "rutbe_n": "ランク {n}", "reklam_olmadi": "広告を読み込めなかった。少し後で。", "d_deger": "風車", "d_kopru": "ガラスの橋", "d_ay": "月", "d_obelisk": "オベリスク", "isikla_al": "光で購入", "deko_alindi": "「{ad}」を世界に追加しました。", "hs_oto_bas": "自動バックアップ", "hs_oto_ack": "進行状況はスマートフォンの Google アカウントにバックアップされます。機種変更しても戻ります。", "hs_bagli": "接続済み", "hs_bagli_ack": "各レベルの終了時にバックアップされます。", "hs_giris_ack": "ログインすると進行状況がアカウントに連携され、他のスマートフォンでも開けます。", "hs_yok_ack": "このバージョンでは利用できません。スマートフォンアプリで提供予定です。", "hs_giris": "Google Play ゲームでログイン", "hs_hesap_degis": "アカウントを切り替えるには、スマートフォンの <b>Play ゲーム</b> アプリを使ってください。", "hs_pg_basari": "Play ゲームの実績", "hs_gelismis": "詳細：コードでバックアップ", "hs_tasi_bas": "セーブデータを移す", "hs_tasi_ack": "下のコードをコピーして保管してください。新しいスマートフォンに貼り付けると進行状況が戻ります。", "hs_kod_aria": "バックアップコード", "hs_geri_bas": "セーブデータを復元", "hs_geri_ack": "以前保存したコードを貼り付けてください。<b>現在の進行状況は置き換えられます。</b>", "hs_yapistir": "ここにコードを貼り付け", "hs_geri_aria": "復元コード", "hs_geri_yukle": "復元", "hs_tesekkur": "セーブデータはスマートフォンに保存され、Google アカウントにバックアップされます。", "hs_kopyalandi": "コピーしました ✓", "hs_elle_kopyala": "コードを手動で選択してコピーしてください", "hs_yuklendi": "復元しました。レベル {n} が開いています。進行状況が戻りました。", "hs_giris_hata": "ログインできませんでした。インターネット接続を確認して、もう一度お試しください。", "hs_baglanti_hata": "接続できませんでした。", "hs_bulut_ileri": "クラウドのセーブデータの方が進んでいました。レベル {n} が開いています。", "hs_bulut_okunamadi": "クラウドのセーブデータを読み込めませんでした。", "hs_baglandi_yedek": "接続しました。進行状況をバックアップしています。", "kod_bos": "コードが空です。", "kod_bozuk": "コードを読み込めません。不完全か壊れています。", "kod_yabanci": "このコードは Prismio のセーブデータではありません。", "kod_ilerleme_yok": "コードに進行状況がありません。", "kod_yazilamadi": "保存できませんでした。ストレージがいっぱいの可能性があります。", "hk_surum": "バージョン", "hk_yapim": "ビルド", "hk_yapimci": "クレジット", "hk_tasarim": "デザイン・開発", "hk_bulmaca": "パズルデザイン", "hk_gorsel": "ビジュアルアイデンティティ", "hk_yil": "年", "hk_ilerleme": "進行状況", "hk_acilan_bolum": "解放したレベル", "hk_cozulen": "クリアしたステージ", "hk_toplam_yildiz": "星の合計", "hk_acilan_tema": "解放したテーマ", "hk_basari": "実績", "hk_dunya_parca": "ワールドのパーツ", "hk_yasal": "法的情報", "hk_gizlilik": "プライバシーポリシー", "hk_destek": "サポート・お問い合わせ", "hk_tesekkur": "遊んでくれてありがとう。", "hk_baglanti_yok": "このリンクはリリース前に追加されます。", "zaman_skor": "{n} レベル", "zaman_sonuc": "{n} レベルをクリアしました。", "mg_not": "光はレベルをクリアして手に入れます。美しい解法ほど多くもらえます。星3つで12、大きなレベルは+25。", "mg_isik_bilgi": "光の大半は<b>プレイ</b>で手に入ります。レベルをクリアすると光がもらえ、<b>美しい解法</b>ならさらに多くもらえます。星3つで12、大きなレベルで25追加。", "mg_can_bilgi": "<b>解かずに抜ける</b>とライフが減ります。解けば減りません。ライフは自然に回復します：<b>4時間</b>ごとに1つ。", "dt_bas": "自分の世界をつくろう", "dt_metin": "{n} ステージを解くと開きます。<br>ステージをクリアすると木・柱・クリスタル・ランタンが手に入ります。<br>自分だけの風景に並べましょう。", "dt_sayi": "ステージ", "dt_aciliyor": "開いています…", "dt_kaldi": "あと {n} ステージ", "durum_acik": "達成", "aria_hucre": "{x} 列目、{y} 行目", "aria_kilitli": "ロック中", "tema_fildisi_k": "自然な紙、やわらかな影、静かな部屋。", "tema_pirinc_k": "黄色い金属、細い線、計測器のような手触り。", "tema_murekkep_k": "暗い部屋、インクのしみ、星空。", "tema_vitray_k": "太い鉛線、深い色、教会の窓。", "tema_kagit_k": "白い紙、折り目、鉛筆のスケッチ。", "tema_bakir_k": "古い屋根、酸化した銅、緑青のしみ。", "tema_deniz_k": "紺色の水、砂の底、遠くから届く光。", "tema_orman_k": "太い木、苔、枝の間から差す日差し。", "tema_kum_k": "焼けた大地、日干しれんがの壁、長い影。", "tema_kuzey_k": "漆黒の夜、氷、揺れる緑と紫のカーテン。", "ag_oynanis": "ゲームプレイ", "ag_erisim": "アクセシビリティ", "ag_goruntu": "表示", "ag_ses": "サウンド", "ba_s3": "3日連続でプレイする。", "ba_s7": "7日連続でプレイする。", "ba_s30": "30日連続でプレイする。", "ba_s100": "100日連続でプレイする。", "aria_geri": "戻る", "aria_tahta": "光のパズル盤", "tekrar_odul_yok": "このレベルはすでにこの星数でクリア済みです。鏡を減らしてみよう。", "a_sestipi": "サウンドの種類", "a_sestipi_a": "効果音の音色", "st_cam": "ガラス", "st_ahsap": "木", "st_retro": "レトロ", "hs_kes": "Play ゲームとの接続を解除", "hs_kesildi": "接続を解除しました。進行状況はクラウドに保存されず、実績も送信されません。Google アカウントから完全にログアウトするには Play ゲーム アプリを使ってください。", "hs_kapali": "未接続です。Play ゲームは使われず、進行状況はこのスマートフォンと Google バックアップにのみ保存されます。", "hs_durum_bagli": "Play ゲーム：接続中", "hs_durum_kapali": "Play ゲーム：未接続", "paketler": "パック", "pk_ses": "サウンドパック", "pk_tahta": "ボードスタイル", "pk_menu": "ホーム背景", "pk_ses_cam_a": "澄んだガラスの音", "pk_ses_ahsap_a": "やわらかく温かいマリンバの音", "pk_ses_retro_a": "8ビットゲーム機の音", "pk_tahta_klasik": "クラシック", "pk_tahta_klasik_a": "テーマ本来のボード", "pk_tahta_neon": "ネオン", "pk_tahta_neon_a": "光るビームと光の枠", "pk_tahta_altin": "ゴールド", "pk_tahta_altin_a": "金の枠とやわらかな輝き", "pk_tahta_aurora": "オーロラ", "pk_tahta_aurora_a": "色がめぐる動く枠", "pk_menu_tema": "テーマの柄", "pk_menu_nokta": "ドット", "pk_menu_cizgi": "ライン", "pk_menu_yildiz": "星", "pk_menu_cam": "ステンドグラス", "pk_menu_kat": "折り紙", "pk_menu_dalga": "波", "pk_menu_izgara": "グリッド", "pk_sec": "使う", "pk_secili": "使用中", "pk_dinle": "試聴", "pk_ucretsiz": "無料", "pk_alindi": "「{ad}」を解放して選びました。", "erken_ac": "先に解放 · ◆ {n}", "erken_kart": "今すぐなら ◆ {n}", "a_hatirlatma": "毎日のリマインダー", "a_hatirlatma_a": "タスクが残っていれば夕方に通知", "bild_gorev": "今日のタスクが待っています。いくつかステージを解いて光を受け取ろう。", "bild_seri": "{n}日連続記録を途切れさせないで！今日のタスクが待っています。", "bild_izin_yok": "通知がオフです。端末の設定でオンにできます。", "isik_paket": "光 {n}", "u_isik_satin_a": "テーマとパック用", "u_can_satin_a": "ライフがすぐ満タンに", "satin_tesekkur": "ありがとう！反映されました。", "satin_basarisiz": "購入を完了できませんでした。", "satin_bekliyor": "支払い確認待ち。確認後に自動で反映されます。", "dolu": "満タン", "hk_reklam_gizlilik": "広告のプライバシー設定"};
   DILLER.ko={"oyna": "시작", "tum_bolumler": "모든 레벨 ›", "zamana_karsi": "타임 어택", "temalar": "테마", "oduller": "보상", "odul_odasi": "보상의 방", "dunyam": "나의 세계", "ayarlar": "설정", "hakkinda": "정보", "hesap": "계정", "hesap_yedek": "계정 및 백업", "magaza": "상점", "basarilar": "업적", "gunluk_gorev": "일일 과제", "ana_menu": "메인 메뉴", "haritaya_don": "지도로 돌아가기", "magazaya_git": "상점으로", "kaldigin_yer": "이어서 하기", "yolculuk": "여정", "bolum": "레벨", "sifirla": "초기화", "ipucu": "힌트", "yeni_tahta": "새 퍼즐", "ayna": "거울", "sinir": "제한", "can": "생명", "isik": "빛", "isik_kucuk": "빛", "gun": "일", "baslangic_ipucu": "거울을 놓아 빛을 크리스털로 옮기세요.", "kristal_kaldi": "크리스털 {n}개가 어둠 속.", "kristal_kaldi_1": "크리스털 {n}개가 어둠 속.", "hepsi_yandi": "크리스털이 켜졌다.", "hepsi_yandi_eniyi": "크리스털이 켜졌다. 가장 깔끔한 해법.", "dongu_hatasi": "빛이 되돌아옴. 거울을 돌리거나 제거.", "ipucu_kalmadi": "이 레벨에 남은 힌트가 없습니다.", "ipucu_verildi_can": "힌트 배치. 생명 1 소모.", "ipucu_bedava_kaldi": "힌트 배치. 이 레벨에 무료 {n}회 남음.", "can_yok_ipucu": "생명 없음. 힌트는 생명 1.", "can_yok_yeni": "생명 없음. 새 퍼즐은 생명 1.", "yeni_tahta_onay": "새 퍼즐은 생명 1. 한 번 더 눌러 확인.", "ayna_siniri": "거울 제한: {n}. 하나 제거.", "tahta_uretilemedi": "퍼즐 생성 실패. \"새 퍼즐\" 누르기.", "cikmak_tekrar": "한 번 더 눌러 나가기", "cozdun": "완료.", "buyuk_bitti": "큰 레벨 완료", "en_iyi_cozum": "최소 거울. 더 깔끔할 수 없음.", "bir_ayna_fazla": "거울 하나 초과. {n}개로도 풀려요.", "ayna_fazla": "거울 {f}개 초과. 가장 깔끔한 건 {n}.", "yildiz_yok": "거울이 너무 많음. 별 없음. 최선은 {n}.", "sonraki_bolum": "다음 레벨 →", "daha_az_dene": "더 적은 거울로 도전", "tekrar_dene": "다시 시도", "yeniden_dene": "재도전", "tema_acildi": "테마 \"{ad}\" 해제됨", "sure_bitti": "시간 종료", "canin_bitti": "생명 없음.", "yeni_can": "새 생명", "reklam_can": "짧은 광고 · +1 생명", "reklam_oynatiliyor": "광고 재생 중…", "plus_al": "Prismio Plus 구매", "plus_geri_yukle": "이미 구매함, 복원", "plus_kontrol": "구매 확인 중…", "plus_tesekkur": "감사합니다. Prismio Plus가 활성화되었습니다.", "tema": "테마", "plus": "Plus", "baglaniyor": "연결 중…", "kod_kopyala": "코드 복사", "kod_yanlis": "코드가 틀렸습니다.", "odulu_al": "받기", "gorevler_bitti": "오늘 과제 완료", "seri_basla": "오늘 레벨을 풀어 연속 기록 시작", "dil": "언어", "gelistirici": "개발자", "tahta_kaldi": "{n}레벨 남음", "aciliyor": "해제 중…", "reklam_alani": "광고 공간", "slogan": "풀어보세요. 그리고 더 잘 풀어보세요.", "b_ilk_isik": "첫 빛", "b_usta": "완벽 열 번", "b_koleksiyon": "세 가지 색", "b_gezgin": "나그네", "b_bolge_usta": "지역 달인", "b_mukemmel": "완벽한 해법", "b_dunya_kur": "첫 돌", "b_isinma": "첫걸음", "b_temiz_is": "깔끔한 해법", "b_hizli_dusun": "빠른 눈길", "b_uc_gun": "사흘", "b_bir_hafta": "일곱 밤", "b_bir_ay": "보름달", "b_yuz_gun": "백일", "b_uzun_yol": "긴 길", "b_yari_yol": "절반 지점", "b_isigin_sonu": "빛의 끝", "b_kusursuz": "완벽한 백", "b_buyuk_sinav": "큰 문턱", "b_tam_kolek": "완전한 팔레트", "b_dunya_tamam": "온전한 풍경", "g_bolumler": "레벨", "g_ustalik": "숙련", "g_seri": "연속", "g_koleksiyon": "수집", "a_titresim": "진동", "a_titresim_a": "터치 진동", "a_animasyon": "애니메이션", "a_animasyon_a": "화면·보상 전환", "a_parcacik": "파티클 효과", "a_parcacik_a": "배경 빛 먼지", "a_otogec": "자동 진행", "a_otogec_a": "풀면 이동", "a_efekt": "효과음", "a_efekt_a": "거울·크리스털 소리", "a_shapes": "모양 표시", "a_shapes_a": "크리스털에 기호 추가", "a_kontrast": "고대비", "a_kontrast_a": "선을 뚜렷하게", "a_azhareket": "모션 줄이기", "a_azhareket_a": "전환 움직임 줄이기", "a_kalite": "화질", "a_kalite_a": "낮음 / 중간 / 높음", "a_dusuk": "낮음", "a_orta": "중간", "a_yuksek": "높음", "d_fidan": "묘목", "d_tas": "돌무더기", "d_cali": "관목", "d_sutun": "기둥", "d_kemer": "아치", "d_heykel": "조각상", "d_kristal": "수정 군집", "d_dev_prizma": "거대 프리즘", "d_fener": "등불", "d_asma_lamba": "매달린 등", "d_yildiz": "별", "d_bulut": "구름", "d_cesme": "분수", "d_isik_kapisi": "빛의 문", "gv_3bolum": "레벨 3개 풀기", "gv_2yildiz": "레벨 2개에서 별 3개", "gv_zaman5": "타임 어택 5레벨", "bolum_n": "레벨 {n}", "bolum_acilir": "레벨 {n}에서 해제", "yildiz_n": "별 {n}개", "buyuk_bolum": "큰 레벨", "bolge_0": "상아 정원", "bolge_1": "황동 천문대", "bolge_2": "잉크 방", "bolge_3": "스테인드글라스 대성당", "bolge_4": "종이 공방", "bolge_5": "석회 안뜰", "bolge_6": "구리 탑", "bolge_7": "밤의 서재", "bolge_8": "색유리 창", "bolge_9": "접히는 홀", "bolge_10": "소금 테라스", "bolge_11": "시계탑", "bolge_12": "암실", "bolge_13": "유리 가마", "bolge_14": "종이접기 정원", "bolge_15": "대리석 복도", "bolge_16": "망원경 발코니", "bolge_17": "그림자 통로", "bolge_18": "모자이크 연못", "bolge_19": "공책 탑", "bolge_20": "자개 방", "bolge_21": "아스트롤라베 홀", "bolge_22": "별 지도", "bolge_23": "색채 방앗간", "bolge_24": "봉투 공방", "bolge_25": "석고 갤러리", "bolge_26": "나침반 광장", "bolge_27": "달빛 저수조", "bolge_28": "간유리 세트", "bolge_29": "연필 숲", "bolge_30": "흰 아치", "bolge_31": "톱니바퀴 창고", "bolge_32": "고요한 우물", "bolge_33": "빛 가르개", "bolge_34": "접힌 계단", "bolge_35": "모래시계 방", "bolge_36": "청동 천문대", "bolge_37": "야간 경비", "bolge_38": "색의 우물", "bolge_39": "양피지 홀", "bolge_40": "도자기 테라스", "bolge_41": "바퀴 정원", "bolge_42": "어두운 수로", "bolge_43": "불꽃 유리", "bolge_44": "주름 공방", "bolge_45": "설화석고 홀", "bolge_46": "육분의 탑", "bolge_47": "잠든 도서관", "bolge_48": "장미창", "bolge_49": "편지 탑", "bolge_50": "진주 궁전", "bolge_51": "크로노미터 방", "bolge_52": "사각지대", "bolge_53": "깨진 유리 거리", "bolge_54": "주름진 홀", "bolge_55": "설화석고 돔", "bolge_56": "별 바퀴", "bolge_57": "등불 우물", "bolge_58": "빛의 돔", "bolge_59": "날개 공방", "bolge_60": "안개 안뜰", "bolge_61": "진자 홀", "bolge_62": "밤의 부두", "bolge_63": "유리 다리", "bolge_64": "종이 등불", "bolge_65": "설화석고 방", "bolge_66": "천구", "bolge_67": "깊은 어둠", "bolge_68": "색의 돔", "bolge_69": "굽은 탑", "bolge_70": "분필 거리", "bolge_71": "다이얼 정원", "bolge_72": "메아리 방", "bolge_73": "프리즘 시장", "bolge_74": "겹친 지붕", "bolge_75": "유백유리 홀", "bolge_76": "천정 테라스", "bolge_77": "보름달 방", "bolge_78": "빛의 터널", "bolge_79": "봉투 탑", "bolge_80": "눈 안뜰", "bolge_81": "별시계", "bolge_82": "밤의 계곡", "bolge_83": "루비 창", "bolge_84": "굴절 공방", "bolge_85": "서리 갤러리", "bolge_86": "자오선 탑", "bolge_87": "먼 어둠", "bolge_88": "무지개 홀", "bolge_89": "경첩 방", "bolge_90": "빙하 궁전", "bolge_91": "끝없는 다이얼", "bolge_92": "마지막 어둠", "bolge_93": "빛의 왕관", "bolge_94": "접히는 하늘", "bolge_95": "수정 정상", "bolge_96": "거대 렌즈", "bolge_97": "고요한 별", "bolge_98": "마지막 프리즘", "bolge_99": "빛의 끝", "tema_fildisi": "상아", "tema_fildisi_o": "소박하고 따뜻한 돌의 느낌.", "tema_pirinc": "황동", "tema_pirinc_o": "톱니바퀴와 천문대의 고요.", "tema_murekkep": "잉크", "tema_murekkep_o": "어두운 바탕에 빛나는 선.", "tema_vitray": "스테인드글라스", "tema_vitray_o": "색유리로 든 성당의 빛.", "tema_kagit": "종이", "tema_kagit_o": "부드러운 접힘과 깔끔한 선.", "tema_bakir": "구리", "tema_bakir_o": "오래된 금속과 시간의 초록 흔적.", "tema_deniz": "깊은 물", "tema_deniz_o": "깊은 물의 고요. 빛이 스며든다.", "tema_orman": "숲", "tema_orman_o": "축축한 그림자와 고요한 초록.", "tema_kum": "모래", "tema_kum_o": "단단한 그림자와 따뜻한 흙.", "tema_kuzey": "오로라", "tema_kuzey_o": "어두운 하늘의 초록 물결.", "koleksiyon": "컬렉션", "tema_sayi": "{a} / {b} 테마", "kullaniliyor": "사용 중", "secmek_dokun": "눌러서 선택", "al_buton": "구매", "eksik_isik": "{n} 부족", "tema_secildi": "\"{ad}\" 선택됨.", "tema_alindi": "\"{ad}\" 잠금 해제 후 선택됨.", "zaten_kullaniliyor": "이미 사용 중", "temayi_kullan": "테마 사용", "isik_ver_al": "빛 {n}로 잠금 해제", "isik_daha_lazim": "빛 {n} 더 필요", "kapat": "닫기", "oniz_harita": "지도", "oniz_tahta": "보드", "oniz_parca": "조각", "ba_ilk": "첫 레벨 완료.", "ba_usta": "레벨 10개 별 3개로.", "ba_kolek": "테마 3개를 잠금 해제.", "ba_gezgin": "레벨 50개 풀기.", "ba_bolge": "첫 지역을 완료하세요.", "ba_mukemmel": "레벨 20개 최선의 해법으로.", "ba_dunya": "조각 5개 배치.", "ba_isinma": "레벨 5개 풀기.", "ba_temiz": "레벨 하나 별 3개로.", "ba_hizli": "타임어택으로 레벨 3개.", "ba_3gun": "3일 연속 플레이.", "ba_hafta": "7일 연속 플레이.", "ba_ay": "30일 연속 플레이.", "ba_yuzgun": "100일 연속 플레이.", "ba_uzunyol": "레벨 200개 완료.", "ba_yariyol": "레벨 500개 완료.", "ba_son": "레벨 1000개 완료.", "ba_kusursuz": "레벨 100개 별 3개로.", "ba_sinav": "큰 레벨 10개 완료.", "ba_tamkolek": "모든 테마를 잠금 해제.", "ba_dunyatam": "모든 세계 조각 수집.", "u_reklam_izle": "광고 보기", "u_isik_reklam_ack": "짧은 광고로 빛 15.", "u_gunluk_isik": "일일 빛", "u_gunluk_ack": "하루 한 번, 빛 10 선물.", "u_can_reklam_ack": "짧은 광고로 생명 1.", "u_can_doldur": "생명 채우기", "u_can_doldur_ack": "짧은 광고로 생명 충전.", "can_zaten_dolu": "생명이 이미 가득함.", "kazandin": "{n} 획득.", "n_isik": "빛 {n}", "tum_canlar": "모든 생명", "n_can": "생명 {n}", "odul_kelime": "보상", "seri_devam": "연속 기록 유지 중. 오늘 안 풀면 끊김", "seri_basladi": "연속 기록 시작. 내일 다시", "gunluk_seri": "{n}일 연속.", "dunya_bos": "여기는 아직 텅 비었음.", "dunya_bos2": "여기에 조각을 놓을 수 있습니다.", "dunyanda": "당신의 세계에", "n_parca": "{n} 조각", "dunya_kur_bas": "나만의 세계 만들기", "dunya_kur_1": "레벨 100개 후 열림.", "dunya_kur_2": "레벨을 풀면 조각이 모임.", "kat_doga": "자연", "kat_yapi": "건축", "kat_kristal": "크리스털", "kat_isik": "빛", "kat_gokyuzu": "하늘", "kat_ozel": "특별", "gorev_odul_al": "과제 완료, 빛 받기", "alindi": "받음", "gorev_ack": "과제는 매일 갱신. 레벨을 풀면 진행. 빛을 잊지 마세요.", "acik_durum": "해제됨", "ipucu_bedava_var": "힌트, 무료 {n}회 남음", "ipucu_bir_can": "힌트는 생명 1", "yeni_tahta_bedava": "새 퍼즐, 무료", "yeni_tahta_can": "새 퍼즐은 생명 1", "bedava_ipucu_kaldi": "무료 힌트 {n}회 있음.", "bedava_ipucu_bitti": "무료 힌트 소진. 다음은 생명 1.", "plus_reklam_yok": "광고 없음", "plus_reklam_yok_a": "게임 내 광고가 없음.", "plus_sinirsiz_can": "무제한 생명", "plus_sinirsiz_can_a": "생명 기다림 없음. 언제든 플레이.", "plus_ipucu": "무료 힌트 4회", "plus_acik": "Prismio Plus 활성화됨", "plus_acik_ack": "Prismio Plus 켜짐. 광고 없음, 무제한 생명, 레벨당 힌트 4회.", "plus_bir_kez": "한 번 결제로 영원히.", "plus_not": "한 번 결제. 구독·자동 청구 없음.", "plus_yakinda": "이 빌드에서는 구매 꺼짐. 곧 제공.", "ayna_kullandin": "거울 {k}개 배치. 가장 깔끔한 건 {e}.", "bu_bolumde_sinir": "이 레벨 제한은 {n}", "yeni_can_sonra": "{s} 후 새 생명.", "n_bolum": "{n}개 레벨", "n_bolum_cozdun": "레벨 {n}개를 풀었음.", "n_yildiz_kelime": "별 {n}", "gizli": "숨김", "n_tema": "테마 {n}", "en_uzun_seri": "최장 연속 기록 {n}일", "parca_koleksiyon": "{a} / {b} 조각", "devam_ediyor": "진행 중", "plus_ipucu_a": "레벨당 힌트 2회 대신 4회.", "nasil_oynanir": "플레이 방법", "no_amac": "목표", "no_amac_a": "빛을 이끌어 크리스털을 켜세요.", "no_ayna": "거울", "no_ayna_a": "칸을 눌러 거울 배치. 다시 누르면 회전. 빛을 90도 꺾음.", "no_kristal": "크리스털", "no_kristal_a": "자기 색으로만 빛남. 빨간 크리스털은 빨간빛이 필요.", "no_duvar": "벽", "no_duvar_a": "빛은 벽을 못 지남. 거울로 돌아가기.", "no_prizma": "프리즘", "no_prizma_a": "흰빛을 셋으로 나눔: 빨강, 초록, 파랑.", "no_ayristirici": "분광기", "no_ayristirici_a": "들어온 색을 둘로 나눔. 빨간빛은 노랑과 마젠타로.", "no_delik": "웜홀", "no_delik_a": "빛을 벽 너머로 옮김. 화살표가 나오는 곳을 표시.", "no_yildiz": "별", "no_yildiz_a": "모든 레벨에 최소 거울 수가 있음. 맞추면 별 3개.", "no_sekil": "모양", "no_sekil_a": "각 색에 형태가 있음. 색 구분이 어려우면 형태를 보세요.", "no_ipucu_bas": "막히면", "no_ipucu_a": "거울 하나를 제자리에 놓음. 힌트마다 생명 1.", "anladim": "알겠어요", "senin_cozumun": "내 배치", "en_iyi_cozum_bu": "가장 깔끔한 해법", "en_iyi_goster": "최선의 해법 보기", "cozumu_gizle": "내 배치로 돌아가기", "n_ayna_kelime": "거울 {n}개", "cozumun_yok": "이 레벨의 기록이 없음.", "r_kivilcim": "불꽃", "r_mum": "촛불", "r_fener": "등불", "r_mesale": "횃불", "r_denizfeneri": "등대", "r_safak": "새벽", "r_yildiz": "별", "r_gunes": "태양", "lig": "리그", "rutbe": "등급", "toplam_isik": "총 빛", "sonraki_rutbe": "다음 등급", "en_ust_rutbe": "정상입니다. 그 위는 없음.", "isik_kaldi_rutbe": "빛 {n} 더 모으면 {ad}", "lig_ack": "빛을 얻을수록 등급이 오름. 쓴 빛은 낮추지 않음.", "siralamayi_ac": "빛 순위", "siralama_giris": "Play 게임즈에 연결해 순위 참여.", "rutbe_yukseldi": "새 등급: {ad}", "rutbe_n": "{n}등급", "reklam_olmadi": "광고를 불러오지 못함. 잠시 후 다시.", "d_deger": "풍차", "d_kopru": "유리 다리", "d_ay": "달", "d_obelisk": "오벨리스크", "isikla_al": "빛으로 구매", "deko_alindi": "\"{ad}\"을(를) 세계에 추가했습니다.", "hs_oto_bas": "자동 백업", "hs_oto_ack": "진행 상황이 휴대폰의 Google 계정에 백업됩니다. 휴대폰을 바꿔도 돌아옵니다.", "hs_bagli": "연결됨", "hs_bagli_ack": "레벨이 끝날 때마다 백업됩니다.", "hs_giris_ack": "로그인하면 진행 상황이 계정에 연결되어 다른 휴대폰에서도 열립니다.", "hs_yok_ack": "이 버전에서는 사용할 수 없습니다. 휴대폰 앱에서 제공됩니다.", "hs_giris": "Google Play 게임즈로 로그인", "hs_hesap_degis": "계정을 바꾸려면 휴대폰의 <b>Play 게임즈</b> 앱을 사용하세요.", "hs_pg_basari": "Play 게임즈 업적", "hs_gelismis": "고급: 코드로 백업", "hs_tasi_bas": "저장 데이터 옮기기", "hs_tasi_ack": "아래 코드를 복사해 보관하세요. 새 휴대폰에 붙여 넣으면 진행 상황이 돌아옵니다.", "hs_kod_aria": "백업 코드", "hs_geri_bas": "저장 데이터 복원", "hs_geri_ack": "이전에 저장한 코드를 붙여 넣으세요. <b>현재 진행 상황은 대체됩니다.</b>", "hs_yapistir": "여기에 코드 붙여넣기", "hs_geri_aria": "복원 코드", "hs_geri_yukle": "복원", "hs_tesekkur": "저장 데이터는 휴대폰에 보관되고 Google 계정에 백업됩니다.", "hs_kopyalandi": "복사됨 ✓", "hs_elle_kopyala": "코드를 직접 선택해 복사하세요", "hs_yuklendi": "복원했습니다. 레벨 {n}이 열렸습니다. 진행 상황이 돌아왔습니다.", "hs_giris_hata": "로그인하지 못했습니다. 인터넷 연결을 확인하고 다시 시도하세요.", "hs_baglanti_hata": "연결할 수 없습니다.", "hs_bulut_ileri": "클라우드 저장 데이터가 더 앞서 있었습니다. 레벨 {n}이 열렸습니다.", "hs_bulut_okunamadi": "클라우드 저장 데이터를 읽을 수 없습니다.", "hs_baglandi_yedek": "연결되었습니다. 진행 상황을 백업하고 있습니다.", "kod_bos": "코드가 비어 있습니다.", "kod_bozuk": "코드를 읽을 수 없습니다. 불완전하거나 손상되었습니다.", "kod_yabanci": "이 코드는 Prismio 저장 데이터가 아닙니다.", "kod_ilerleme_yok": "코드에 진행 상황이 없습니다.", "kod_yazilamadi": "저장할 수 없습니다. 휴대폰 저장 공간이 가득 찼을 수 있습니다.", "hk_surum": "버전", "hk_yapim": "빌드", "hk_yapimci": "제작진", "hk_tasarim": "디자인 및 개발", "hk_bulmaca": "퍼즐 디자인", "hk_gorsel": "비주얼 아이덴티티", "hk_yil": "연도", "hk_ilerleme": "진행 상황", "hk_acilan_bolum": "열린 레벨", "hk_cozulen": "푼 레벨", "hk_toplam_yildiz": "총 별", "hk_acilan_tema": "열린 테마", "hk_basari": "업적", "hk_dunya_parca": "월드 조각", "hk_yasal": "법적 고지", "hk_gizlilik": "개인정보처리방침", "hk_destek": "지원 및 문의", "hk_tesekkur": "플레이해 주셔서 감사합니다.", "hk_baglanti_yok": "이 링크는 출시 전에 추가됩니다.", "zaman_skor": "{n}레벨", "zaman_sonuc": "{n}레벨을 풀었습니다.", "mg_not": "빛은 레벨을 끝내면 얻습니다. 깔끔한 해법일수록 더 많이 받습니다. 별 3개는 12, 큰 레벨은 +25.", "mg_isik_bilgi": "빛은 대부분 <b>플레이</b>로 얻습니다. 레벨을 끝내면 빛을 받고, <b>깔끔한 해법</b>은 더 많이 줍니다. 별 3개는 12, 큰 레벨은 25를 더합니다.", "mg_can_bilgi": "<b>풀지 않고 나가면</b> 생명이 줄어듭니다. 풀면 절대 줄지 않습니다. 생명은 저절로 찹니다: <b>4시간</b>마다 1개.", "dt_bas": "나만의 세계를 만드세요", "dt_metin": "레벨 {n}개를 풀면 열립니다.<br>레벨을 끝낼 때마다 나무, 기둥, 크리스털, 등불을 얻습니다.<br>모두 나만의 풍경에 배치하세요.", "dt_sayi": "레벨", "dt_aciliyor": "여는 중…", "dt_kaldi": "레벨 {n}개 남음", "durum_acik": "달성", "aria_hucre": "{x}열 {y}행", "aria_kilitli": "잠김", "tema_fildisi_k": "자연스러운 종이, 부드러운 그림자, 고요한 방.", "tema_pirinc_k": "노란 금속, 가는 선, 측정 도구 같은 느낌.", "tema_murekkep_k": "어두운 방, 잉크 얼룩, 별이 빛나는 하늘.", "tema_vitray_k": "굵은 납선, 깊은 색, 성당 창문.", "tema_kagit_k": "흰 종이, 접힌 자국, 연필 스케치.", "tema_bakir_k": "오래된 지붕, 산화된 구리, 녹청 얼룩.", "tema_deniz_k": "남색 물, 모래 바닥, 멀리서 오는 빛.", "tema_orman_k": "굵은 나무, 이끼, 가지 사이로 스미는 햇빛.", "tema_kum_k": "그을린 흙, 흙벽돌 벽, 긴 그림자.", "tema_kuzey_k": "칠흑 같은 밤, 얼음, 일렁이는 초록·보라 커튼.", "ag_oynanis": "게임플레이", "ag_erisim": "접근성", "ag_goruntu": "화면", "ag_ses": "사운드", "ba_s3": "3일 연속 플레이하세요.", "ba_s7": "7일 연속 플레이하세요.", "ba_s30": "30일 연속 플레이하세요.", "ba_s100": "100일 연속 플레이하세요.", "aria_geri": "뒤로", "aria_tahta": "빛 퍼즐 보드", "tekrar_odul_yok": "이미 이 별 개수로 푼 레벨입니다. 거울을 더 적게 써 보세요.", "a_sestipi": "사운드 유형", "a_sestipi_a": "효과음의 음색", "st_cam": "유리", "st_ahsap": "나무", "st_retro": "레트로", "hs_kes": "Play 게임즈 연결 해제", "hs_kesildi": "연결을 해제했습니다. 진행 상황이 더 이상 클라우드에 백업되지 않고 업적도 전송되지 않습니다. Google 계정에서 완전히 로그아웃하려면 Play 게임즈 앱을 사용하세요.", "hs_kapali": "연결되지 않음. 게임이 Play 게임즈를 사용하지 않으며 진행 상황은 이 휴대폰과 Google 백업에만 남습니다.", "hs_durum_bagli": "Play 게임즈: 연결됨", "hs_durum_kapali": "Play 게임즈: 연결 안 됨", "paketler": "팩", "pk_ses": "사운드 팩", "pk_tahta": "보드 스타일", "pk_menu": "홈 배경", "pk_ses_cam_a": "맑게 울리는 유리 소리", "pk_ses_ahsap_a": "부드럽고 따뜻한 마림바 음색", "pk_ses_retro_a": "8비트 게임기 사운드", "pk_tahta_klasik": "클래식", "pk_tahta_klasik_a": "테마 기본 보드", "pk_tahta_neon": "네온", "pk_tahta_neon_a": "빛나는 광선과 밝은 테두리", "pk_tahta_altin": "골드", "pk_tahta_altin_a": "금빛 테두리와 은은한 광택", "pk_tahta_aurora": "오로라", "pk_tahta_aurora_a": "색이 도는 살아있는 테두리", "pk_menu_tema": "테마 패턴", "pk_menu_nokta": "점", "pk_menu_cizgi": "선", "pk_menu_yildiz": "별", "pk_menu_cam": "스테인드글라스", "pk_menu_kat": "종이접기", "pk_menu_dalga": "물결", "pk_menu_izgara": "격자", "pk_sec": "사용", "pk_secili": "사용 중", "pk_dinle": "듣기", "pk_ucretsiz": "무료", "pk_alindi": "\"{ad}\" 잠금 해제 및 선택 완료.", "erken_ac": "미리 열기 · ◆ {n}", "erken_kart": "지금 ◆ {n}", "a_hatirlatma": "매일 알림", "a_hatirlatma_a": "과제가 남아 있으면 저녁에 알림", "bild_gorev": "오늘의 과제가 기다립니다. 레벨 몇 개를 풀고 빛을 받으세요.", "bild_seri": "{n}일 연속 기록을 지키세요! 오늘의 과제가 기다립니다.", "bild_izin_yok": "알림이 꺼져 있습니다. 휴대폰 설정에서 켤 수 있습니다.", "isik_paket": "빛 {n}", "u_isik_satin_a": "테마와 팩용", "u_can_satin_a": "생명이 즉시 가득 참", "satin_tesekkur": "감사합니다! 지급되었습니다.", "satin_basarisiz": "구매를 완료하지 못했습니다.", "satin_bekliyor": "결제 확인 대기 중. 확인되면 자동 지급됩니다.", "dolu": "가득", "hk_reklam_gizlilik": "광고 개인정보 옵션"};
   DILLER.it={"oyna": "Gioca", "tum_bolumler": "Tutti i livelli ›", "zamana_karsi": "Contro il tempo", "temalar": "Temi", "oduller": "Ricompense", "odul_odasi": "Sala dei Premi", "dunyam": "Il Mio Mondo", "ayarlar": "Impostazioni", "hakkinda": "Informazioni", "hesap": "Account", "hesap_yedek": "Account e backup", "magaza": "Negozio", "basarilar": "Obiettivi", "gunluk_gorev": "Missione giornaliera", "ana_menu": "Menu principale", "haritaya_don": "Torna alla mappa", "magazaya_git": "Vai al negozio", "kaldigin_yer": "Dove eri rimasto", "yolculuk": "Viaggio", "bolum": "Livello", "sifirla": "Reimposta", "ipucu": "Suggerimento", "yeni_tahta": "Nuovo puzzle", "ayna": "specchi", "sinir": "LIMITE", "can": "Vite", "isik": "Luce", "isik_kucuk": "luce", "gun": "giorni", "baslangic_ipucu": "Metti gli specchi, porta la luce ai cristalli.", "kristal_kaldi": "{n} cristalli al buio.", "kristal_kaldi_1": "{n} cristallo al buio.", "hepsi_yandi": "Cristalli accesi.", "hepsi_yandi_eniyi": "Cristalli accesi. Soluzione più pulita.", "dongu_hatasi": "La luce si è chiusa. Gira o togli uno specchio.", "ipucu_kalmadi": "Nessun suggerimento rimasto in questo livello.", "ipucu_verildi_can": "Suggerimento posto. 1 vita spesa.", "ipucu_bedava_kaldi": "Suggerimento posto. {n} gratis in questo livello.", "can_yok_ipucu": "Niente vite. Un suggerimento costa 1 vita.", "can_yok_yeni": "Niente vite. Un nuovo puzzle costa 1 vita.", "yeni_tahta_onay": "Nuovo puzzle: 1 vita. Tocca ancora per confermare.", "ayna_siniri": "Limite specchi: {n}. Rimuovine uno.", "tahta_uretilemedi": "Impossibile creare il puzzle. Tocca \"Nuovo puzzle\".", "cikmak_tekrar": "Tocca ancora per uscire", "cozdun": "Risolto.", "buyuk_bitti": "Livello grande superato", "en_iyi_cozum": "Meno specchi. Niente di più pulito.", "bir_ayna_fazla": "Uno specchio di troppo. Anche {n} risolve.", "ayna_fazla": "{f} specchi di troppo. Il più pulito: {n}.", "yildiz_yok": "Troppi specchi. Niente stelle. Il migliore è {n}.", "sonraki_bolum": "Livello successivo →", "daha_az_dene": "Prova con meno specchi", "tekrar_dene": "Riprova", "yeniden_dene": "Ricomincia", "tema_acildi": "Tema \"{ad}\" sbloccato", "sure_bitti": "Tempo scaduto", "canin_bitti": "Niente vite.", "yeni_can": "Nuova vita", "reklam_can": "Annuncio breve · +1 vita", "reklam_oynatiliyor": "Riproduzione annuncio…", "plus_al": "Ottieni Prismio Plus", "plus_geri_yukle": "Già acquistato, ripristina", "plus_kontrol": "Verifica acquisto…", "plus_tesekkur": "Grazie. Prismio Plus è attivo.", "tema": "Tema", "plus": "Plus", "baglaniyor": "Connessione…", "kod_kopyala": "Copia il codice", "kod_yanlis": "Codice errato.", "odulu_al": "Riscuoti", "gorevler_bitti": "Le missioni di oggi sono fatte", "seri_basla": "Risolvi un livello oggi per iniziare una serie", "dil": "Lingua", "gelistirici": "Sviluppatore", "tahta_kaldi": "Mancano {n} livelli", "aciliyor": "Sblocco…", "reklam_alani": "Spazio pubblicitario", "slogan": "Risolvilo. Poi risolvilo meglio.", "b_ilk_isik": "Prima Luce", "b_usta": "Dieci Impeccabili", "b_koleksiyon": "Tre Colori", "b_gezgin": "Viandante", "b_bolge_usta": "Maestro di Regione", "b_mukemmel": "Soluzione da Maestro", "b_dunya_kur": "Prima Pietra", "b_isinma": "Primo Passo", "b_temiz_is": "Soluzione Pulita", "b_hizli_dusun": "Sguardo Rapido", "b_uc_gun": "Tre Giorni", "b_bir_hafta": "Sette Notti", "b_bir_ay": "Luna Piena", "b_yuz_gun": "Cento Giorni", "b_uzun_yol": "Lunga Strada", "b_yari_yol": "A Metà Strada", "b_isigin_sonu": "La Fine della Luce", "b_kusursuz": "Cento Perfetti", "b_buyuk_sinav": "Grande Soglia", "b_tam_kolek": "Tavolozza Piena", "b_dunya_tamam": "Paesaggio Intero", "g_bolumler": "Livelli", "g_ustalik": "Maestria", "g_seri": "Serie", "g_koleksiyon": "Collezione", "a_titresim": "Vibrazione", "a_titresim_a": "Vibrazione al tocco", "a_animasyon": "Animazioni", "a_animasyon_a": "Transizioni di schermo e premio", "a_parcacik": "Effetti particellari", "a_parcacik_a": "Polvere di luce sullo sfondo", "a_otogec": "Avanzamento automatico", "a_otogec_a": "Avanza dopo aver risolto", "a_efekt": "Effetti sonori", "a_efekt_a": "Suoni di specchio e cristallo", "a_shapes": "Indicatori di forma", "a_shapes_a": "Aggiungi un simbolo ai cristalli", "a_kontrast": "Alto contrasto", "a_kontrast_a": "Fai risaltare le linee", "a_azhareket": "Riduci il movimento", "a_azhareket_a": "Riduci il movimento delle transizioni", "a_kalite": "Qualità visiva", "a_kalite_a": "Bassa / Media / Alta", "a_dusuk": "Bassa", "a_orta": "Media", "a_yuksek": "Alta", "d_fidan": "Alberello", "d_tas": "Gruppo di Pietre", "d_cali": "Arbusto", "d_sutun": "Colonna", "d_kemer": "Arco", "d_heykel": "Statua", "d_kristal": "Grappolo di Cristalli", "d_dev_prizma": "Prisma Gigante", "d_fener": "Lanterna", "d_asma_lamba": "Lampada Sospesa", "d_yildiz": "Stella", "d_bulut": "Nuvola", "d_cesme": "Fontana", "d_isik_kapisi": "Porta di Luce", "gv_3bolum": "Risolvi 3 livelli", "gv_2yildiz": "Ottieni 3 stelle in 2 livelli", "gv_zaman5": "5 livelli a tempo", "bolum_n": "Livello {n}", "bolum_acilir": "Si sblocca al livello {n}", "yildiz_n": "{n} stelle", "buyuk_bolum": "livello grande", "bolge_0": "Giardino d'Avorio", "bolge_1": "Osservatorio d'Ottone", "bolge_2": "Stanza d'Inchiostro", "bolge_3": "Cattedrale di Vetrate", "bolge_4": "Bottega della Carta", "bolge_5": "Corte di Calce", "bolge_6": "Torre di Rame", "bolge_7": "Biblioteca Notturna", "bolge_8": "Finestra Colorata", "bolge_9": "Sala Pieghevole", "bolge_10": "Terrazza di Sale", "bolge_11": "Torre dell'Orologio", "bolge_12": "Camera Oscura", "bolge_13": "Fornace di Vetro", "bolge_14": "Giardino Origami", "bolge_15": "Corridoio di Marmo", "bolge_16": "Balcone del Telescopio", "bolge_17": "Passaggio d'Ombra", "bolge_18": "Vasca a Mosaico", "bolge_19": "Torre dei Quaderni", "bolge_20": "Stanza di Madreperla", "bolge_21": "Sala dell'Astrolabio", "bolge_22": "Mappa Stellare", "bolge_23": "Mulino dei Colori", "bolge_24": "Bottega delle Buste", "bolge_25": "Galleria di Gesso", "bolge_26": "Piazza della Bussola", "bolge_27": "Cisterna di Chiaro di Luna", "bolge_28": "Set di Vetro Smerigliato", "bolge_29": "Foresta di Matite", "bolge_30": "Arco Bianco", "bolge_31": "Cripta degli Ingranaggi", "bolge_32": "Pozzo Silenzioso", "bolge_33": "Frangiluce", "bolge_34": "Scala Piegata", "bolge_35": "Stanza della Clessidra", "bolge_36": "Osservatorio di Bronzo", "bolge_37": "Ronda Notturna", "bolge_38": "Pozzo dei Colori", "bolge_39": "Sala della Pergamena", "bolge_40": "Terrazza di Porcellana", "bolge_41": "Giardino delle Ruote", "bolge_42": "Canale Scuro", "bolge_43": "Vetro di Fiamma", "bolge_44": "Bottega delle Pieghe", "bolge_45": "Sala d'Alabastro", "bolge_46": "Torre del Sestante", "bolge_47": "Biblioteca Addormentata", "bolge_48": "Rosone", "bolge_49": "Torre delle Lettere", "bolge_50": "Palazzo di Perle", "bolge_51": "Stanza del Cronometro", "bolge_52": "Punto Cieco", "bolge_53": "Via del Vetro Rotto", "bolge_54": "Sala Spiegazzata", "bolge_55": "Cupola d'Alabastro", "bolge_56": "Ruota Stellare", "bolge_57": "Pozzo delle Lanterne", "bolge_58": "Cupola di Luce", "bolge_59": "Bottega delle Ali", "bolge_60": "Corte di Nebbia", "bolge_61": "Sala del Pendolo", "bolge_62": "Molo Notturno", "bolge_63": "Ponte di Vetro", "bolge_64": "Lanterna di Carta", "bolge_65": "Sala d'Alabastro", "bolge_66": "Sfera Celeste", "bolge_67": "Buio Profondo", "bolge_68": "Cupola Colorata", "bolge_69": "Torre Sinuosa", "bolge_70": "Via del Gesso", "bolge_71": "Giardino dei Quadranti", "bolge_72": "Stanza dell'Eco", "bolge_73": "Bazar dei Prismi", "bolge_74": "Tetto a Strati", "bolge_75": "Sala di Vetro Opalino", "bolge_76": "Terrazza dello Zenit", "bolge_77": "Stanza di Luna Piena", "bolge_78": "Tunnel di Luce", "bolge_79": "Torre delle Buste", "bolge_80": "Corte di Neve", "bolge_81": "Orologio Stellare", "bolge_82": "Valle Notturna", "bolge_83": "Finestra di Rubino", "bolge_84": "Bottega della Rifrazione", "bolge_85": "Galleria di Brina", "bolge_86": "Torre del Meridiano", "bolge_87": "Buio Lontano", "bolge_88": "Sala dell'Arcobaleno", "bolge_89": "Stanza delle Cerniere", "bolge_90": "Palazzo del Ghiacciaio", "bolge_91": "Quadrante Infinito", "bolge_92": "Ultimo Buio", "bolge_93": "Corona di Luce", "bolge_94": "Cielo Pieghevole", "bolge_95": "Vetta di Cristallo", "bolge_96": "Grande Lente", "bolge_97": "Stella Silenziosa", "bolge_98": "Ultimo Prisma", "bolge_99": "La Fine della Luce", "tema_fildisi": "Avorio", "tema_fildisi_o": "Una sensazione di pietra semplice e calda.", "tema_pirinc": "Ottone", "tema_pirinc_o": "Ingranaggi e calma da osservatorio.", "tema_murekkep": "Inchiostro", "tema_murekkep_o": "Linee luminose su fondo scuro.", "tema_vitray": "Vetrata", "tema_vitray_o": "Luce di cattedrale dal vetro colorato.", "tema_kagit": "Carta", "tema_kagit_o": "Pieghe morbide e linee pulite.", "tema_bakir": "Rame", "tema_bakir_o": "Metallo vecchio e la traccia verde del tempo.", "tema_deniz": "Acque Profonde", "tema_deniz_o": "La quiete dell'acqua profonda. La luce filtra.", "tema_orman": "Foresta", "tema_orman_o": "Ombre umide e verde calmo.", "tema_kum": "Sabbia", "tema_kum_o": "Ombre dure e terra calda.", "tema_kuzey": "Aurora Boreale", "tema_kuzey_o": "Onde verdi in un cielo scuro.", "koleksiyon": "Collezione", "tema_sayi": "{a} / {b} temi", "kullaniliyor": "In uso", "secmek_dokun": "Tocca per scegliere", "al_buton": "Compra", "eksik_isik": "mancano {n}", "tema_secildi": "\"{ad}\" selezionato.", "tema_alindi": "\"{ad}\" sbloccato e selezionato.", "zaten_kullaniliyor": "Già in uso", "temayi_kullan": "Usa tema", "isik_ver_al": "sblocca con {n} luce", "isik_daha_lazim": "Servono altre {n} luce", "kapat": "Chiudi", "oniz_harita": "Mappa", "oniz_tahta": "Tavola", "oniz_parca": "Pezzi", "ba_ilk": "Completa il primo livello.", "ba_usta": "Finisci 10 livelli con 3 stelle.", "ba_kolek": "Sblocca 3 temi.", "ba_gezgin": "Risolvi 50 livelli.", "ba_bolge": "Completa la prima regione.", "ba_mukemmel": "Finisci 20 livelli con la soluzione migliore.", "ba_dunya": "Posiziona 5 pezzi.", "ba_isinma": "Risolvi 5 livelli.", "ba_temiz": "Finisci un livello con 3 stelle.", "ba_hizli": "Risolvi 3 livelli a tempo.", "ba_3gun": "Gioca 3 giorni di fila.", "ba_hafta": "Gioca 7 giorni di fila.", "ba_ay": "Gioca 30 giorni di fila.", "ba_yuzgun": "Gioca 100 giorni di fila.", "ba_uzunyol": "Completa 200 livelli.", "ba_yariyol": "Completa 500 livelli.", "ba_son": "Completa 1000 livelli.", "ba_kusursuz": "Finisci 100 livelli con 3 stelle.", "ba_sinav": "Completa 10 livelli grandi.", "ba_tamkolek": "Sblocca tutti i temi.", "ba_dunyatam": "Raccogli tutti i pezzi del mondo.", "u_reklam_izle": "Guarda un annuncio", "u_isik_reklam_ack": "15 luce per un breve annuncio.", "u_gunluk_isik": "Luce quotidiana", "u_gunluk_ack": "Una volta al giorno, 10 luce in regalo.", "u_can_reklam_ack": "1 vita per un breve annuncio.", "u_can_doldur": "Ricarica le vite", "u_can_doldur_ack": "Guarda un breve annuncio e ricarica le vite.", "can_zaten_dolu": "Le tue vite sono già piene.", "kazandin": "Hai guadagnato {n}.", "n_isik": "{n} luce", "tum_canlar": "Tutte le vite", "n_can": "{n} vita", "odul_kelime": "Ricompensa", "seri_devam": "La tua serie è viva. Risolvi oggi o si spezza", "seri_basladi": "Serie iniziata. Torna domani", "gunluk_seri": "Serie di {n} giorni.", "dunya_bos": "Qui è ancora vuoto.", "dunya_bos2": "Puoi sistemare qui i tuoi pezzi.", "dunyanda": "Nel tuo mondo", "n_parca": "{n} pezzi", "dunya_kur_bas": "Costruisci il tuo mondo", "dunya_kur_1": "Si apre dopo 100 livelli.", "dunya_kur_2": "I pezzi si accumulano risolvendo i livelli.", "kat_doga": "Natura", "kat_yapi": "Strutture", "kat_kristal": "Cristallo", "kat_isik": "Luce", "kat_gokyuzu": "Cielo", "kat_ozel": "Speciale", "gorev_odul_al": "Missione fatta, prendi la luce", "alindi": "Ritirato", "gorev_ack": "Le missioni si rinnovano ogni giorno. Avanzano risolvendo livelli. Non scordare la luce.", "acik_durum": "Sbloccato", "ipucu_bedava_var": "Suggerimento, ne hai {n} gratis", "ipucu_bir_can": "Un suggerimento costa 1 vita", "yeni_tahta_bedava": "Nuovo puzzle, gratis", "yeni_tahta_can": "Un nuovo puzzle costa 1 vita", "bedava_ipucu_kaldi": "Hai {n} suggerimenti gratis.", "bedava_ipucu_bitti": "Suggerimenti gratis finiti. Il prossimo costa 1 vita.", "plus_reklam_yok": "Nessuna pubblicità", "plus_reklam_yok_a": "Nessuna pubblicità nel gioco.", "plus_sinirsiz_can": "Vite illimitate", "plus_sinirsiz_can_a": "Niente attesa per le vite. Gioca quando vuoi.", "plus_ipucu": "4 suggerimenti gratis", "plus_acik": "Prismio Plus è attivo", "plus_acik_ack": "Prismio Plus attivo. Niente pubblicità, vite illimitate, 4 suggerimenti per livello.", "plus_bir_kez": "Un pagamento. Tuo per sempre.", "plus_not": "Un pagamento. Nessun abbonamento, nessun addebito automatico.", "plus_yakinda": "Gli acquisti sono chiusi in questa versione. Presto.", "ayna_kullandin": "{k} specchi posati. Il più pulito è {e}.", "bu_bolumde_sinir": "limite {n} in questo livello", "yeni_can_sonra": "Nuova vita tra {s}.", "n_bolum": "{n} livelli", "n_bolum_cozdun": "Hai risolto {n} livelli.", "n_yildiz_kelime": "{n} stelle", "gizli": "Nascosto", "n_tema": "{n} temi", "en_uzun_seri": "La tua serie più lunga è {n} giorni", "parca_koleksiyon": "{a} / {b} pezzi", "devam_ediyor": "In corso", "plus_ipucu_a": "4 suggerimenti per livello invece di 2.", "nasil_oynanir": "Come si gioca", "no_amac": "Obiettivo", "no_amac_a": "Guida la luce e accendi i cristalli.", "no_ayna": "Specchio", "no_ayna_a": "Tocca una casella per uno specchio. Tocca ancora per girarlo. Piega la luce di 90 gradi.", "no_kristal": "Cristallo", "no_kristal_a": "Brilla solo del proprio colore. Il cristallo rosso vuole luce rossa.", "no_duvar": "Muro", "no_duvar_a": "La luce non passa il muro. Usa gli specchi per aggirarlo.", "no_prizma": "Prisma", "no_prizma_a": "Divide la luce bianca in tre: rosso, verde, blu.", "no_ayristirici": "Divisore", "no_ayristirici_a": "Divide in due il colore in entrata. Il rosso diventa giallo e magenta.", "no_delik": "Cunicolo", "no_delik_a": "Porta la luce oltre un muro. La freccia mostra l'uscita.", "no_yildiz": "Stelle", "no_yildiz_a": "Ogni livello ha un minimo di specchi. Raggiungilo per 3 stelle.", "no_sekil": "Forme", "no_sekil_a": "Ogni colore ha una forma. Guarda le forme se i colori confondono.", "no_ipucu_bas": "Se ti blocchi", "no_ipucu_a": "Mette uno specchio al posto giusto. Ogni suggerimento costa 1 vita.", "anladim": "Ho capito", "senin_cozumun": "La tua disposizione", "en_iyi_cozum_bu": "Soluzione più pulita", "en_iyi_goster": "Vedi la soluzione migliore", "cozumu_gizle": "Torna alla tua disposizione", "n_ayna_kelime": "{n} specchi", "cozumun_yok": "Nessun registro di questo livello.", "r_kivilcim": "Scintilla", "r_mum": "Candela", "r_fener": "Lanterna", "r_mesale": "Torcia", "r_denizfeneri": "Faro", "r_safak": "Alba", "r_yildiz": "Stella", "r_gunes": "Sole", "lig": "Lega", "rutbe": "Grado", "toplam_isik": "Luce totale", "sonraki_rutbe": "Grado successivo", "en_ust_rutbe": "Sei in cima. Niente di più in alto.", "isik_kaldi_rutbe": "{n} luce per {ad}", "lig_ack": "Il grado sale guadagnando luce. Quella spesa non lo abbassa.", "siralamayi_ac": "Classifica luce", "siralama_giris": "Collega Play Giochi per la classifica.", "rutbe_yukseldi": "Nuovo grado: {ad}", "rutbe_n": "Grado {n}", "reklam_olmadi": "L'annuncio non si è caricato. Riprova a breve.", "d_deger": "Mulino", "d_kopru": "Ponte di Vetro", "d_ay": "Luna", "d_obelisk": "Obelisco", "isikla_al": "Compra con la luce", "deko_alindi": "\"{ad}\" aggiunto al tuo mondo.", "hs_oto_bas": "Backup automatico", "hs_oto_ack": "I tuoi progressi vengono salvati nell'account Google del telefono. Tornano se cambi telefono.", "hs_bagli": "Connesso", "hs_bagli_ack": "Salvato alla fine di ogni livello.", "hs_giris_ack": "Accedi per collegare i progressi al tuo account. Si aprono anche su altri telefoni.", "hs_yok_ack": "Non disponibile in questa versione. Arriverà nell'app per telefono.", "hs_giris": "Accedi con Google Play Giochi", "hs_hesap_degis": "Per cambiare account, usa l'app <b>Play Giochi</b> del telefono.", "hs_pg_basari": "Obiettivi Play Giochi", "hs_gelismis": "Avanzate: backup con codice", "hs_tasi_bas": "Trasferisci il salvataggio", "hs_tasi_ack": "Copia e conserva il codice qui sotto. Incollalo su un nuovo telefono per recuperare i progressi.", "hs_kod_aria": "Codice di backup", "hs_geri_bas": "Ripristina salvataggio", "hs_geri_ack": "Incolla un codice salvato in precedenza. <b>I progressi attuali verranno sostituiti.</b>", "hs_yapistir": "Incolla qui il codice", "hs_geri_aria": "Codice di ripristino", "hs_geri_yukle": "Ripristina", "hs_tesekkur": "Il salvataggio resta sul telefono e viene copiato nel tuo account Google.", "hs_kopyalandi": "Copiato ✓", "hs_elle_kopyala": "Seleziona e copia il codice a mano", "hs_yuklendi": "Ripristinato. Livello {n} sbloccato. I progressi sono tornati.", "hs_giris_hata": "Accesso non riuscito. Controlla la connessione e riprova.", "hs_baglanti_hata": "Impossibile connettersi.", "hs_bulut_ileri": "Il salvataggio nel cloud era più avanti. Livello {n} sbloccato.", "hs_bulut_okunamadi": "Impossibile leggere il salvataggio nel cloud.", "hs_baglandi_yedek": "Connesso. Stiamo salvando i tuoi progressi.", "kod_bos": "Il codice è vuoto.", "kod_bozuk": "Impossibile leggere il codice. È incompleto o danneggiato.", "kod_yabanci": "Questo codice non è un salvataggio di Prismio.", "kod_ilerleme_yok": "Il codice non contiene progressi.", "kod_yazilamadi": "Impossibile salvare. La memoria potrebbe essere piena.", "hk_surum": "Versione", "hk_yapim": "Build", "hk_yapimci": "Crediti", "hk_tasarim": "Design e sviluppo", "hk_bulmaca": "Design dei puzzle", "hk_gorsel": "Identità visiva", "hk_yil": "Anno", "hk_ilerleme": "I tuoi progressi", "hk_acilan_bolum": "Livelli sbloccati", "hk_cozulen": "Livelli risolti", "hk_toplam_yildiz": "Stelle totali", "hk_acilan_tema": "Temi sbloccati", "hk_basari": "Obiettivi", "hk_dunya_parca": "Pezzi del mondo", "hk_yasal": "Note legali", "hk_gizlilik": "Informativa sulla privacy", "hk_destek": "Supporto e contatti", "hk_tesekkur": "Grazie per aver giocato.", "hk_baglanti_yok": "Questo link verrà aggiunto prima dell'uscita.", "zaman_skor": "{n} livelli", "zaman_sonuc": "Hai risolto {n} livelli.", "mg_not": "La luce si guadagna finendo i livelli. Le soluzioni eleganti ne danno di più. Tre stelle danno 12, i livelli grandi +25.", "mg_isik_bilgi": "La maggior parte della luce si guadagna <b>giocando</b>. Finire un livello dà luce. Una <b>soluzione elegante</b> ne dà di più. Tre stelle aggiungono 12, un livello grande 25.", "mg_can_bilgi": "Perdi una vita se <b>esci senza risolvere</b>. Risolvere non costa mai vite. Si ricaricano da sole: una ogni <b>4 ore</b>.", "dt_bas": "Costruisci il tuo mondo", "dt_metin": "Si apre dopo aver risolto {n} livelli.<br>Finendo i livelli guadagni alberi, colonne, cristalli e lanterne.<br>Disponili nel tuo paesaggio.", "dt_sayi": "livelli", "dt_aciliyor": "Apertura…", "dt_kaldi": "Mancano {n} livelli", "durum_acik": "Sbloccato", "aria_hucre": "Colonna {x}, riga {y}", "aria_kilitli": "bloccato", "tema_fildisi_k": "Carta naturale, ombra morbida, una stanza quieta.", "tema_pirinc_k": "Metallo giallo, linee sottili, l'aria di uno strumento di misura.", "tema_murekkep_k": "Stanza buia, macchie d'inchiostro, cielo stellato.", "tema_vitray_k": "Spesse linee di piombo, colore profondo, una vetrata di chiesa.", "tema_kagit_k": "Carta bianca, segni di piega, schizzi a matita.", "tema_bakir_k": "Vecchio tetto, rame ossidato, macchie di patina.", "tema_deniz_k": "Acqua blu notte, fondo di sabbia, luce che arriva da lontano.", "tema_orman_k": "Tronchi spessi, muschio, sole tra i rami.", "tema_kum_k": "Terra bruciata, muri di adobe, ombre lunghe.", "tema_kuzey_k": "Notte nera, ghiaccio, un velo verde e viola che ondeggia.", "ag_oynanis": "Gioco", "ag_erisim": "Accessibilità", "ag_goruntu": "Schermo", "ag_ses": "Audio", "ba_s3": "Gioca 3 giorni di fila.", "ba_s7": "Gioca 7 giorni di fila.", "ba_s30": "Gioca 30 giorni di fila.", "ba_s100": "Gioca 100 giorni di fila.", "aria_geri": "Indietro", "aria_tahta": "Tavola del puzzle di luce", "tekrar_odul_yok": "Hai già risolto questo livello con queste stelle. Prova con meno specchi.", "a_sestipi": "Tipo di suono", "a_sestipi_a": "Il timbro degli effetti", "st_cam": "Vetro", "st_ahsap": "Legno", "st_retro": "Retrò", "hs_kes": "Disconnetti Play Giochi", "hs_kesildi": "Disconnesso. I progressi non vengono più salvati nel cloud e gli obiettivi non vengono inviati. Per uscire del tutto dall'account Google, usa l'app Play Giochi.", "hs_kapali": "Non connesso. Il gioco non usa Play Giochi; i progressi restano su questo telefono e nel suo backup Google.", "hs_durum_bagli": "Play Giochi: connesso", "hs_durum_kapali": "Play Giochi: non connesso", "paketler": "Pacchetti", "pk_ses": "Pacchetti audio", "pk_tahta": "Stili tavola", "pk_menu": "Sfondi della home", "pk_ses_cam_a": "Note di vetro limpide", "pk_ses_ahsap_a": "Toni di marimba morbidi e caldi", "pk_ses_retro_a": "Suoni da console a 8 bit", "pk_tahta_klasik": "Classico", "pk_tahta_klasik_a": "La tavola del tema", "pk_tahta_neon": "Neon", "pk_tahta_neon_a": "Raggi luminosi, cornice illuminata", "pk_tahta_altin": "Oro", "pk_tahta_altin_a": "Cornice dorata con lieve bagliore", "pk_tahta_aurora": "Aurora", "pk_tahta_aurora_a": "Cornice viva dai colori rotanti", "pk_menu_tema": "Motivo del tema", "pk_menu_nokta": "Puntini", "pk_menu_cizgi": "Linee", "pk_menu_yildiz": "Stelle", "pk_menu_cam": "Vetrata", "pk_menu_kat": "Origami", "pk_menu_dalga": "Onde", "pk_menu_izgara": "Griglia", "pk_sec": "Usa", "pk_secili": "In uso", "pk_dinle": "Ascolta", "pk_ucretsiz": "Gratis", "pk_alindi": "\"{ad}\" sbloccato e scelto.", "erken_ac": "Sblocca subito · ◆ {n}", "erken_kart": "o subito ◆ {n}", "a_hatirlatma": "Promemoria giornaliero", "a_hatirlatma_a": "La sera se restano missioni", "bild_gorev": "Le missioni di oggi ti aspettano. Risolvi qualche livello e prendi la luce.", "bild_seri": "Non perdere la serie di {n} giorni! Le missioni di oggi ti aspettano.", "bild_izin_yok": "Le notifiche sono disattivate. Attivale nelle impostazioni del telefono.", "isik_paket": "{n} di luce", "u_isik_satin_a": "Per temi e pacchetti", "u_can_satin_a": "Tutte le vite subito piene", "satin_tesekkur": "Grazie! Aggiunto alla partita.", "satin_basarisiz": "Acquisto non completato.", "satin_bekliyor": "Pagamento in attesa. Consegnato alla conferma.", "dolu": "Pieno", "hk_reklam_gizlilik": "Opzioni privacy annunci"};
-  DILLER.tr.slogan="Biraz ışık. Biraz mantık."; DILLER.tr.devam_et="Devam et";
-  DILLER.en.slogan="A little light. A little logic."; DILLER.en.devam_et="Continue";
   DILLER.az={"oyna": "Oyna", "tum_bolumler": "Bütün bölmələr ›", "zamana_karsi": "Zamana qarşı", "temalar": "Mövzular", "oduller": "Mükafatlar", "odul_odasi": "Mükafat Otağı", "dunyam": "Dünyam", "ayarlar": "Tənzimləmələr", "hakkinda": "Haqqında", "hesap": "Hesab", "hesap_yedek": "Hesab və ehtiyat", "magaza": "Mağaza", "basarilar": "Nailiyyətlər", "gunluk_gorev": "Gündəlik tapşırıq", "ana_menu": "Əsas menyu", "haritaya_don": "Xəritəyə qayıt", "magazaya_git": "Mağazaya get", "kaldigin_yer": "Qaldığın taxta", "yolculuk": "Səyahət", "bolum": "Bölmə", "sifirla": "Sıfırla", "ipucu": "İpucu", "yeni_tahta": "Yeni tapmaca", "ayna": "güzgü", "sinir": "HƏDD", "can": "Can", "isik": "İşıq", "isik_kucuk": "işıq", "gun": "gün", "baslangic_ipucu": "Aynaları yerləşdir, işığı kristallara daşı.", "kristal_kaldi": "{n} kristal qaranlıqda.", "kristal_kaldi_1": "{n} kristal qaranlıqda.", "hepsi_yandi": "Kristallar yandı.", "hepsi_yandi_eniyi": "Kristallar yandı. Ən təmiz həll.", "dongu_hatasi": "İşıq özünə qapandı. Aynanı çevir ya da götür.", "ipucu_kalmadi": "Bu bölmədə ipucu qalmadı.", "ipucu_verildi_can": "İpucu qoyuldu. 1 can xərcləndi.", "ipucu_bedava_kaldi": "İpucu qoyuldu. Bu bölmədə {n} pulsuz qaldı.", "can_yok_ipucu": "Can qalmadı. İpucu 1 can istəyir.", "can_yok_yeni": "Can qalmadı. Yeni tapmaca 1 can istəyir.", "yeni_tahta_onay": "Yeni tapmaca 1 can. Təsdiq üçün bir də toxun.", "ayna_siniri": "Ayna limiti: {n}. Birini çıxar.", "tahta_uretilemedi": "Tapmaca qurulmadı. \"Yeni tapmaca\"ya toxun.", "cikmak_tekrar": "Çıxmaq üçün bir də toxun", "cozdun": "Həll edildi.", "buyuk_bitti": "Böyük bölmə bitdi", "en_iyi_cozum": "Ən az ayna. Bundan təmizi yox.", "bir_ayna_fazla": "Bir ayna artıq. {n} ayna ilə də olur.", "ayna_fazla": "{f} ayna artıq. Ən təmizi: {n}.", "yildiz_yok": "Ayna çox oldu. Ulduz yox. Ən yaxşısı {n}.", "sonraki_bolum": "Növbəti bölmə →", "daha_az_dene": "Daha az güzgü ilə cəhd et", "tekrar_dene": "Yenidən cəhd et", "yeniden_dene": "Yenidən başla", "tema_acildi": "\"{ad}\" mövzusu açıldı", "sure_bitti": "Vaxt bitdi", "canin_bitti": "Can qalmadı.", "yeni_can": "Yeni can", "reklam_can": "Qısa reklam · +1 can", "reklam_oynatiliyor": "Reklam oynadılır…", "plus_al": "Prismio Plus al", "plus_geri_yukle": "Artıq aldım, bərpa et", "plus_kontrol": "Alışın yoxlanılır…", "plus_tesekkur": "Təşəkkürlər. Prismio Plus açıldı.", "tema": "Mövzu", "plus": "Plus", "baglaniyor": "Bağlanır…", "kod_kopyala": "Kodu kopyala", "kod_yanlis": "Kod səhvdir.", "odulu_al": "Al", "gorevler_bitti": "Bugünkü tapşırıqlar bitdi", "seri_basla": "Bu gün bir bölmə həll et, seri başlasın", "dil": "Dil", "gelistirici": "Tərtibatçı", "tahta_kaldi": "{n} bölmə qaldı", "aciliyor": "Açılır…", "reklam_alani": "Reklam sahəsi", "slogan": "Həll et. Sonra daha yaxşı həll et.", "b_ilk_isik": "İlk İşıq", "b_usta": "On Qüsursuz", "b_koleksiyon": "Üç Rəng", "b_gezgin": "Səyyah", "b_bolge_usta": "Bölgə Ustası", "b_mukemmel": "Usta Həll", "b_dunya_kur": "İlk Daş", "b_isinma": "İlk Addım", "b_temiz_is": "Yalın Həll", "b_hizli_dusun": "Cəld Baxış", "b_uc_gun": "Üç Gün", "b_bir_hafta": "Yeddi Gecə", "b_bir_ay": "Bədirlənmə", "b_yuz_gun": "Yüz Gün", "b_uzun_yol": "Uzun Yol", "b_yari_yol": "Yolun Yarısı", "b_isigin_sonu": "İşığın Sonu", "b_kusursuz": "Qüsursuz Yüz", "b_buyuk_sinav": "Böyük Astana", "b_tam_kolek": "Tam Palitra", "b_dunya_tamam": "Bütöv Mənzərə", "g_bolumler": "Bölmələr", "g_ustalik": "Ustalıq", "g_seri": "Seriya", "g_koleksiyon": "Kolleksiya", "a_titresim": "Vibrasiya", "a_titresim_a": "Toxunma titrəyişi", "a_animasyon": "Animasiyalar", "a_animasyon_a": "Ekran və mükafat keçidləri", "a_parcacik": "Zərrəcik effektləri", "a_parcacik_a": "Fon işıq tozu", "a_otogec": "Avtomatik keçid", "a_otogec_a": "Həll edəndən sonra keç", "a_efekt": "Səs effektləri", "a_efekt_a": "Ayna və kristal səsləri", "a_shapes": "Forma göstəriciləri", "a_shapes_a": "Kristallara işarə əlavə et", "a_kontrast": "Yüksək kontrast", "a_kontrast_a": "Xətləri qabart", "a_azhareket": "Hərəkəti azalt", "a_azhareket_a": "Keçid hərəkətini azalt", "a_kalite": "Görüntü keyfiyyəti", "a_kalite_a": "Aşağı / Orta / Yüksək", "a_dusuk": "Aşağı", "a_orta": "Orta", "a_yuksek": "Yüksək", "d_fidan": "Fidan", "d_tas": "Daş Yığını", "d_cali": "Kol", "d_sutun": "Sütun", "d_kemer": "Tağ", "d_heykel": "Heykəl", "d_kristal": "Kristal Yığını", "d_dev_prizma": "Nəhəng Prizma", "d_fener": "Fənər", "d_asma_lamba": "Asma Lampa", "d_yildiz": "Ulduz", "d_bulut": "Bulud", "d_cesme": "Fəvvarə", "d_isik_kapisi": "İşıq Qapısı", "gv_3bolum": "3 bölmə həll et", "gv_2yildiz": "2 bölmədə 3 ulduz al", "gv_zaman5": "Zamana qarşı 5 bölmə", "bolum_n": "Bölmə {n}", "bolum_acilir": "Bölmə {n}-də açılır", "yildiz_n": "{n} ulduz", "buyuk_bolum": "böyük bölmə", "bolge_0": "Fil Dişi Bağı", "bolge_1": "Mis Rəsədxanası", "bolge_2": "Mürəkkəb Otağı", "bolge_3": "Vitraj Kafedralı", "bolge_4": "Kağız Emalatxanası", "bolge_5": "Əhəng Həyəti", "bolge_6": "Mis Qülləsi", "bolge_7": "Gecə Kitabxanası", "bolge_8": "Rəngli Pəncərə", "bolge_9": "Qatlanan Salon", "bolge_10": "Duz Terası", "bolge_11": "Saat Qülləsi", "bolge_12": "Qaranlıq Otaq", "bolge_13": "Şüşə Sobası", "bolge_14": "Oriqami Bağı", "bolge_15": "Mərmər Dəhlizi", "bolge_16": "Teleskop Balkonu", "bolge_17": "Kölgə Keçidi", "bolge_18": "Mozaika Hovuzu", "bolge_19": "Dəftər Qülləsi", "bolge_20": "Sədəf Otağı", "bolge_21": "Usturlab Salonu", "bolge_22": "Ulduz Xəritəsi", "bolge_23": "Rəng Dəyirmanı", "bolge_24": "Zərf Emalatxanası", "bolge_25": "Gips Qalereyası", "bolge_26": "Kompas Meydanı", "bolge_27": "Ay İşığı Anbarı", "bolge_28": "Buzlu Şüşə Dəsti", "bolge_29": "Qələm Meşəsi", "bolge_30": "Ağ Tağ", "bolge_31": "Dişli Zirzəmisi", "bolge_32": "Sakit Quyu", "bolge_33": "İşıq Qıran", "bolge_34": "Qatlanmış Pilləkən", "bolge_35": "Qum Saatı Otağı", "bolge_36": "Tunc Rəsədxanası", "bolge_37": "Gecə Növbəsi", "bolge_38": "Rəng Quyusu", "bolge_39": "Perqament Salonu", "bolge_40": "Çini Terası", "bolge_41": "Çarx Bağı", "bolge_42": "Qaranlıq Kanal", "bolge_43": "Alov Şüşəsi", "bolge_44": "Qırış Emalatxanası", "bolge_45": "Alebastr Salonu", "bolge_46": "Sekstant Qülləsi", "bolge_47": "Yuxulu Kitabxana", "bolge_48": "Gül Pəncərəsi", "bolge_49": "Məktub Qülləsi", "bolge_50": "İnci Sarayı", "bolge_51": "Xronometr Otağı", "bolge_52": "Kor Nöqtə", "bolge_53": "Sınıq Şüşə Küçəsi", "bolge_54": "Qırışıq Salon", "bolge_55": "Alebastr Günbəzi", "bolge_56": "Ulduz Çarxı", "bolge_57": "Fənər Quyusu", "bolge_58": "İşıq Günbəzi", "bolge_59": "Qanad Emalatxanası", "bolge_60": "Duman Həyəti", "bolge_61": "Rəqqas Salonu", "bolge_62": "Gecə Körpüsü", "bolge_63": "Şüşə Körpü", "bolge_64": "Kağız Fənər", "bolge_65": "Mərmər Otağı", "bolge_66": "Səma Kürəsi", "bolge_67": "Dərin Qaranlıq", "bolge_68": "Rəngli Günbəz", "bolge_69": "Əyri Qüllə", "bolge_70": "Təbaşir Küçəsi", "bolge_71": "Siferblat Bağı", "bolge_72": "Əks-səda Otağı", "bolge_73": "Prizma Bazarı", "bolge_74": "Qatlı Dam", "bolge_75": "Süd Şüşəsi Salonu", "bolge_76": "Zenit Terası", "bolge_77": "Bədirlənmiş Ay Otağı", "bolge_78": "İşıq Tuneli", "bolge_79": "Zərf Qülləsi", "bolge_80": "Qar Həyəti", "bolge_81": "Ulduz Saatı", "bolge_82": "Gecə Vadisi", "bolge_83": "Yaqut Pəncərəsi", "bolge_84": "Sınma Emalatxanası", "bolge_85": "Şaxta Qalereyası", "bolge_86": "Meridian Qülləsi", "bolge_87": "Uzaq Qaranlıq", "bolge_88": "Göy Qurşağı Salonu", "bolge_89": "Menteşə Otağı", "bolge_90": "Buzlaq Sarayı", "bolge_91": "Sonsuz Siferblat", "bolge_92": "Son Qaranlıq", "bolge_93": "İşıq Tacı", "bolge_94": "Qatlanan Səma", "bolge_95": "Kristal Zirvə", "bolge_96": "Böyük Linza", "bolge_97": "Sakit Ulduz", "bolge_98": "Son Prizma", "bolge_99": "İşığın Sonu", "tema_fildisi": "Fil Dişi", "tema_fildisi_o": "Sadə, isti daş hissi.", "tema_pirinc": "Mis", "tema_pirinc_o": "Dişlilər və rəsədxana sükutu.", "tema_murekkep": "Mürəkkəb", "tema_murekkep_o": "Qaranlıq fonda parlayan xətlər.", "tema_vitray": "Vitraj", "tema_vitray_o": "Rəngli şüşədən katedral işığı.", "tema_kagit": "Kağız", "tema_kagit_o": "Yumşaq qatlar və təmiz xətlər.", "tema_bakir": "Mis", "tema_bakir_o": "Köhnə metal və zamanın yaşıl izi.", "tema_deniz": "Dərin Su", "tema_deniz_o": "Dərin suyun sükutu. İşıq süzülür.", "tema_orman": "Meşə", "tema_orman_o": "Nəm kölgələr və sakit yaşıl.", "tema_kum": "Qum", "tema_kum_o": "Sərt kölgələr və isti torpaq.", "tema_kuzey": "Şimal İşığı", "tema_kuzey_o": "Qaranlıq göydə yaşıl dalğalar.", "koleksiyon": "Kolleksiya", "tema_sayi": "{a} / {b} mövzu", "kullaniliyor": "İstifadədə", "secmek_dokun": "Seçmək üçün toxun", "al_buton": "Al", "eksik_isik": "{n} çatmır", "tema_secildi": "\"{ad}\" seçildi.", "tema_alindi": "\"{ad}\" açıldı və seçildi.", "zaten_kullaniliyor": "Artıq istifadədə", "temayi_kullan": "Mövzunu seç", "isik_ver_al": "{n} işığa aç", "isik_daha_lazim": "{n} işıq daha lazımdır", "kapat": "Bağla", "oniz_harita": "Xəritə", "oniz_tahta": "Taxta", "oniz_parca": "Hissələr", "ba_ilk": "İlk bölməni tamamla.", "ba_usta": "10 bölməni 3 ulduzla bitir.", "ba_kolek": "3 mövzu aç.", "ba_gezgin": "50 bölmə həll et.", "ba_bolge": "İlk bölgəni tamamla.", "ba_mukemmel": "20 bölməni ən yaxşı həll ilə bitir.", "ba_dunya": "5 hissə yerləşdir.", "ba_isinma": "5 bölmə həll et.", "ba_temiz": "Bir bölməni 3 ulduzla bitir.", "ba_hizli": "Zamana qarşı 3 bölmə həll et.", "ba_3gun": "3 gün aralıqsız oyna.", "ba_hafta": "7 gün aralıqsız oyna.", "ba_ay": "30 gün aralıqsız oyna.", "ba_yuzgun": "100 gün aralıqsız oyna.", "ba_uzunyol": "200 bölmə tamamla.", "ba_yariyol": "500 bölmə tamamla.", "ba_son": "1000 bölməni tamamla.", "ba_kusursuz": "100 bölməni 3 ulduzla bitir.", "ba_sinav": "10 böyük bölmə tamamla.", "ba_tamkolek": "Bütün mövzuları aç.", "ba_dunyatam": "Bütün dünya hissələrini yığ.", "u_reklam_izle": "Reklam izlə", "u_isik_reklam_ack": "Qısa reklam müqabilində 15 işıq.", "u_gunluk_isik": "Gündəlik işıq", "u_gunluk_ack": "Gündə bir dəfə, 10 hədiyyə işıq.", "u_can_reklam_ack": "Qısa reklam müqabilində 1 can.", "u_can_doldur": "Canları doldur", "u_can_doldur_ack": "Qısa reklam izlə, canların dolsun.", "can_zaten_dolu": "Canların artıq doludur.", "kazandin": "{n} qazandın.", "n_isik": "{n} işıq", "tum_canlar": "Bütün canlar", "n_can": "{n} can", "odul_kelime": "Mükafat", "seri_devam": "Serin davam edir. Bu gün həll et, yoxsa qırılır", "seri_basladi": "Seri başladı. Sabah davam et", "gunluk_seri": "{n} günlük seri.", "dunya_bos": "Burası hələ boşdur.", "dunya_bos2": "Hissələri bura düzə bilərsən.", "dunyanda": "Dünyanda", "n_parca": "{n} hissə", "dunya_kur_bas": "Öz dünyanı qur", "dunya_kur_1": "100 bölmədən sonra açılır.", "dunya_kur_2": "Bölmələri həll etdikcə hissələr yığılır.", "kat_doga": "Təbiət", "kat_yapi": "Tikili", "kat_kristal": "Kristal", "kat_isik": "İşıq", "kat_gokyuzu": "Göy", "kat_ozel": "Xüsusi", "gorev_odul_al": "Tapşırıq bitdi, işığı al", "alindi": "Alındı", "gorev_ack": "Tapşırıqlar hər gün yenilənir. Bölmə həll etdikcə irəliləyir. İşığını almağı unutma.", "acik_durum": "Açıq", "ipucu_bedava_var": "İpucu, {n} pulsuz hüququn var", "ipucu_bir_can": "İpucu 1 can istəyir", "yeni_tahta_bedava": "Yeni tapmaca, pulsuz", "yeni_tahta_can": "Yeni tapmaca 1 can istəyir", "bedava_ipucu_kaldi": "{n} pulsuz ipucun var.", "bedava_ipucu_bitti": "Pulsuz ipucu bitdi. Növbəti 1 can.", "plus_reklam_yok": "Reklam yoxdur", "plus_reklam_yok_a": "Oyunda reklam görməzsən.", "plus_sinirsiz_can": "Limitsiz can", "plus_sinirsiz_can_a": "Can gözləmək yoxdur. İstədiyin an oyna.", "plus_ipucu": "4 pulsuz ipucu", "plus_acik": "Prismio Plus açıqdır", "plus_acik_ack": "Prismio Plus aktivdir. Reklamsız, limitsiz can, bölmə başına 4 ipucu.", "plus_bir_kez": "Bir ödəniş. Əbədi sənindir.", "plus_not": "Bir ödəniş. Abunəlik və avtomatik çıxarış yoxdur.", "plus_yakinda": "Bu versiyada satınalma bağlıdır. Tezliklə.", "ayna_kullandin": "{k} ayna qoyuldu. Ən təmizi {e}.", "bu_bolumde_sinir": "bu bölmədə limit {n}", "yeni_can_sonra": "Yeni can {s} sonra.", "n_bolum": "{n} bölüm", "n_bolum_cozdun": "{n} bölmə həll etdin.", "n_yildiz_kelime": "{n} ulduz", "gizli": "Gizli", "n_tema": "{n} mövzu", "en_uzun_seri": "Ən uzun serin {n} gün", "parca_koleksiyon": "{a} / {b} hissə", "devam_ediyor": "Davam edir", "plus_ipucu_a": "Hər bölmədə 2 əvəzinə 4 ipucu.", "nasil_oynanir": "Necə oynanır", "no_amac": "Məqsəd", "no_amac_a": "İşığı yönləndir, kristalları yandır.", "no_ayna": "Ayna", "no_ayna_a": "Xanaya toxun, ayna qoy. Bir də toxun, dönsün. İşığı 90 dərəcə əyir.", "no_kristal": "Kristal", "no_kristal_a": "Yalnız öz rəngi ilə parlayır. Qırmızı kristal qırmızı işıq istəyir.", "no_duvar": "Divar", "no_duvar_a": "İşıq divardan keçmir. Aynalarla ətrafından dolan.", "no_prizma": "Prizma", "no_prizma_a": "Ağ işığı üç rəngə bölür: qırmızı, yaşıl, mavi.", "no_ayristirici": "Ayırıcı", "no_ayristirici_a": "Gələn rəngi ikiyə bölür. Qırmızı işıq sarı və moruğa çevrilir.", "no_delik": "Qara dəlik", "no_delik_a": "İşığı maneənin arxasına aparır. Ox çıxış yerini göstərir.", "no_yildiz": "Ulduz", "no_yildiz_a": "Hər bölmənin ən az ayna sayı bəllidir. Ona çatsan 3 ulduz.", "no_sekil": "Formalar", "no_sekil_a": "Hər rəngin bir forması var. Rəngləri ayırmaq çətindirsə formalara bax.", "no_ipucu_bas": "İlişib qalsan", "no_ipucu_a": "Bir aynanı düzgün yerə qoyur. Hər ipucu 1 can istəyir.", "anladim": "Başa düşdüm", "senin_cozumun": "Sənin düzülüşün", "en_iyi_cozum_bu": "Ən təmiz həll", "en_iyi_goster": "Ən yaxşı həlli gör", "cozumu_gizle": "Öz düzülüşünə qayıt", "n_ayna_kelime": "{n} ayna", "cozumun_yok": "Bu bölmənin qeydi yoxdur.", "r_kivilcim": "Qığılcım", "r_mum": "Şam", "r_fener": "Fənər", "r_mesale": "Məşəl", "r_denizfeneri": "Mayak", "r_safak": "Şəfəq", "r_yildiz": "Ulduz", "r_gunes": "Günəş", "lig": "Liqa", "rutbe": "Rütbə", "toplam_isik": "Ümumi işıq", "sonraki_rutbe": "Növbəti rütbə", "en_ust_rutbe": "Zirvədəsən. Daha yuxarısı yox.", "isik_kaldi_rutbe": "{n} işıq sonra {ad}", "lig_ack": "İşıq qazandıqca rütbən yüksəlir. Xərclənən işıq onu aşağı salmır.", "siralamayi_ac": "İşıq sıralaması", "siralama_giris": "Sıralama üçün Play Oyunlar'a qoşul.", "rutbe_yukseldi": "Yeni rütbə: {ad}", "rutbe_n": "{n}. rütbə", "reklam_olmadi": "Reklam yüklənmədi. Bir azdan yoxla.", "d_deger": "Dəyirman", "d_kopru": "Şüşə Körpü", "d_ay": "Ay", "d_obelisk": "Dikilitaş", "isikla_al": "İşıqla al", "deko_alindi": "\"{ad}\" dünyana əlavə edildi.", "hs_oto_bas": "Avtomatik ehtiyat", "hs_oto_ack": "İrəliləyişin telefonunun Google hesabına yedəklənir. Telefonu dəyişsən geri gəlir.", "hs_bagli": "Qoşulub", "hs_bagli_ack": "Hər bölümün sonunda yedəklənir.", "hs_giris_ack": "Daxil olsan, irəliləyişin hesabına bağlanır. Başqa telefonda da açılır.", "hs_yok_ack": "Bu versiyada yoxdur. Telefon tətbiqində gələcək.", "hs_giris": "Google Play Games ilə daxil ol", "hs_hesap_degis": "Hesabı dəyişmək üçün telefonundakı <b>Play Games</b> tətbiqindən istifadə et.", "hs_pg_basari": "Play Games nailiyyətləri", "hs_gelismis": "Ətraflı: kodla ehtiyat", "hs_tasi_bas": "Qeydini köçür", "hs_tasi_ack": "Aşağıdakı kodu kopyala və saxla. Yeni telefonda bu kodu yapışdırsan irəliləyişin geri gələr.", "hs_kod_aria": "Ehtiyat kodu", "hs_geri_bas": "Qeydi bərpa et", "hs_geri_ack": "Əvvəl aldığın kodu bura yapışdır. <b>İndiki irəliləyişin silinəcək.</b>", "hs_yapistir": "Kodu bura yapışdır", "hs_geri_aria": "Bərpa kodu", "hs_geri_yukle": "Bərpa et", "hs_tesekkur": "Qeydin telefonunda saxlanılır və Google hesabına yedəklənir.", "hs_kopyalandi": "Kopyalandı ✓", "hs_elle_kopyala": "Kodu əllə seç və kopyala", "hs_yuklendi": "Yükləndi. Bölüm {n} açıqdır. İrəliləyişin geri gəldi.", "hs_giris_hata": "Daxil olmaq alınmadı. İnternet bağlantını yoxla və yenidən cəhd et.", "hs_baglanti_hata": "Bağlantı qurulmadı.", "hs_bulut_ileri": "Buluddakı qeyd daha irəlidə idi. Bölüm {n} açıqdır.", "hs_bulut_okunamadi": "Bulud qeydi oxunmadı.", "hs_baglandi_yedek": "Qoşuldu. İrəliləyişin yedəklənir.", "kod_bos": "Kod boşdur.", "kod_bozuk": "Kod oxunmadı. Natamam və ya korlanıb.", "kod_yabanci": "Bu kod Prismio qeydi deyil.", "kod_ilerleme_yok": "Kodda irəliləyiş yoxdur.", "kod_yazilamadi": "Qeyd yazılmadı. Telefon yaddaşı dolu ola bilər.", "hk_surum": "Versiya", "hk_yapim": "Quruluş", "hk_yapimci": "Müəlliflər", "hk_tasarim": "Dizayn və hazırlanma", "hk_bulmaca": "Tapmaca dizaynı", "hk_gorsel": "Vizual kimlik", "hk_yil": "İl", "hk_ilerleme": "İrəliləyişin", "hk_acilan_bolum": "Açılan bölüm", "hk_cozulen": "Həll olunan bölmə", "hk_toplam_yildiz": "Ümumi ulduz", "hk_acilan_tema": "Açılan tema", "hk_basari": "Nailiyyət", "hk_dunya_parca": "Dünya parçası", "hk_yasal": "Hüquqi", "hk_gizlilik": "Məxfilik siyasəti", "hk_destek": "Dəstək və əlaqə", "hk_tesekkur": "Oynadığın üçün təşəkkürlər.", "hk_baglanti_yok": "Bu keçid buraxılışdan əvvəl əlavə ediləcək.", "zaman_skor": "{n} bölüm", "zaman_sonuc": "{n} bölüm həll etdin.", "mg_not": "İşıq bölüm bitirərək qazanılır. Zərif həll daha çox qazandırır. Üç ulduz 12, böyük bölüm +25.", "mg_isik_bilgi": "İşığın çoxu <b>oynayaraq</b> qazanılır. Bölüm bitirmək işıq verir. <b>Zərif həll</b> daha çox verir. Üç ulduz 12, böyük bölüm 25 işıq əlavə edir.", "mg_can_bilgi": "Can <b>həll etmədən çıxanda</b> gedir. Həll etsən heç vaxt getmir. Özü də dolur: hər <b>4 saatda</b> bir can gəlir.", "dt_bas": "Öz dünyanı qur", "dt_metin": "{n} bölmə həll edəndə bura açılır.<br>Bölmə bitirdikcə ağac, sütun, kristal və fənər qazanırsan.<br>Hamısını öz mənzərənə düzürsən.", "dt_sayi": "bölmə", "dt_aciliyor": "Açılır…", "dt_kaldi": "{n} bölmə qaldı", "durum_acik": "Açıq", "aria_hucre": "{x}. sütun {y}. sətir", "aria_kilitli": "kilidli", "tema_fildisi_k": "Təbii kağız, yumşaq kölgə, sakit bir otaq.", "tema_pirinc_k": "Sarı metal, incə xətt, ölçü aləti hissi.", "tema_murekkep_k": "Qaranlıq otaq, mürəkkəb ləkəsi, ulduzlu səma.", "tema_vitray_k": "Qalın qurğuşun xətt, dərin rəng, kilsə pəncərəsi.", "tema_kagit_k": "Ağ kağız, qatlanma izi, qələm eskizi.", "tema_bakir_k": "Köhnə dam, oksidləşmiş mis, patina ləkəsi.", "tema_deniz_k": "Lacivərd su, qum zəmin, uzaqdan gələn işıq.", "tema_orman_k": "Qalın ağac, mamır, budaqlardan süzülən günəş.", "tema_kum_k": "Qovrulmuş torpaq, kərpic divar, uzun kölgə.", "tema_kuzey_k": "Qara gecə, buz, dalğalanan yaşıl-bənövşəyi pərdə.", "ag_oynanis": "Oyun", "ag_erisim": "Əlçatanlıq", "ag_goruntu": "Ekran", "ag_ses": "Səs", "ba_s3": "3 gün ardıcıl oyna.", "ba_s7": "7 gün ardıcıl oyna.", "ba_s30": "30 gün ardıcıl oyna.", "ba_s100": "100 gün ardıcıl oyna.", "aria_geri": "Geri", "aria_tahta": "İşıq tapmacası lövhəsi", "tekrar_odul_yok": "Bu bölümü artıq bu ulduzla həll etmişdin. Daha az güzgü ilə yoxla.", "a_sestipi": "Səs tipi", "a_sestipi_a": "Effektlərin tembri", "st_cam": "Şüşə", "st_ahsap": "Taxta", "st_retro": "Retro", "hs_kes": "Play Games bağlantısını kəs", "hs_kesildi": "Bağlantı kəsildi. İrəliləyişin artıq buluda yedəklənmir, nailiyyətlər göndərilmir. Google hesabından tam çıxmaq üçün Play Games tətbiqindən istifadə et.", "hs_kapali": "Qoşulmayıb. Oyun Play Games istifadə etmir; irəliləyişin yalnız bu telefonda və Google yedəyində qalır.", "hs_durum_bagli": "Play Games: qoşulub", "hs_durum_kapali": "Play Games: qoşulmayıb", "paketler": "Paketlər", "pk_ses": "Səs paketləri", "pk_tahta": "Lövhə bəzəkləri", "pk_menu": "Ana səhifə fonları", "pk_ses_cam_a": "Şəffaf, cingildəyən şüşə notları", "pk_ses_ahsap_a": "Yumşaq, isti marimba tembri", "pk_ses_retro_a": "8-bit oyun konsolu səsləri", "pk_tahta_klasik": "Klassik", "pk_tahta_klasik_a": "Temanın öz lövhəsi", "pk_tahta_neon": "Neon", "pk_tahta_neon_a": "Parlayan şüalar, işıqlı çərçivə", "pk_tahta_altin": "Qızıl", "pk_tahta_altin_a": "Qızıl çərçivə və yüngül parıltı", "pk_tahta_aurora": "Aurora", "pk_tahta_aurora_a": "Rəngləri fırlanan canlı çərçivə", "pk_menu_tema": "Temanın naxışı", "pk_menu_nokta": "Nöqtələr", "pk_menu_cizgi": "Xətlər", "pk_menu_yildiz": "Ulduzlar", "pk_menu_cam": "Vitraj", "pk_menu_kat": "Origami", "pk_menu_dalga": "Dalğalar", "pk_menu_izgara": "Tor", "pk_sec": "Seç", "pk_secili": "Seçilib", "pk_dinle": "Dinlə", "pk_ucretsiz": "Pulsuz", "pk_alindi": "\"{ad}\" alındı və seçildi.", "erken_ac": "Tez aç · ◆ {n}", "erken_kart": "və ya indi ◆ {n}", "a_hatirlatma": "Gündəlik xatırlatma", "a_hatirlatma_a": "Tapşırıqlar bitməyibsə axşam xatırladır", "bild_gorev": "Gündəlik tapşırıqların səni gözləyir. Bir neçə bölmə həll et, işığını al.", "bild_seri": "{n} günlük serini itirmə! Bugünkü tapşırıqlar səni gözləyir.", "bild_izin_yok": "Bildiriş icazəsi bağlıdır. Telefon ayarlarından aça bilərsən.", "isik_paket": "{n} İşıq", "u_isik_satin_a": "Mövzular və paketlər üçün", "u_can_satin_a": "Bütün canların dərhal dolur", "satin_tesekkur": "Təşəkkürlər! Hesabına əlavə edildi.", "satin_basarisiz": "Satınalma tamamlanmadı.", "satin_bekliyor": "Ödəniş təsdiq gözləyir. Təsdiqlənəndə avtomatik veriləcək.", "dolu": "Dolu", "hk_reklam_gizlilik": "Reklam məxfilik seçimləri"};
+  // ---- Ilk acilis sinematigi + ogretici metinleri (13 dil) ----
+  (function(){
+    var K={
+      slogan:{tr:"Biraz ışık. Biraz mantık.",en:"A little light. A little logic.",es:"Un poco de luz. Un poco de lógica.",pt:"Um pouco de luz. Um pouco de lógica.",de:"Ein bisschen Licht. Ein bisschen Logik.",fr:"Un peu de lumière. Un peu de logique.",ru:"Немного света. Немного логики.",zhTW:"一點光，一點邏輯。",zhCN:"一点光，一点逻辑。",ja:"少しの光。少しのロジック。",ko:"약간의 빛, 약간의 논리.",it:"Un po' di luce. Un po' di logica.",az:"Bir az işıq. Bir az məntiq."},
+      devam_et:{tr:"Devam et",en:"Continue",es:"Continuar",pt:"Continuar",de:"Weiter",fr:"Continuer",ru:"Продолжить",zhTW:"繼續",zhCN:"继续",ja:"続ける",ko:"계속하기",it:"Continua",az:"Davam et"},
+      sin_1:{tr:"Her şey karanlıktı.",en:"It was all darkness.",es:"Todo era oscuridad.",pt:"Tudo era escuridão.",de:"Alles war Dunkelheit.",fr:"Tout était ténèbres.",ru:"Всё тонуло во тьме.",zhTW:"一切都籠罩在黑暗中。",zhCN:"一切都笼罩在黑暗中。",ja:"すべては闇の中だった。",ko:"모든 것이 어둠이었다.",it:"Tutto era buio.",az:"Hər şey qaranlıq idi."},
+      sin_2:{tr:"Sonra tek bir ışık doğdu.",en:"Then a single light appeared.",es:"Entonces apareció una luz.",pt:"Então surgiu uma luz.",de:"Dann erschien ein einziges Licht.",fr:"Puis une lumière est apparue.",ru:"И тогда родился свет.",zhTW:"然後，一道光亮起。",zhCN:"然后，一道光亮起。",ja:"そして、ひとつの光が生まれた。",ko:"그때 한 줄기 빛이 태어났다.",it:"Poi nacque una luce.",az:"Sonra bir işıq doğdu."},
+      sin_3:{tr:"Prizma ışığı renklere böler.",en:"A prism splits light into colors.",es:"Un prisma divide la luz en colores.",pt:"Um prisma divide a luz em cores.",de:"Ein Prisma teilt Licht in Farben.",fr:"Un prisme sépare la lumière en couleurs.",ru:"Призма разделяет свет на цвета.",zhTW:"稜鏡能把光分成色彩。",zhCN:"棱镜能把光分成色彩。",ja:"プリズムは光を色に分ける。",ko:"프리즘은 빛을 색으로 나눈다.",it:"Un prisma divide la luce in colori.",az:"Prizma işığı rənglərə ayırır."},
+      sin_4:{tr:"Aynalarla yönlendir. Kristalleri aydınlat.",en:"Guide it with mirrors. Light every crystal.",es:"Guíala con espejos. Ilumina cada cristal.",pt:"Guie-a com espelhos. Acenda cada cristal.",de:"Lenke es mit Spiegeln. Bring jeden Kristall zum Leuchten.",fr:"Guide-la avec des miroirs. Allume chaque cristal.",ru:"Направляй её зеркалами. Зажги каждый кристалл.",zhTW:"用鏡子引導光，點亮每一顆水晶。",zhCN:"用镜子引导光，点亮每一颗水晶。",ja:"鏡で導き、すべてのクリスタルを灯そう。",ko:"거울로 빛을 이끌어 모든 크리스털을 밝히세요.",it:"Guidala con gli specchi. Accendi ogni cristallo.",az:"Güzgülərlə yönləndir. Hər kristalı işıqlandır."},
+      sin_atla:{tr:"Atla",en:"Skip",es:"Omitir",pt:"Pular",de:"Überspringen",fr:"Passer",ru:"Пропустить",zhTW:"跳過",zhCN:"跳过",ja:"スキップ",ko:"건너뛰기",it:"Salta",az:"Keç"},
+      sin_basla:{tr:"Başla",en:"Start",es:"Empezar",pt:"Começar",de:"Los geht's",fr:"Commencer",ru:"Начать",zhTW:"開始",zhCN:"开始",ja:"はじめる",ko:"시작",it:"Inizia",az:"Başla"},
+      sin_izle:{tr:"Giriş filmini izle",en:"Watch the intro",es:"Ver la intro",pt:"Assistir à abertura",de:"Intro ansehen",fr:"Voir l'intro",ru:"Смотреть вступление",zhTW:"觀看開場動畫",zhCN:"观看开场动画",ja:"オープニングを見る",ko:"인트로 보기",it:"Guarda l'intro",az:"Girişə bax"},
+      ogr_giris:{tr:"Yeşil ışık aşağı iniyor. Onu kristale ulaştır.",en:"The green light heads down. Get it to the crystal.",es:"La luz verde baja. Llévala hasta el cristal.",pt:"A luz verde desce. Leve-a até o cristal.",de:"Das grüne Licht geht nach unten. Bring es zum Kristall.",fr:"La lumière verte descend. Amène-la jusqu'au cristal.",ru:"Зелёный свет идёт вниз. Доведи его до кристалла.",zhTW:"綠光正向下。把它引到水晶上。",zhCN:"绿光正向下。把它引到水晶上。",ja:"緑の光は下へ向かう。クリスタルまで導こう。",ko:"초록빛이 아래로 향합니다. 크리스털까지 이끄세요.",it:"La luce verde scende. Portala fino al cristallo.",az:"Yaşıl işıq aşağı enir. Onu kristala çatdır."},
+      ogr_giris2:{tr:"Prizma ışığı üç renge böler. Her kristali kendi rengiyle yak.",en:"The prism splits light into three colors. Light each crystal with its own color.",es:"El prisma divide la luz en tres colores. Enciende cada cristal con su color.",pt:"O prisma divide a luz em três cores. Acenda cada cristal com a sua cor.",de:"Das Prisma teilt das Licht in drei Farben. Entzünde jeden Kristall mit seiner Farbe.",fr:"Le prisme sépare la lumière en trois couleurs. Allume chaque cristal de sa couleur.",ru:"Призма делит свет на три цвета. Зажги каждый кристалл его цветом.",zhTW:"稜鏡把光分成三種顏色。用各自的顏色點亮每顆水晶。",zhCN:"棱镜把光分成三种颜色。用各自的颜色点亮每颗水晶。",ja:"プリズムは光を三色に分ける。各クリスタルを同じ色で灯そう。",ko:"프리즘이 빛을 세 가지 색으로 나눕니다. 각 크리스털을 같은 색으로 밝히세요.",it:"Il prisma divide la luce in tre colori. Accendi ogni cristallo col suo colore.",az:"Prizma işığı üç rəngə ayırır. Hər kristalı öz rənginlə işıqlandır."},
+      ogr_dokun:{tr:"Bu kareye dokun: ayna yerleşir.",en:"Tap this square to place a mirror.",es:"Toca esta casilla para poner un espejo.",pt:"Toque neste quadrado para colocar um espelho.",de:"Tippe auf dieses Feld, um einen Spiegel zu setzen.",fr:"Touche cette case pour poser un miroir.",ru:"Нажми на эту клетку, чтобы поставить зеркало.",zhTW:"點這一格放置鏡子。",zhCN:"点这一格放置镜子。",ja:"このマスをタップして鏡を置こう。",ko:"이 칸을 눌러 거울을 놓으세요.",it:"Tocca questa casella per mettere uno specchio.",az:"Güzgü qoymaq üçün bu xanaya toxun."},
+      ogr_cevir:{tr:"Bir daha dokun: ayna döner.",en:"Tap again to rotate the mirror.",es:"Toca otra vez para girar el espejo.",pt:"Toque de novo para girar o espelho.",de:"Tippe erneut, um den Spiegel zu drehen.",fr:"Touche encore pour tourner le miroir.",ru:"Нажми ещё раз, чтобы повернуть зеркало.",zhTW:"再點一次，鏡子會轉向。",zhCN:"再点一次，镜子会转向。",ja:"もう一度タップすると鏡が回る。",ko:"한 번 더 누르면 거울이 돌아갑니다.",it:"Tocca ancora per ruotare lo specchio.",az:"Güzgünü döndərmək üçün yenidən toxun."},
+      ogr_devam:{tr:"Dokunmaya devam et: ayna dönüyor.",en:"Keep tapping: the mirror turns.",es:"Sigue tocando: el espejo gira.",pt:"Continue tocando: o espelho gira.",de:"Tippe weiter: der Spiegel dreht sich.",fr:"Continue de toucher : le miroir tourne.",ru:"Продолжай нажимать: зеркало поворачивается.",zhTW:"繼續點擊，鏡子會轉動。",zhCN:"继续点击，镜子会转动。",ja:"タップを続けると鏡が回る。",ko:"계속 누르면 거울이 돌아갑니다.",it:"Continua a toccare: lo specchio ruota.",az:"Toxunmağa davam et: güzgü dönür."},
+      ogr_sil:{tr:"Bu ayna gerekmiyor. Kaldırmak için dokunmaya devam et.",en:"You don't need this mirror. Keep tapping to remove it.",es:"No necesitas este espejo. Sigue tocando para quitarlo.",pt:"Você não precisa deste espelho. Continue tocando para remover.",de:"Diesen Spiegel brauchst du nicht. Tippe weiter, um ihn zu entfernen.",fr:"Ce miroir est inutile. Continue de toucher pour le retirer.",ru:"Это зеркало не нужно. Нажимай дальше, чтобы убрать.",zhTW:"不需要這面鏡子，繼續點擊即可移除。",zhCN:"不需要这面镜子，继续点击即可移除。",ja:"この鏡は不要。タップを続けると外せる。",ko:"이 거울은 필요 없어요. 계속 눌러 없애세요.",it:"Questo specchio non serve. Continua a toccare per toglierlo.",az:"Bu güzgü lazım deyil. Silmək üçün toxunmağa davam et."},
+      ogr_bravo_baslik:{tr:"Harika!",en:"Great!",es:"¡Genial!",pt:"Ótimo!",de:"Super!",fr:"Bravo !",ru:"Отлично!",zhTW:"太棒了！",zhCN:"太棒了！",ja:"すごい！",ko:"훌륭해요!",it:"Ottimo!",az:"Əla!"},
+      ogr_bravo_ack:{tr:"Işığı kristale ulaştırdın. Şimdi gerçek bir bulmaca.",en:"You got the light to the crystal. Now a real puzzle.",es:"Llevaste la luz al cristal. Ahora, un puzle de verdad.",pt:"Você levou a luz ao cristal. Agora, um quebra-cabeça de verdade.",de:"Du hast das Licht zum Kristall gebracht. Jetzt ein echtes Rätsel.",fr:"Tu as amené la lumière au cristal. Place à un vrai puzzle.",ru:"Ты довёл свет до кристалла. Теперь настоящая головоломка.",zhTW:"你把光引到了水晶上。現在來一道真正的謎題。",zhCN:"你把光引到了水晶上。现在来一道真正的谜题。",ja:"光をクリスタルに届けた。次は本物のパズルだ。",ko:"빛을 크리스털까지 보냈어요. 이제 진짜 퍼즐입니다.",it:"Hai portato la luce al cristallo. Ora un vero puzzle.",az:"İşığı kristala çatdırdın. İndi real tapmaca."},
+      ogr_devam_btn:{tr:"Devam",en:"Continue",es:"Continuar",pt:"Continuar",de:"Weiter",fr:"Continuer",ru:"Далее",zhTW:"繼續",zhCN:"继续",ja:"続ける",ko:"계속",it:"Continua",az:"Davam"}
+    };
+    for(var a in K){ if(!Object.prototype.hasOwnProperty.call(K,a))continue;
+      for(var l in K[a]){ if(DILLER[l]) DILLER[l][a]=K[a][l]; } }
+  })();
   // ---- SOZLUK ----
   // Yanlis ceviri bulunursa SADECE bu satirlar degisir, kod degismez.
 
@@ -2074,7 +2254,7 @@
              sayac:{cozulen:0,ucYildiz:0,zamanBolum:0},
              magaza:{},   // urun son alim zamanlari
              oynamaSn:0,  // toplam oynama suresi (saniye) - bulut kaydi icin
-             nasilGordu:0,   //: nasil oynanir ekrani gosterildi mi
+             nasilGordu:0, ogreticiBitti:0,   //: nasil oynanir ekrani gosterildi mi
              dunyaAcildi:0,  // Dunyam kapisi acildi mi
              toplamCozulen:0, //: omur boyu cozulen tahta. ASLA sifirlanmaz.
              toplamIsik:null, //: omur boyu KAZANILAN isik. Rutbe buna bakar.
@@ -2115,7 +2295,7 @@
   }
   var SAVE_ALANLAR=['siparisler','level','enYuksek','theme','unlocked','shapes','lives','livesAt',
                     'coins','stars','decos','decoAktif','basari','gorev','ayar','sayac',
-                    'magaza','dunyaAcildi','oynamaSn','seri','plus','toplamCozulen','nasilGordu','toplamIsik',
+                    'magaza','dunyaAcildi','oynamaSn','seri','plus','toplamCozulen','nasilGordu','ogreticiBitti','toplamIsik',
                     'paket','paketSecim'];
 
   function save(){
@@ -2247,6 +2427,7 @@
                        ? Math.min(d.toplamIsik, 99999999) : null;
     //: Nasil oynanir gosterildi mi
     state.nasilGordu = (d.nasilGordu?1:0);
+    state.ogreticiBitti = (d.ogreticiBitti?1:0);
 
     state.decos     = nesne(d.decos,{});
     state.decoAktif = nesne(d.decoAktif,{});
@@ -3777,6 +3958,7 @@
       var e=document.getElementById(id); if(e)e.disabled=!!(zafer && state.mode==='yolculuk');
     });
     updateHud(sim);
+    if(state._ogr) ogrGuncelle();
   }
 
   // Tahta kilitli mi? Tek dogruluk kaynagi.
@@ -3898,6 +4080,7 @@
   }
 
   function loadLevel(){
+    if(state._ogr===1){ ogrTahtasiKur(); return; }
     state.cfg=curve(state.level);
     // TOHUM SECIMI - iki mod, iki farkli kural:
     //  YOLCULUK: tohum = bolum no. Bolum 4 her zaman ayni tahta.
@@ -3932,7 +4115,7 @@
     if(aktifEkran==='oyun' && ad!=='oyun' && state._girdi && !state.bitti && state.mode==='yolculuk'){
       state._girdi=false; canKaybet(); rozetleriCiz();
     }
-    if(ad!=='oyun')state._girdi=false;
+    if(ad!=='oyun'){ state._girdi=false; if(state._ogr) ogrKapat(); }
     for(var k in EKRANLAR) document.getElementById(EKRANLAR[k]).classList.toggle('acik', k===ad);
     aktifEkran=ad; window.scrollTo(0,0);
     if(ad==='harita')haritaCiz();
@@ -3996,6 +4179,7 @@
   var _cikisSorusu=0;
 
   function geriGit(){
+    if(SN.acik){ sinemaKapat(); return; }
     // Acik katman varsa once onu kapat
     var kat=$('katman');
     if(kat && kat.classList.contains('acik')){ kat.classList.remove('acik'); return; }
@@ -4516,6 +4700,8 @@
   // ===================== KAZANMA =====================
   function kazandI(kullanilan){
     if(state.paid)return;
+    if(state._ogr===1){ ogrKazandi1(); return; }
+    if(state._ogr===2){ state.ogreticiBitti=1; state.nasilGordu=1; ogrKapat(); }
     state.paid=true; state.bitti=true; state._girdi=false;   // cozdu, can gitmez
     //: Oyuncunun KENDI cozumunu dondur. Bitis kartinda ve haritada
     // bu gosterilir. Kopya alinir cunku state.mirrors sonra degisebilir.
@@ -5438,7 +5624,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.9.4',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.9.5',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
@@ -7649,15 +7835,273 @@
     setTimeout(kapat, 1300);
   })();
 
-  // ---- ILK ACILISTA "NASIL OYNANIR" ----
-  // SADECE hic oynamamis oyuncuya, SADECE bir kez.
-  // Neden ilk tahtadan ONCE degil de menude: oyuncuyu oyundan once
-  // yaziyla karsilamak kotu karsilamadir. Menude duruyor, isteyen acar,
-  // istemeyen oynamaya gider. Zorlamiyoruz, HATIRLATIYORUZ.
-  if(!state.nasilGordu && (state.enYuksek||1)<=1 && !(state.toplamCozulen>0)){
+  // ==========================================================================
+  //  ILK ACILIS: SINEMATIK + ETKILESIMLI OGRETICI
+  // --------------------------------------------------------------------------
+  //  Akis (sadece hic oynamamis oyuncu):
+  //    acilis perdesi -> sinematik (5 sahne, dokununca ilerler, Atla var)
+  //    -> OGRETICI TAHTA (tek aynali, elle kurulur) -> 1. bolum (gercek, rehberli)
+  //  Rehber: cozumden "siradaki dokunulacak kare" bulunur, el isareti ve
+  //  tek satir yonerge gosterilir. Oyuncu dokundukca rehber guncellenir.
+  //  Ogretici tahta ILERLEME YAZMAZ (yildiz/isik/enYuksek degismez).
+  //  state._ogr: 0 yok, 1 ogretici tahta, 2 gercek 1. bolum (rehberli)
+  // ==========================================================================
+  function ilkAcilisMi(){
+    return !state.ogreticiBitti && !state.nasilGordu && (state.enYuksek||1)<=1 && !(state.toplamCozulen>0);
+  }
+
+  // ---------- SINEMATIK ----------
+  var SN={acik:false, sira:0, zm:0, sz:[], geri:null};
+  var SN_SURE=[3300,3100,3800,4300,0];       // son sahne dokunmayi bekler
+  var SN_ADET=5;
+
+  function snToz(){
+    var h='', i;
+    for(i=0;i<22;i++){
+      var x=Math.round(Math.random()*360), y=Math.round(180+Math.random()*340);
+      var r=(0.8+Math.random()*1.6).toFixed(1), d=(6+Math.random()*7).toFixed(1);
+      var dx=Math.round(-14+Math.random()*28), dy=-Math.round(14+Math.random()*34);
+      h+='<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#F5E6C4" style="--d:'+d+'s;--dx:'+dx+'px;--dy:'+dy+'px"/>';
+    }
+    return '<g class="toz">'+h+'</g>';
+  }
+  // Uc sonuk kristal: ucgen (yesil), besgen (sari), daire (kirmizi)
+  function snKristaller(){
+    return '<g class="kr-sonuk" fill="none" stroke-width="3.2" stroke-linejoin="round">'+
+      '<path d="M90 392 L118 444 H62 Z" stroke="#2E9E6B"/>'+
+      '<path d="M180 440 L204 458 L195 486 H165 L156 458 Z" stroke="#F5C93F"/>'+
+      '<circle cx="272" cy="426" r="24" stroke="#EF4B57"/></g>';
+  }
+  function snSahneHtml(){
+    var bg='<rect width="360" height="640" fill="url(#sgBg)"/>';
+    var s1='<div class="sn s1"><svg class="sahne" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">'+bg+
+      '<ellipse class="ay-isik" cx="180" cy="-30" rx="170" ry="300" fill="#FFF1D0" opacity=".07" filter="url(#sgGlow2)"/>'+
+      snKristaller()+snToz()+'</svg><p class="sn-yazi">'+htmlKacir(T('sin_1'))+'</p></div>';
+    var s2='<div class="sn s2"><svg class="sahne" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">'+bg+
+      snKristaller()+snToz()+
+      '<g class="parilti" style="transform-box:fill-box;transform-origin:center"><circle cx="10" cy="320" r="46" fill="url(#sgFlare)"/></g>'+
+      '<g class="k-yatay"><rect x="-10" y="309" width="390" height="22" rx="11" fill="#FFF2D2" opacity=".5" filter="url(#sgGlow)"/>'+
+      '<rect x="-10" y="317" width="390" height="6" rx="3" fill="#FFFBEF"/></g>'+
+      '</svg><p class="sn-yazi">'+htmlKacir(T('sin_2'))+'</p></div>';
+    var s3='<div class="sn s3"><svg class="sahne" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">'+bg+
+      '<g class="kamera">'+snToz()+
+      '<g class="k-beyaz"><rect x="-10" y="309" width="188" height="22" rx="11" fill="#FFF2D2" opacity=".5" filter="url(#sgGlow)"/>'+
+      '<rect x="-10" y="317" width="188" height="6" rx="3" fill="#FFFBEF"/></g>'+
+      '<path class="prizma-cam" d="M205 252 L252 346 H158 Z" fill="url(#sgCam)" stroke="#F5F1E8" stroke-width="2.6" stroke-linejoin="round"/>'+
+      '<path class="prizma-cam" d="M205 252 L252 346 H205 Z" fill="rgba(245,201,63,.16)"/>'+
+      '<g stroke-linecap="round" fill="none" filter="url(#sgGlow)" opacity=".75">'+
+        '<path class="demet r" pathLength="1" d="M236 322 L372 244" stroke="#EF4B57" stroke-width="11"/>'+
+        '<path class="demet y" pathLength="1" d="M236 322 H372" stroke="#F5C93F" stroke-width="11"/>'+
+        '<path class="demet g" pathLength="1" d="M236 322 L372 400" stroke="#2E9E6B" stroke-width="11"/></g>'+
+      '<g stroke-linecap="round" fill="none">'+
+        '<path class="demet r" pathLength="1" d="M236 322 L372 244" stroke="#FF6B75" stroke-width="4.5"/>'+
+        '<path class="demet y" pathLength="1" d="M236 322 H372" stroke="#FFD863" stroke-width="4.5"/>'+
+        '<path class="demet g" pathLength="1" d="M236 322 L372 400" stroke="#45C187" stroke-width="4.5"/></g>'+
+      '</g></svg><p class="sn-yazi">'+htmlKacir(T('sin_3'))+'</p></div>';
+    var s4='<div class="sn s4"><svg class="sahne" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">'+bg+snToz()+
+      '<g stroke-linecap="round" fill="none" filter="url(#sgGlow)" opacity=".7">'+
+        '<path class="yol-a" pathLength="1" d="M180 -10 V430" stroke="#2E9E6B" stroke-width="11"/>'+
+        '<path class="yol-b" pathLength="1" d="M180 430 H266" stroke="#2E9E6B" stroke-width="11"/></g>'+
+      '<g stroke-linecap="round" fill="none">'+
+        '<path class="yol-a" pathLength="1" d="M180 -10 V430" stroke="#45C187" stroke-width="4.5"/>'+
+        '<path class="yol-b" pathLength="1" d="M180 430 H266" stroke="#45C187" stroke-width="4.5"/></g>'+
+      '<g class="ayna-kutu" style="transform-box:fill-box;transform-origin:center">'+
+        '<line x1="158" y1="408" x2="202" y2="452" stroke="#A79880" stroke-width="13" stroke-linecap="round"/>'+
+        '<line x1="161" y1="411" x2="199" y2="449" stroke="#E7DFD1" stroke-width="3" stroke-linecap="round" opacity=".8"/></g>'+
+      '<path class="kr-sonuk" d="M292 398 L320 450 H264 Z" fill="none" stroke="#2E9E6B" stroke-width="3.2" stroke-linejoin="round"/>'+
+      '<g class="kr-yan"><circle cx="292" cy="436" r="54" fill="#45C187" opacity=".28" filter="url(#sgGlow2)"/>'+
+        '<path d="M292 398 L320 450 H264 Z" fill="#45C187" stroke="#CFF5E2" stroke-width="3.2" stroke-linejoin="round"/></g>'+
+      '<circle class="kr-halka" cx="292" cy="436" r="40" fill="none" stroke="#7FE0B0" stroke-width="3"/>'+
+      '<g class="kivilcim" stroke="#CFF5E2" stroke-width="3" stroke-linecap="round">'+
+        '<line x1="292" y1="372" x2="292" y2="356"/><line x1="326" y1="386" x2="338" y2="374"/><line x1="340" y1="436" x2="356" y2="436"/>'+
+        '<line x1="326" y1="486" x2="338" y2="498"/><line x1="258" y1="386" x2="246" y2="374"/><line x1="244" y1="436" x2="228" y2="436"/></g>'+
+      '</svg><p class="sn-yazi">'+htmlKacir(T('sin_4'))+'</p></div>';
+    var s5='<div class="sn s5"><svg class="sahne" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">'+bg+
+      '<ellipse cx="180" cy="270" rx="170" ry="150" fill="#F5C93F" opacity=".10" filter="url(#sgGlow2)"/>'+snToz()+'</svg>'+
+      '<div class="sn-son">'+
+        '<svg viewBox="0 0 200 100" aria-hidden="true">'+
+          '<rect x="4" y="54" width="82" height="7" rx="3.5" fill="#FFFBEF"/>'+
+          '<path d="M100 8 L146 88 H54 Z" fill="rgba(255,255,255,.10)" stroke="#F5F1E8" stroke-width="2.6" stroke-linejoin="round"/>'+
+          '<path d="M100 8 L146 88 H100 Z" fill="rgba(245,201,63,.28)"/>'+
+          '<path d="M128 58 L192 23" stroke="#EF4B57" stroke-width="4" stroke-linecap="round"/>'+
+          '<path d="M128 58 H196" stroke="#F5C93F" stroke-width="4" stroke-linecap="round"/>'+
+          '<path d="M128 58 L192 93" stroke="#2E9E6B" stroke-width="4" stroke-linecap="round"/></svg>'+
+        '<h1>Prismio</h1><p>'+htmlKacir(T('slogan'))+'</p>'+
+        '<button type="button" class="sn-basla" id="snBasla">'+htmlKacir(T('sin_basla'))+'</button></div></div>';
+    var defs='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>'+
+      '<radialGradient id="sgBg" cx=".5" cy=".42" r=".85"><stop offset="0" stop-color="#2a231b"/><stop offset=".7" stop-color="#0d0b09"/><stop offset="1" stop-color="#070605"/></radialGradient>'+
+      '<radialGradient id="sgFlare"><stop offset="0" stop-color="#FFFBEF" stop-opacity=".95"/><stop offset=".4" stop-color="#FFE9B0" stop-opacity=".35"/><stop offset="1" stop-color="#FFE9B0" stop-opacity="0"/></radialGradient>'+
+      '<linearGradient id="sgCam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#BFD9FF" stop-opacity=".14"/><stop offset="1" stop-color="#fff" stop-opacity=".38"/></linearGradient>'+
+      '<filter id="sgGlow" x="-30%" y="-300%" width="160%" height="700%"><feGaussianBlur stdDeviation="7"/></filter>'+
+      '<filter id="sgGlow2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="18"/></filter>'+
+      '</defs></svg>';
+    var nk='<div class="sn-nokta" aria-hidden="true">'+'<i></i><i></i><i></i><i></i><i></i>'+'</div>';
+    return defs+s1+s2+s3+s4+s5+'<div class="sn-vin"></div><div class="sn-tane"></div>'+
+      '<div class="sn-bar u"></div><div class="sn-bar a"></div>'+nk+
+      '<button type="button" class="sn-atla" id="snAtla">'+htmlKacir(T('sin_atla'))+' ›</button>';
+  }
+  function snSesTemizle(){ for(var i=0;i<SN.sz.length;i++)clearTimeout(SN.sz[i]); SN.sz=[]; }
+  function snSes(ms,ad){ SN.sz.push(setTimeout(function(){ try{ titret(ad); }catch(e){} },ms)); }
+  function sahneGit(i){
+    var k=$('sinema'); if(!k||!SN.acik)return;
+    clearTimeout(SN.zm); snSesTemizle();
+    SN.sira=i;
+    var sah=k.querySelectorAll('.sn'), nk=k.querySelectorAll('.sn-nokta i'), j;
+    for(j=0;j<sah.length;j++){ sah[j].classList.toggle('on', j===i); }
+    for(j=0;j<nk.length;j++){ nk[j].classList.toggle('on', j===i); }
+    var at=$('snAtla'); if(at) at.hidden=(i===SN_ADET-1);
+    // ses isaretleri (titret ayar kapaliysa zaten sessiz kalir)
+    if(i===1) snSes(500,'dokun');
+    if(i===2){ snSes(1300,'ayna'); }
+    if(i===3){ snSes(1000,'ayna'); snSes(2000,'kristal'); }
+    if(i===4) snSes(300,'bitis');
+    if(i<SN_ADET-1) SN.zm=setTimeout(function(){ sahneGit(i+1); }, SN_SURE[i]);
+    else SN.zm=setTimeout(sinemaKapat, 12000);
+  }
+  function sinemaKapat(){
+    if(!SN.acik)return; SN.acik=false;
+    clearTimeout(SN.zm); snSesTemizle();
+    var k=$('sinema'); var geri=SN.geri; SN.geri=null;
+    if(!k){ if(geri)geri(); return; }
+    k.classList.add('kapan');
     setTimeout(function(){
-      if(aktifEkran==='menu'){ nasilCiz(); git('nasil'); }
-    }, 1700);
+      k.hidden=true; k.innerHTML='';
+      k.classList.remove('acik','kapan');
+      document.documentElement.classList.remove('sinemada');
+      if(geri)geri();
+    }, 480);
+  }
+  function sinemaAc(geri){
+    var k=$('sinema');
+    if(!k){ if(geri)geri(); return; }
+    if(SN.acik)return;
+    SN.acik=true; SN.geri=geri||null; SN.sira=0;
+    k.innerHTML=snSahneHtml();
+    k.hidden=false;
+    document.documentElement.classList.add('sinemada');
+    void k.offsetWidth;
+    k.classList.add('acik');
+    $('snAtla').addEventListener('click',function(ev){ ev.stopPropagation(); sinemaKapat(); });
+    $('snBasla').addEventListener('click',function(ev){ ev.stopPropagation(); sinemaKapat(); });
+    k.onclick=function(){ if(SN.sira<SN_ADET-1) sahneGit(SN.sira+1); };
+    sahneGit(0);
+  }
+
+  // ---------- OGRETICI TAHTA ----------
+  // 5x5. Kaynak sol ustte saga bakar, prizma ortada. Yesil isik asagi iner.
+  // Kristale ulasmak icin (2,3) hucresine BIR ayna gerekir: '\' (iki dokunus).
+  // Ilk dokunus '/' koyar (yanlis yon) -> "bir daha dokun: ayna doner" dersi dogal olarak cikar.
+  function ogrTahtasiKur(){
+    state.cfg=curve(1);
+    state.n=5; state.cells=[];
+    var i; for(i=0;i<25;i++) state.cells.push({t:EMPTY,c:null,id:null});
+    state.holePairs={}; state.holeList=[];
+    state.cells[idx(0,1)]={t:SOURCE,c:null,id:null};
+    state.src={x:0,y:1,d:1};
+    state.cells[idx(2,1)]={t:PRISM,c:null,id:null};
+    state.prismColors=['R','Y','G'];                 // yukari kirmizi, duz sari, asagi yesil
+    state.cells[idx(0,3)]={t:WALL,c:null,id:null};
+    state.cells[idx(4,0)]={t:WALL,c:null,id:null};
+    state.cells[idx(4,3)]={t:CRYSTAL,c:'G',id:'c0'};
+    state.crystals=[{x:4,y:3,c:'G',id:'c0'}];
+    state.solution={'2,3':'\\'};
+    state.best=1; state.skor=0;
+    state.justWon=false; state.mistakes=0; state.loopSeen=false; state.paid=false; state.bitti=false;
+    state._ipucuSayi=0; state.mirrors={}; state._sonAyna=null;
+    draw();
+    if(typeof ipucuButonuTazele==='function') ipucuButonuTazele();
+  }
+  function ogrBaslat(){            // 1. asama: ogretici tahta
+    state._ogr=1; state.mode='yolculuk'; state.level=1; state._karma=0;
+    $('sayac').hidden=true;
+    document.documentElement.classList.add('ogr');
+    git('oyun'); loadLevel();
+    state._girdi=false;            // ogreticiden cikmak can yakmaz
+  }
+  function ogrBaslat2(){           // 2. asama: gercek 1. bolum, rehberli
+    var b=$('ogrBravo'); if(b) b.hidden=true;
+    state._ogr=2; state.mode='yolculuk'; state.level=1; state._karma=0;
+    $('sayac').hidden=true;
+    document.documentElement.classList.add('ogr');
+    git('oyun'); loadLevel();
+    state._girdi=false;
+  }
+  function ogrKapat(){
+    state._ogr=0;
+    document.documentElement.classList.remove('ogr');
+    ogrGizle();
+  }
+  function ogrGizle(){
+    var kat=$('ogrKatman'); if(kat) kat.hidden=true;
+    var u=$('ogrUst'); if(u) u.hidden=true;
+    var ip=$('ipucu'); if(ip) ip.classList.remove('ogr-ipucu');
+  }
+  var OGR_EL='<svg class="ogr-el" viewBox="0 0 48 48" aria-hidden="true"><path d="M19 7a4 4 0 0 1 8 0v17l4.6-1.3a4 4 0 0 1 4.7 2.1l.4.8a4 4 0 0 1 5 1.9l.6 1.3c.9 1.9.9 4 .2 5.9l-2.3 6.5A8 8 0 0 1 32.6 48H24a8 8 0 0 1-6.4-3.2l-7.1-9.5a3.6 3.6 0 0 1 5.7-4.3L19 33.3z" fill="#fff" stroke="#26221E" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+  function ogrGuncelle(){
+    if(!state._ogr || state.bitti || aktifEkran!=='oyun'){ ogrGizle(); return; }
+    var kutu=$('tahtakutu'), svg=$('svg'); if(!kutu||!svg)return;
+    // siradaki hedef kare
+    var hedef=null, tip='', k;
+    for(k in state.solution){
+      if(!Object.prototype.hasOwnProperty.call(state.solution,k))continue;
+      var cur=state.mirrors[k], want=state.solution[k];
+      if(cur!==want){ hedef=k; tip=!cur ? 'dokun' : ((cur==='/'&&want==='\\') ? 'cevir' : 'devam'); break; }
+    }
+    if(!hedef){
+      for(k in state.mirrors){ if(Object.prototype.hasOwnProperty.call(state.mirrors,k) && !state.solution[k]){ hedef=k; tip='sil'; break; } }
+    }
+    var ust=$('ogrUst');
+    if(ust){ ust.textContent=T(state._ogr===1?'ogr_giris':'ogr_giris2'); ust.hidden=false; }
+    var ip=$('ipucu');
+    if(ip && hedef){ ip.className='ipucu ogr-ipucu'; ip.textContent=T('ogr_'+tip); }
+    var kat=$('ogrKatman');
+    if(!kat){
+      kat=document.createElement('div'); kat.id='ogrKatman'; kat.className='ogr-katman';
+      kat.innerHTML='<span class="ogr-halka"></span>'+OGR_EL;
+      kutu.appendChild(kat);
+    }
+    if(!hedef){ kat.hidden=true; return; }
+    kat.hidden=false;
+    var p=hedef.split(','), x=+p[0], y=+p[1], N=state.n;
+    var sr=svg.getBoundingClientRect(), kr=kutu.getBoundingClientRect();
+    if(!sr.width){ kat.hidden=true; return; }
+    var hu=sr.width/N, cx=(sr.left-kr.left)+(x+.5)*hu, cy=(sr.top-kr.top)+(y+.5)*hu;
+    var hl=kat.querySelector('.ogr-halka'), el=kat.querySelector('.ogr-el');
+    hl.style.width=(hu*.86)+'px'; hl.style.height=(hu*.86)+'px';
+    hl.style.left=cx+'px'; hl.style.top=cy+'px';
+    el.style.left=(cx+hu*.12)+'px'; el.style.top=(cy+hu*.1)+'px';
+  }
+  window.addEventListener('resize',function(){ if(state._ogr) ogrGuncelle(); });
+
+  // 1. asama kazanildi: ilerleme YAZMADAN kisa kutlama, sonra gercek 1. bolum
+  function ogrKazandi1(){
+    state.paid=true; state.bitti=true; state._girdi=false;
+    var kk=$('tahtakutu'); if(kk) kk.classList.add('kilitli');
+    ['btnSifirla','btnIpucu'].forEach(function(id){ var e=$(id); if(e)e.disabled=true; });
+    ogrGizle();
+    var ip=$('ipucu'); if(ip){ ip.className='ipucu'; ip.textContent=T('hepsi_yandi_eniyi'); }
+    try{ titret('bitis'); }catch(e){}
+    var goster=(state._akToplam||0)+0.30+0.45;
+    var kutu=$('tahtakutu');
+    kutu.classList.remove('zafer'); void kutu.offsetWidth; kutu.classList.add('zafer');
+    setTimeout(function(){
+      if(state._ogr!==1 || aktifEkran!=='oyun')return;
+      var b=$('ogrBravo');
+      if(!b)return;
+      $('ogrBravoBaslik').textContent=T('ogr_bravo_baslik');
+      $('ogrBravoAck').textContent=T('ogr_bravo_ack');
+      $('ogrBravoDevam').textContent=T('ogr_devam_btn');
+      b.hidden=false;
+    }, goster*1000);
+  }
+  (function(){ var d=$('ogrBravoDevam'); if(d)d.addEventListener('click',ogrBaslat2); })();
+  (function(){ var b=$('nasilSinema'); if(b)b.addEventListener('click',function(){ sinemaAc(function(){ git('nasil'); }); }); })();
+
+  // ---- ILK ACILIS: hic oynamamis oyuncu direkt sinematige, sonra ogreticiye ( yerine) ----
+  if(ilkAcilisMi()){
+    setTimeout(function(){
+      if(ilkAcilisMi() && !SN.acik) sinemaAc(ogrBaslat);
+    }, 60);
   }
 
   setInterval(function(){ if(state.lives<MAX_LIVES)rozetleriCiz(); },30000);
