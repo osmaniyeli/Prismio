@@ -197,6 +197,19 @@ jobs:
           track: internal
           status: completed
           whatsNewDirectory: distribution/whatsnew
+      # Kapali test (Alpha) testcilari da ayni surumu alsin. Google kapali kanalda
+      # inceleme yapabilir; surum incelemeden sonra gorunur.
+      - name: Google Play'e yukle (Kapali test - Alpha)
+        if: env.IMZA_VAR == 'true' && env.PLAY_VAR == 'true'
+        uses: r0adkll/upload-google-play@v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.prismio.app
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          releaseName: ${{ steps.surum.outputs.ad }} (${{ steps.surum.outputs.kod }})
+          track: alpha
+          status: completed
+          whatsNewDirectory: distribution/whatsnew
 
       - name: Etiketse Releases'e koy
         if: github.ref_type == 'tag'
