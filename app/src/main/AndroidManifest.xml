@@ -11,12 +11,14 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- D-107: Google Play Faturalandirma. Tek seferlik satin alma icin. -->
     <uses-permission android:name="com.android.vending.BILLING" />
-    <!-- Ayarlar > Titresim. WebView'da navigator.vibrate() bu izin olmadan
-         sessizce hicbir sey yapmaz. Normal izin: kullaniciya sorulmaz. -->
+    <!-- Ayarlar > Titresim. OyunKopru.titret() yerel Vibrator kullanir; bu izin
+         olmadan hicbir titresim calismaz. Normal izin: kullaniciya sorulmaz. -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- Gunluk gorev hatirlatmasi. Android 13+ izni acilista kullaniciya sorulur. -->
+    <!-- Hatirlaticilar (gunde en fazla 3 bildirim). Android 13+ izni acilista DEGIL,
+         oyuncu ilk bolumu cozunce bir kez sorulur. Kesin alarm izni (SCHEDULE_EXACT_ALARM /
+         USE_EXACT_ALARM) ISTENMEZ: yaklasik alarm yeterli. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Telefon yeniden baslayinca hatirlatma alarmi yeniden kurulur. -->
+    <!-- Telefon yeniden baslayinca hatirlatici alarmlari yeniden kurulur. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -83,11 +85,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- Gunluk gorev hatirlatmasi: alarm + yeniden baslatma -->
+        <!-- Hatirlaticilar: alarm + yeniden baslatma / surum guncelleme / saat dilimi degisimi -->
         <receiver android:name=".Hatirlatma" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
     </application>

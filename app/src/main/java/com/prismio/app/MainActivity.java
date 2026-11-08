@@ -27,8 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
  *  1. WEBVIEW AGA CIKAMAZ. Her istek engellenir, sadece yerel dosya acilir.
  *     Uygulamanin INTERNET izni var ama o izin sadece Play Games icin.
  *     Oyun sayfasi tek bir dis istek bile yapamaz.
- *  2. JavaScript koprusu SINIRLI. Sadece dort metot: durum, giris,
- *     yedekle, indir. Dosya/sistem erisimi vermiyor. Gelen veri kod
+ *  2. JavaScript koprusu SINIRLI (Play Games, kayit, satin alma, reklam,
+ *     titresim, hatirlatici). Dosya/sistem erisimi vermiyor. Gelen veri kod
  *     olarak calistirilmiyor, sadece kayit dosyasina yaziliyor.
  *  3. Dosya erisimi kapali. WebView yerel dosya sistemine bakamaz.
  *  4. Hata ayiklama kapali.
@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
 
         web.loadUrl("file:///android_asset/index.html");
         geriTusunuBagla();
-        // Bildirim izni: oyun ekrani gorundukten kisa sure sonra, sadece ilk kez sorulur.
-        web.postDelayed(this::bildirimIzniIlkSefer, 1800);
+        // Bildirim izni ACILISTA SORULMAZ (Play Games girisi ve acilis ogreticisiyle
+        // cakisiyordu). Oyun ilk bolum cozulunce bildirimIzniFirsat() cagirir.
     }
 
     /**
@@ -180,8 +180,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ======================================================================
-    //  BILDIRIM IZNI (Android 13+). Ilk acilista bir kez sorulur; reddedilirse
-    //  tekrar tekrar sorulmaz. Ayarlardan "Gunluk hatirlatma" acilinca yeniden istenir.
+    //  BILDIRIM IZNI (Android 13+). Oyuncu ilk bolumu cozunce (JS ->
+    //  bildirimIzniFirsat) BIR KEZ sorulur; reddedilirse otomatik olarak bir daha
+    //  sorulmaz. Ayarlardan "Hatirlaticilar" acilinca oyuncu istegiyle yeniden istenir
+    //  (Android iki red sonrasi pencereyi gostermez; JS "telefon ayarlarindan ac" der).
     // ======================================================================
     static final int ISTEK_BILDIRIM = 7001;
 
@@ -190,15 +192,16 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void bildirimIzniIlkSefer() {
+    /** Uygun anda (ilk bolum cozuldu) cagrilir. Hic sorulmadiysa sorar; sorulduysa sessiz kalir. */
+    void bildirimIzniFirsat() {
         android.content.SharedPreferences d = getSharedPreferences("prismio_hatirlatma", MODE_PRIVATE);
         if (d.getBoolean("izinSoruldu", false) || bildirimIzniVar()) return;
-        d.edit().putBoolean("izinSoruldu", true).apply();
         bildirimIzniIste();
     }
 
     void bildirimIzniIste() {
         if (bildirimIzniVar()) { izinSonucu(true); return; }
+        getSharedPreferences("prismio_hatirlatma", MODE_PRIVATE).edit().putBoolean("izinSoruldu", true).apply();
         if (Build.VERSION.SDK_INT >= 33) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.POST_NOTIFICATIONS}, ISTEK_BILDIRIM);

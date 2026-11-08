@@ -32,11 +32,15 @@ import java.util.Set;
  * GOOGLE PLAY SATIN ALMA
  *
  * URUNLER (Play Console'da tanimli, kimlikler birebir ayni olmali):
- *   prismio_plus  KALICI      Reklamsiz + sinirsiz can + 4 ipucu. Bir kez alinir.
- *   isik_500      TUKETILIR   500 isik
- *   isik_1500     TUKETILIR   1500 isik
- *   isik_4000     TUKETILIR   4000 isik
- *   can_doldur    TUKETILIR   Canlari doldurur
+ *   prismio_plus  KALICI      Reklamsiz + sinirsiz can. Bir kez alinir.      99,99 TL
+ *   isik_100      TUKETILIR   100 isik                                       10 TL
+ *   isik_180      TUKETILIR   180 isik                                       15 TL
+ *   isik_420      TUKETILIR   420 isik                                       30 TL
+ *   isik_960      TUKETILIR   960 isik                                       60 TL
+ *
+ * ESKI KIMLIKLER (isik_500, isik_1500, isik_4000, can_doldur): artik SATILMAZ
+ *   ve fiyat sorgusuna girmez. Yalniz eski surumde odenmis ama tuketilmemis
+ *   bir satin alma kalmissa teslim edilebilsin diye TUKETILIR kumesinde durur.
  *
  * TUKETILIR URUN AKISI - cift odul vermemek icin:
  *   1. Google "PURCHASED" der -> oyuna (siparis anahtariyla) haber verilir.
@@ -57,10 +61,13 @@ public class Odeme {
     private static final String ETIKET = "PrismioOdeme";
 
     public static final String PLUS = "prismio_plus";
-    public static final Set<String> TUKETILIR = new HashSet<>(Arrays.asList(
-            "isik_500", "isik_1500", "isik_4000", "can_doldur"));
+    /** Satista olan, fiyati sorulan ve satin alinabilen urunler. */
     private static final List<String> TUM_URUNLER = Arrays.asList(
-            PLUS, "isik_500", "isik_1500", "isik_4000", "can_doldur");
+            PLUS, "isik_100", "isik_180", "isik_420", "isik_960");
+    /** Teslim edilebilen tuketilir urunler: yeni 4 isik paketi + eski kimlikler (yalniz yarim kalmis teslimler icin). */
+    public static final Set<String> TUKETILIR = new HashSet<>(Arrays.asList(
+            "isik_100", "isik_180", "isik_420", "isik_960",
+            "isik_500", "isik_1500", "isik_4000", "can_doldur"));
 
     private final Activity etkinlik;
     private final Geri geri;
@@ -83,7 +90,7 @@ public class Odeme {
         void durum(boolean sahip, String fiyat, boolean hazir, boolean dogrulandi);
         /** Plus satin alma sonucu */
         void sonuc(boolean basarili, String mesaj);
-        /** Butun urunlerin yerel fiyatlari: {"isik_500":"₺58,99", ...} */
+        /** Butun urunlerin yerel fiyatlari: {"isik_100":"₺10,00", "prismio_plus":"₺99,99", ...} */
         void fiyatlar(String json);
         /** Tuketilir urun odenmis: oyun odulu versin, sonra teslimEdildi(anahtar) */
         void teslim(String urunId, String anahtar);

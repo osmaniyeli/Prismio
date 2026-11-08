@@ -5,9 +5,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -175,14 +182,20 @@ public class OyunKopru {
      */
     @JavascriptInterface
     public void durumSor() {
+        // Oyuncu daha once reddettiyse SDK acilista baslatilmadi (bkz. PrismioApp):
+        // Play Games'e hic dokunma, pencere acma. Sadece "bagli degil" de.
+        if (!PrismioApp.sdkHazirMi()) {
+            jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
+            return;
+        }
         etkinlik.runOnUiThread(() -> {
             try {
                 GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
                 istemci.isAuthenticated().addOnCompleteListener(gorev -> {
-                    boolean girisli = gorev.isSuccessful()
-                            && gorev.getResult() != null
-                            && gorev.getResult().isAuthenticated();
+                    boolean cevapAlindi = gorev.isSuccessful() && gorev.getResult() != null;
+                    boolean girisli = cevapAlindi && gorev.getResult().isAuthenticated();
                     if (!gorev.isSuccessful()) Log.w(ETIKET, "giris durumu alinamadi", gorev.getException());
+                    pgDurumKaydet(girisli, cevapAlindi);
                     if (girisli) oyuncuAdiyla(ad -> jsCagir("window.__pgDurum && window.__pgDurum(true," + metinKacir(ad) + ")"));
                     else jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
                 });
@@ -203,11 +216,14 @@ public class OyunKopru {
     public void girisYap() {
         etkinlik.runOnUiThread(() -> {
             try {
+                // Oyuncu daha once reddettiyse SDK acilista baslamamisti; simdi baslat.
+                PrismioApp.sdkBaslat(etkinlik);
                 GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
                 istemci.signIn().addOnCompleteListener(gorev -> {
                     boolean ok = gorev.isSuccessful()
                             && gorev.getResult() != null
                             && gorev.getResult().isAuthenticated();
+                    if (ok) pgDurumKaydet(true, true);
                     if (!ok) {
                         // En sik sebep: Play Console'da OAuth istemcisi / SHA-1 eksik
                         // ya da hesap test kullanicisi degil. Bkz. PLAY_GAMES_KURULUM.md
@@ -222,6 +238,142 @@ public class OyunKopru {
                 jsCagir("window.__pgGiris && window.__pgGiris(false,null)");
             }
         });
+    }
+
+    // ======================================================================
+    //  GIRIS TERCIHI  (SharedPreferences "prismio_pg")
+    //   durum = ""        : hic sorulmadi / bilinmiyor  -> acilista SDK baslar
+    //           "girisli" : oyuncu bagli                -> acilista SDK baslar (sessiz giris)
+    //           "red"     : oyuncu reddetti/giris yok   -> acilista SDK BASLAMAZ, pencere cikmaz
+    //  "red"den cikis yalnizca oyuncu Hesap ekraninda "Giris yap"a basinca (girisYap).
+    // ======================================================================
+    private SharedPreferences pgDepo() {
+        return etkinlik.getSharedPreferences(PrismioApp.PG_DEPO, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * isAuthenticated() sonucunu hatirla.
+     * kesin = Play Games gercek bir cevap verdi (hata/zaman asimi degil).
+     * Cevrimdisiyken alinan "hayir" sayilmaz: ucak modunda acilan oyuncu "red"e dusmesin.
+     */
+    private void pgDurumKaydet(boolean girisli, boolean kesin) {
+        try {
+            SharedPreferences d = pgDepo();
+            String onceki = d.getString("durum", "");
+            SharedPreferences.Editor e = d.edit();
+            if (girisli) {
+                e.putString("durum", "girisli").putInt("basarisiz", 0);
+            } else if (kesin && cevrimiciMi()) {
+                if ("girisli".equals(onceki)) {
+                    // Daha once bagliydi: ust uste 2 kez dusmedikce reddedilmis sayma.
+                    int n = d.getInt("basarisiz", 0) + 1;
+                    if (n >= 2) e.putString("durum", "red").putInt("basarisiz", 0);
+                    else e.putInt("basarisiz", n);
+                } else if (!"red".equals(onceki)) {
+                    e.putString("durum", "red");      // bir kez soruldu, giris yok: bir daha sorma
+                }
+            }
+            e.apply();
+        } catch (Throwable t) {
+            Log.w(ETIKET, "giris tercihi yazilamadi", t);
+        }
+    }
+
+    private boolean cevrimiciMi() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) etkinlik.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return true;
+            Network ag = cm.getActiveNetwork();
+            if (ag == null) return false;
+            NetworkCapabilities nc = cm.getNetworkCapabilities(ag);
+            return nc != null && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        } catch (Throwable t) {
+            return true;
+        }
+    }
+
+    // ======================================================================
+    //  TITRESIM
+    //  WebView'da navigator.vibrate guvenilmez (kullanici etkilesimi sarti,
+    //  bazi cihazlarda sessizce etkisiz). Yerel Vibrator dogrudan calisir.
+    //  desen: virgullu ms listesi, navigator.vibrate ile ayni anlam:
+    //  "15" = 15 ms titre; "10,30,10" = titre,dur,titre.
+    //  true = yerel olarak islendi; false = cihazda titresim yok (JS yedege duser).
+    // ======================================================================
+    private Vibrator titresimci;
+    private boolean titresimDenendi = false;
+
+    private synchronized Vibrator titresimiAl() {
+        if (titresimDenendi) return titresimci;
+        titresimDenendi = true;
+        try {
+            Context c = etkinlik.getApplicationContext();
+            Vibrator v;
+            if (Build.VERSION.SDK_INT >= 31) {
+                VibratorManager vm = (VibratorManager) c.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                v = (vm != null) ? vm.getDefaultVibrator() : null;
+            } else {
+                v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
+            }
+            if (v != null && v.hasVibrator()) titresimci = v;
+        } catch (Throwable t) {
+            Log.w(ETIKET, "titresim servisi alinamadi", t);
+        }
+        return titresimci;
+    }
+
+    /** "12,40,12" -> {12,40,12}. Gecersizse null. En fazla 16 parca, her biri 1000 ms. */
+    private static long[] desenCoz(String desen) {
+        if (desen == null) return null;
+        String[] p = desen.trim().split(",");
+        if (p.length == 0 || p.length > 16) return null;
+        long[] s = new long[p.length];
+        for (int i = 0; i < p.length; i++) {
+            try {
+                long v = Long.parseLong(p[i].trim());
+                if (v < 0) v = 0;
+                if (v > 1000) v = 1000;
+                // 10 ms'nin altindaki titresim motorun donme suresinden kisa: hissedilmez.
+                if (i % 2 == 0 && v > 0 && v < 10) v = 10;
+                s[i] = v;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return s;
+    }
+
+    @JavascriptInterface
+    public boolean titret(String desen) {
+        try {
+            Vibrator v = titresimiAl();
+            if (v == null) return false;
+            long[] s = desenCoz(desen);
+            if (s == null) return true;                 // gecersiz desen: sessizce gec
+            if (Build.VERSION.SDK_INT >= 26) {
+                if (s.length == 1) {
+                    if (s[0] > 0) v.vibrate(VibrationEffect.createOneShot(s[0], VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    // Android desenleri "bekle" ile baslar; navigator.vibrate "titre" ile.
+                    long[] t = new long[s.length + 1];
+                    t[0] = 0;
+                    System.arraycopy(s, 0, t, 1, s.length);
+                    v.vibrate(VibrationEffect.createWaveform(t, -1));
+                }
+            } else {
+                if (s.length == 1) v.vibrate(s[0]);
+                else {
+                    long[] t = new long[s.length + 1];
+                    t[0] = 0;
+                    System.arraycopy(s, 0, t, 1, s.length);
+                    v.vibrate(t, -1);
+                }
+            }
+            return true;
+        } catch (Throwable t) {
+            Log.w(ETIKET, "titresim verilemedi", t);
+            return false;
+        }
     }
 
     private interface AdGeri { void ad(String ad); }
@@ -250,7 +402,7 @@ public class OyunKopru {
      */
     @JavascriptInterface
     public void yedekle(final String veri, final String aciklama, final long oynamaSn) {
-        if (veri == null || veri.length() == 0) {
+        if (veri == null || veri.length() == 0 || !PrismioApp.sdkHazirMi()) {
             jsCagir("window.__pgYedek && window.__pgYedek(false)");
             return;
         }
@@ -332,6 +484,10 @@ public class OyunKopru {
     /** Buluttaki ilerlemeyi oku. */
     @JavascriptInterface
     public void indir() {
+        if (!PrismioApp.sdkHazirMi()) {
+            jsCagir("window.__pgIndir && window.__pgIndir(null)");
+            return;
+        }
         etkinlik.runOnUiThread(this::indirBasla);
     }
 
@@ -466,10 +622,37 @@ public class OyunKopru {
     // ======================================================================
     //  GUNLUK HATIRLATMA - bkz. Hatirlatma
     // ======================================================================
+    /** ESKI tek metinli bicim (eski HTML ile uyum). Yeni oyun hatirlaticilariAyarla kullanir. */
     @JavascriptInterface
     public void hatirlatmaAyarla(boolean aktif, String baslik, String metin, String bittiGun) {
         try { Hatirlatma.ayarla(etkinlik.getApplicationContext(), aktif, baslik, metin, bittiGun); }
         catch (Throwable t) { Log.w(ETIKET, "hatirlatma ayarlanamadi", t); }
+    }
+
+    /**
+     * Gunde en fazla 3 hatirlatici: ogle (12-13), ikindi/aksam ustu (17-18), gece (~21).
+     * metinlerJson : ["ogle metni","17-18 metni","gece metni"]  (oyunun dilinde)
+     * bittiGun     : gunluk gorevlerin bittigi gun ("2026-11-8") ya da "" -> o gun hicbiri atilmaz
+     * oynadiGun    : bugun en az bir bolum cozulduyse bugunun anahtari ya da "" -> 3. atilmaz
+     */
+    @JavascriptInterface
+    public void hatirlaticilariAyarla(boolean aktif, String baslik, String metinlerJson,
+                                      String bittiGun, String oynadiGun) {
+        try {
+            String[] m = new String[3];
+            if (metinlerJson != null) {
+                org.json.JSONArray a = new org.json.JSONArray(metinlerJson);
+                for (int i = 0; i < 3 && i < a.length(); i++) m[i] = a.optString(i, null);
+            }
+            Hatirlatma.ayarla(etkinlik.getApplicationContext(), aktif, baslik, m, bittiGun, oynadiGun);
+        } catch (Throwable t) { Log.w(ETIKET, "hatirlaticilar ayarlanamadi", t); }
+    }
+
+    /** Ilk bolum cozulunce JS bir kez cagirir: izin hic sorulmadiysa sorar, sorulduysa sessiz kalir. */
+    @JavascriptInterface
+    public void bildirimIzniFirsat() {
+        if (etkinlik instanceof MainActivity)
+            etkinlik.runOnUiThread(() -> ((MainActivity) etkinlik).bildirimIzniFirsat());
     }
 
     /** "var" / "yok" */
@@ -604,7 +787,7 @@ public class OyunKopru {
     /** Omur boyu kazanilan isigi siralamaya yazar. Sessiz calisir. */
     @JavascriptInterface
     public void siralamaGonder(final long puan) {
-        if (siralamaId().isEmpty() || puan < 0) return;
+        if (siralamaId().isEmpty() || puan < 0 || !PrismioApp.sdkHazirMi()) return;
         etkinlik.runOnUiThread(() -> {
             try {
                 LeaderboardsClient istemci = PlayGames.getLeaderboardsClient(etkinlik);
@@ -620,7 +803,7 @@ public class OyunKopru {
     /** Siralama ekranini acar. Giris yoksa once girisi ister. */
     @JavascriptInterface
     public void siralamaAc() {
-        if (siralamaId().isEmpty()) return;
+        if (siralamaId().isEmpty() || !PrismioApp.sdkHazirMi()) return;
         etkinlik.runOnUiThread(() -> {
             try {
                 PlayGames.getLeaderboardsClient(etkinlik)
@@ -689,7 +872,7 @@ public class OyunKopru {
      */
     @JavascriptInterface
     public void basariAc(final String oyunIdleri) {
-        if (oyunIdleri == null || oyunIdleri.isEmpty()) return;
+        if (oyunIdleri == null || oyunIdleri.isEmpty() || !PrismioApp.sdkHazirMi()) return;
         etkinlik.runOnUiThread(() -> {
             try {
                 AchievementsClient istemci = PlayGames.getAchievementsClient(etkinlik);
@@ -708,6 +891,7 @@ public class OyunKopru {
     /** Play Games basari ekranini acar. Giris yoksa once girisi baslatir. */
     @JavascriptInterface
     public void basarilarAc() {
+        if (!PrismioApp.sdkHazirMi()) return;
         etkinlik.runOnUiThread(() -> {
             try {
                 PlayGames.getAchievementsClient(etkinlik)
