@@ -266,10 +266,8 @@ public class OyunKopru {
                 e.putString("durum", "girisli").putInt("basarisiz", 0);
             } else if (kesin && cevrimiciMi()) {
                 if ("girisli".equals(onceki)) {
-                    // Daha once bagliydi: ust uste 2 kez dusmedikce reddedilmis sayma.
-                    int n = d.getInt("basarisiz", 0) + 1;
-                    if (n >= 2) e.putString("durum", "red").putInt("basarisiz", 0);
-                    else e.putInt("basarisiz", n);
+                    // Daha once bagliydi ama artik degil: hemen 'red'. Acilista bir daha SDK baslamaz, pencere cikmaz.
+                    e.putString("durum", "red").putInt("basarisiz", 0);
                 } else if (!"red".equals(onceki)) {
                     e.putString("durum", "red");      // bir kez soruldu, giris yok: bir daha sorma
                 }
