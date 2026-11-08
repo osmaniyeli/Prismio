@@ -4091,6 +4091,8 @@
   //  yanlis dokunus baslar. Bu olculmus bir sinir, keyfi degil.
   //  301+ zorlugu boyuttan degil AYNA LIMITI ve karakter dongusunden gelir.
   // ==========================================================================
+  // ZORLUK CARPANI: 1.00 = onceki zorluk. Tum zorluk olceklemesi bu tek sayidan gelir (etkinSeviye, TIER_SKOR, tierProfil, TAVAN).
+  var ZORLUK_CARPANI=1.15;
   var TIERS=[
     // kademe 1  (bolum 1-10)   - OGRETICI. 4x4, delik yok, tek renk cifti.
     { n:[4,4],  cry:[2,3], mir:[2,3], wall:[2,4],   ayristirici:0, holes:0, path:[4,99],  srcPrism:2 },
@@ -4160,6 +4162,7 @@
       // Taban: tavanin belli bir orani. Kademe ilerledikce oran yukselir.
       var oran=0.32+Math.min(0.30, i*0.012);
       var taban=Math.round(tavan*oran);
+      if(i>=2){ taban=Math.round(taban*ZORLUK_CARPANI); tavan=Math.round(tavan*ZORLUK_CARPANI); }   // ilk 2 kademe (ogretici) degismez
       d.push([taban,tavan]);
     }
     return d;
@@ -4205,7 +4208,7 @@
   //  10 NEDEN: Insanin bir bakista kurabildigi zincir sinirı. Bunun
   //  ustunde oyuncu dusunmuyor, deneme yaniliyor.
   //  Zorluk AYNA SAYISINDAN degil duvar, delik, prizma ve renkten gelmeli.
-  var TAVAN={ n:10, mir:10, cry:5, holes:4, duvarOran:0.42, srcPrism:6 };
+  var TAVAN={ n:10, mir:10, cry:5, holes:5, duvarOran:0.48, srcPrism:6 };   // ZORLUK_CARPANI 1.15: holes 4->5, duvarOran .42->.48 (ayna tavani 10 SABIT)
   // Buyuk sinav (her 50. bolum) tahtasi. Normal tavanin BIR USTU.
   // Oyuncu 10x10 tahtayi gorunce "bu farkli" der. Sayilari biraz
   // artirmak yetmiyordu (olcum: 20 bolumun sadece 11'i komsusundan zordu).
@@ -4230,7 +4233,14 @@
   //   Bolum 1-30   : her 10 bolumde bir (ogretici kisim aynen)
   //   Bolum 31-100 : her 7 bolumde bir
   //   Bolum 101+   : her 5 bolumde bir
+  // ZORLUK CARPANI (kullanici karari: oyun %15 daha zor olsun).
+  //   1.00 = onceki zorluk. Tek ayar bu. Etki iki yerden gelir:
+  //   (1) kademeler daha erken gelir (etkinSeviye),
+  //   (2) hedef zorluk puani tabani ve ust sinirlar carpanla buyur (tierSkorAralik, TAVAN).
+  //   Ilk 10 seviye (ogretici) DEGISMEZ. Olcum icin analyzeDifficultyRange kullan.
+  function etkinSeviye(level){ return level<=10 ? level : Math.round(10+(level-10)*ZORLUK_CARPANI); }
   function zorlukKademesi(level){
+    level=etkinSeviye(level);
     if(level<=30)  return Math.floor((level-1)/10)+1;            // 1..3
     if(level<=100) return 4+Math.floor((level-31)/7);            // 4..13
     return 14+Math.floor((level-101)/5);                         // 14..
@@ -4241,8 +4251,13 @@
   function tierProfil(tier){
     if(tier<=TIERS.length){
       var t=TIERS[tier-1];
-      return {n:t.n.slice(), cry:t.cry.slice(), mir:t.mir.slice(),
-              wall:t.wall.slice(), holes:t.holes, path:t.path.slice(),
+      var C=(tier>=3)?ZORLUK_CARPANI:1;          // ilk 2 kademe (ogretici) DEGISMEZ
+      var alanT=t.n[1]*t.n[1];
+      return {n:t.n.slice(), cry:t.cry.slice(),
+              mir:[Math.min(TAVAN.mir,Math.round(t.mir[0]*C)), Math.min(TAVAN.mir,Math.max(t.mir[1],Math.round(t.mir[1]*C)))],
+              wall:[Math.round(t.wall[0]*C), Math.min(Math.floor(alanT*TAVAN.duvarOran), Math.round(t.wall[1]*C))],
+              holes:Math.min(TAVAN.holes, Math.round(t.holes*C)),
+              path:[Math.round(t.path[0]*C), t.path[1]],
               srcPrism:t.srcPrism, ayristirici:(t.ayristirici||0), karakter:'temel'};
     }
     // --- KADEME 7+ ---
@@ -4289,15 +4304,18 @@
     // Artik aralik GERCEKCI bir tavanda durur. Kademe arttikca TABAN yukselir,
     // yani kolay tahtalar elenir; tavan sabit kalir.
     var f=tier-TIER_SKOR.length;
-    var taban=Math.min(78, 62+f*1.2);
-    return [Math.round(taban), 130];
+    var taban=Math.min(78*ZORLUK_CARPANI, (62+f*1.2)*ZORLUK_CARPANI);
+    return [Math.round(taban), Math.round(130*ZORLUK_CARPANI)];
   }
 
   // Kademe ICI rampa. Ayni kademedeki 10 bolum birbirinin kopyasi olmamali.
   // pos 0..9 -> 0..1 arasi bir agirlik. 10. bolum (milestone) en tepede.
   function rampa(level){
     var pos=(level-1)%10;              // 0..9
-    return pos/9;                      // 0 = kademenin en kolayi, 1 = en zoru
+    var t=pos/9;                       // 0 = kademenin en kolayi, 1 = en zoru
+    // ZORLUK_CARPANI: kademe ici agirlik zora kayar (ilk 10 seviye hari)
+    if(level>10) t=Math.min(1, t+(ZORLUK_CARPANI-1)*1.5);
+    return t;
   }
 
   // ==========================================================================
@@ -5497,7 +5515,7 @@
     seriSeritCiz();
     var k=$('devamKart'); if(!k)return;
     // Hangi bolum? En son oynanan, ama acik olandan ileri olamaz.
-    var lv=Math.min(state.level||1, state.enYuksek||1);
+    var lv=Math.max(1, state.enYuksek||1);
     if(lv<1)lv=1;
     // Yeni oyuncu: hic bolum cozmemis. Kart gosterilmez.
     var orta=document.querySelector('.menu-orta');
@@ -6969,7 +6987,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.10.0',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.10.1',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
@@ -8479,7 +8497,7 @@
   (function(){
     var k=$('devamKart'); if(!k)return;
     k.addEventListener('click',function(){
-      var lv=Math.min(state.level||1, state.enYuksek||1);
+      var lv=Math.max(1, state.enYuksek||1);
       bolumBaslat(Math.max(1,lv));
     });
   })();
@@ -9316,7 +9334,7 @@
   // Bolge/devam/seri/kart alt metinleri + ses dugmesi. Gercek veriyle.
   function menuYeniCiz(){
     var ek=$('ek-menu'); if(!ek) return;
-    var lv=Math.min(state.level||1, state.enYuksek||1); if(lv<1)lv=1;
+    var lv=Math.max(1, state.enYuksek||1); if(lv<1)lv=1;
     var bolge=zoneOfLevel(lv);
     var bas=(bolge.tier-1)*10+1, coz=0;
     for(var i=bas;i<bas+10;i++) if(i<state.enYuksek) coz++;
@@ -11570,6 +11588,32 @@
   //  Ogretici tahta ILERLEME YAZMAZ (yildiz/isik/enYuksek degismez).
   //  state._ogr: 0 yok, 1 ogretici tahta, 2 gercek 1. bolum (rehberli)
   // ==========================================================================
+  // ==========================================================================
+  //  PRIZMA KURALI (kullanici sorusu, bolum 112): uc gen prizma yalniz BEYAZ isigi boler;
+  //  kare (ayristirici) prizma yalniz RENKLI isigi ikiye boler. Siralama onemli: once ucgen, sonra kare.
+  //  Nasil oynanir metinleri netlestirildi + ayristiricinin ilk goruldugu bolumde bir kez ipucu.
+  // ==========================================================================
+  (function(){
+    var K={
+      no_prizma_a:{tr:"Beyaz ışığı üç renge böler: kırmızı, yeşil, mavi. Renkli ışığı bölmez, aynen geçirir.",en:"Splits white light into three colors. Colored light passes through unchanged.",es:"Divide la luz blanca en tres colores. La luz de color pasa sin cambios.",pt:"Divide a luz branca em três cores. A luz colorida passa sem mudar.",de:"Teilt weißes Licht in drei Farben. Farbiges Licht geht unverändert hindurch.",fr:"Sépare la lumière blanche en trois couleurs. La lumière colorée passe sans changement.",ru:"Делит белый свет на три цвета. Цветной свет проходит без изменений.",zhTW:"將白光分成三種顏色。有色光會原樣穿過。",zhCN:"将白光分成三种颜色。有色光会原样穿过。",ja:"白い光を三色に分けます。色のついた光はそのまま通ります。",ko:"흰 빛을 세 가지 색으로 나눕니다. 색이 있는 빛은 그대로 통과합니다.",it:"Divide la luce bianca in tre colori. La luce colorata passa invariata.",az:"Ağ işığı üç rəngə ayırır. Rəngli işıq dəyişmədən keçir."},
+      no_ayristirici_a:{tr:"Yalnızca renkli ışığı ikiye böler (kırmızı → sarı + mor). Önce üçgen prizma, sonra kare.",en:"Splits only colored light in two (red → yellow + purple). Use the triangle first, then the square.",es:"Solo divide la luz de color en dos (rojo → amarillo + morado). Primero el triángulo, luego el cuadrado.",pt:"Divide apenas a luz colorida em duas (vermelho → amarelo + roxo). Primeiro o triângulo, depois o quadrado.",de:"Teilt nur farbiges Licht in zwei (Rot → Gelb + Violett). Erst das Dreieck, dann das Quadrat.",fr:"Sépare seulement la lumière colorée en deux (rouge → jaune + violet). D'abord le triangle, puis le carré.",ru:"Делит только цветной свет на два (красный → жёлтый + фиолетовый). Сначала треугольник, потом квадрат.",zhTW:"只會把有色光分成兩色（紅 → 黃＋紫）。先三角形，再方形。",zhCN:"只会把有色光分成两色（红 → 黄＋紫）。先三角形，再方形。",ja:"色のついた光だけを二色に分けます（赤 → 黄＋紫）。先に三角、次に四角。",ko:"색이 있는 빛만 두 색으로 나눕니다(빨강 → 노랑＋보라). 삼각형 먼저, 그다음 사각형.",it:"Divide solo la luce colorata in due (rosso → giallo + viola). Prima il triangolo, poi il quadrato.",az:"Yalnız rəngli işığı ikiyə ayırır (qırmızı → sarı + bənövşəyi). Əvvəl üçbucaq, sonra kvadrat."},
+      ayr_ipucu:{tr:"İpucu: Üçgen prizma yalnızca beyaz ışığı böler. Kare prizma yalnızca renkli ışığı böler. Önce üçgen, sonra kare.",en:"Tip: The triangle prism only splits white light. The square prism only splits colored light. Triangle first, then square.",es:"Pista: el prisma triangular solo divide la luz blanca. El prisma cuadrado solo divide la luz de color. Primero el triángulo, luego el cuadrado.",pt:"Dica: o prisma triangular só divide a luz branca. O prisma quadrado só divide a luz colorida. Primeiro o triângulo, depois o quadrado.",de:"Tipp: Das Dreiecksprisma teilt nur weißes Licht. Das quadratische Prisma teilt nur farbiges Licht. Erst Dreieck, dann Quadrat.",fr:"Astuce : le prisme triangulaire ne sépare que la lumière blanche. Le prisme carré ne sépare que la lumière colorée. D'abord le triangle, puis le carré.",ru:"Подсказка: треугольная призма делит только белый свет. Квадратная — только цветной. Сначала треугольник, потом квадрат.",zhTW:"提示：三角稜鏡只分白光，方形稜鏡只分有色光。先三角形，再方形。",zhCN:"提示：三角棱镜只分白光，方形棱镜只分有色光。先三角形，再方形。",ja:"ヒント：三角プリズムは白い光だけ、四角プリズムは色のついた光だけを分けます。先に三角、次に四角。",ko:"힌트: 삼각 프리즘은 흰 빛만, 사각 프리즘은 색이 있는 빛만 나눕니다. 삼각형 먼저, 그다음 사각형.",it:"Suggerimento: il prisma triangolare divide solo la luce bianca. Il prisma quadrato divide solo la luce colorata. Prima il triangolo, poi il quadrato.",az:"İpucu: Üçbucaq prizma yalnız ağ işığı, kvadrat prizma yalnız rəngli işığı ayırır. Əvvəl üçbucaq, sonra kvadrat."}
+    };
+    for(var a in K){ if(!Object.prototype.hasOwnProperty.call(K,a))continue;
+      for(var l in K[a]){ if(DILLER[l]) DILLER[l][a]=K[a][l]; } }
+  })();
+  function ayrIpucuKontrol(){
+    try{
+      if(state.mode!=='yolculuk' || state._ogr || !state.cells) return;
+      var var_=false; for(var i=0;i<state.cells.length;i++){ if(state.cells[i] && state.cells[i].ayr){ var_=true; break; } }
+      if(!var_) return;
+      if(localStorage.getItem('prismio_ayr_ipucu')) return;
+      localStorage.setItem('prismio_ayr_ipucu','1');
+      setTimeout(function(){ if(aktifEkran==='oyun' && typeof kisaBildirim==='function') { kisaBildirim(T('ayr_ipucu')); var _e=$('_kisaBildirim'); if(_e){ clearTimeout(_e._zaman); _e._zaman=setTimeout(function(){ _e.classList.remove('gor'); },6000); } } }, 600);
+    }catch(e){}
+  }
+  var _loadLevelPrz=loadLevel;
+  loadLevel=function(){ var r=_loadLevelPrz.apply(this,arguments); ayrIpucuKontrol(); return r; };
   function ilkAcilisMi(){
     return !state.ogreticiBitti && !state.nasilGordu && (state.enYuksek||1)<=1 && !(state.toplamCozulen>0);
   }

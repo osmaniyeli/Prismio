@@ -195,7 +195,8 @@ public class OyunKopru {
                     boolean cevapAlindi = gorev.isSuccessful() && gorev.getResult() != null;
                     boolean girisli = cevapAlindi && gorev.getResult().isAuthenticated();
                     if (!gorev.isSuccessful()) Log.w(ETIKET, "giris durumu alinamadi", gorev.getException());
-                    pgDurumKaydet(girisli, cevapAlindi);
+                    // Hata firlatan giris (yapilandirma/imza sorunu) da KESIN sayilir: durum cozulur, tekrar sorulmaz.
+                    pgDurumKaydet(girisli, cevapAlindi || !gorev.isSuccessful());
                     if (girisli) oyuncuAdiyla(ad -> jsCagir("window.__pgDurum && window.__pgDurum(true," + metinKacir(ad) + ")"));
                     else jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
                 });
