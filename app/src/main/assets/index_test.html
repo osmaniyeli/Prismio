@@ -4978,16 +4978,7 @@
       svg.appendChild(el('rect',{x:x*SZ,y:y*SZ,width:SZ,height:SZ,
         fill:((x+y)%2?T.alt:T.cell),stroke:T.grid,'stroke-width':1.5}));
 
-    // Cift bagi: iki deligi birlestiren ince kesikli cizgi. Izgaranin hemen ustunde,
-    // isinlarin altinda kalir ki oyunu kapatmasin.
-    if(state.holeList&&state.holeList.length){
-      state.holeList.forEach(function(hp){
-        svg.appendChild(el('line',{x1:px(hp.a.x),y1:px(hp.a.y),x2:px(hp.b.x),y2:px(hp.b.y),
-          stroke:DELIK_RENK[hp.ci%DELIK_RENK.length],'stroke-width':3,
-          'stroke-dasharray':'4 12','stroke-linecap':'round',opacity:.4}));
-      });
-    }
-
+    // Karadelik cifti arasinda baglanti cizgisi CIZILMEZ (kullanici karari). Cift renk ve simgeyle anlasilir.
     var sim=simulate(state.mirrors);
     var zafer = (sim.count===state.crystals.length && state.crystals.length>0);
     // Kilit TAM BURADA kurulur. kazandI() cizimden sonra calisiyordu,
@@ -6987,7 +6978,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.10.2',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.10.3',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
