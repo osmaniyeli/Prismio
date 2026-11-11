@@ -28,15 +28,14 @@ public class PrismioApp extends Application {
     public void onCreate() {
         super.onCreate();
         SharedPreferences d = getSharedPreferences(PG_DEPO, Context.MODE_PRIVATE);
-        // SDK acilista YALNIZCA oyuncu daha once baglandiysa baslar (sessiz giris, pencere cikmaz).
-        // Diger tum durumlarda ("" ilk acilis, "red") SDK HIC baslamaz: Google'in
-        // "Play Games profili secin" penceresi acilista ASLA kendiliginden cikmaz.
-        // Giris yalnizca oyuncu Ayarlar/Hesap ekranindan "Giris yap"a basinca baslar (OyunKopru.girisYap).
-        if ("girisli".equals(d.getString("durum", ""))) {
+        // Daha once bir Play Games hesabina baglanildiysa SDK her acilista baslar: o hesaba sessizce yeniden
+        // baglanilir (OyunKopru.durumSor sonucu arka planda alir). Hic baglanilmadiysa SDK BASLAMAZ ve
+        // Google'in "Play Games profili secin" penceresi acilista kendiliginden ASLA cikmaz.
+        boolean oncedenBagli = "girisli".equals(d.getString("durum", "")) || d.contains("sonHesap");
+        if (oncedenBagli && !d.getBoolean("duraklat", false)) {
             sdkBaslat(this);
         }
     }
-
     /** SDK'yi (en fazla bir kez) baslatir. Zaten baslatildiysa hicbir sey yapmaz. */
     static synchronized void sdkBaslat(Context c) {
         if (sdkHazir) return;

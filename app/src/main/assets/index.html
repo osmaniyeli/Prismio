@@ -6831,7 +6831,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.10.3',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.10.4',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
@@ -7012,8 +7012,9 @@
     try{ window.PrismioNative.durumSor(); }catch(e){}
   };
   // ad: Play Games oyuncu adi (Google'dan gelir, htmlKacir ile basilir).
-  window.__pgDurum=function(girisli, ad){
+  window.__pgDurum=function(girisli, ad, tani){
     BULUT.kullanici = girisli ? {ad:(typeof ad==='string'?ad:'')} : null;
+    BULUT.tani = girisli ? '' : (typeof tani==='string' ? tani : '');   // son otomatik baglanti denemesinin sonucu (tani)
     if(_pgBekleyen.durum){ var f=_pgBekleyen.durum; _pgBekleyen.durum=null; f(girisli); }
     // Girisliyse sessizce buluttan kontrol et, basarilari ve puani esitle
     if(girisli && !ayar('pgKapali')){ bulutIlkKontrol(); pgEsitle(); }
@@ -11384,6 +11385,13 @@
   }
   var _loadLevelPrz=loadLevel;
   loadLevel=function(){ var r=_loadLevelPrz.apply(this,arguments); ayrIpucuKontrol(); return r; };
+  // Play Games: Hesap ekraninda son otomatik baglanti denemesinin sonucunu goster (sorun varsa nedeni gorunsun).
+  var _hesapCiz0=hesapCiz;
+  hesapCiz=function(){
+    var r=_hesapCiz0.apply(this,arguments);
+    try{ if(!BULUT.kullanici && BULUT.tani) hesapNot('Play Games · '+BULUT.tani,'uyari','hsPgNot'); }catch(e){}
+    return r;
+  };
   function ilkAcilisMi(){
     return !state.ogreticiBitti && !state.nasilGordu && (state.enYuksek||1)<=1 && !(state.toplamCozulen>0);
   }

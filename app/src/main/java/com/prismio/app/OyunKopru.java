@@ -175,38 +175,52 @@ public class OyunKopru {
     }
 
     /**
-     * Oyun aciliyor: zaten giris yapilmis mi?
-     * Play Games v2 acilista kendiliginden sessiz giris dener;
-     * isAuthenticated() o denemenin sonucunu bekler.
-     * Cevap: __pgDurum(girisli, oyuncuAdi)
+     * Oyun aciliyor: ARKA PLANDA, her acilista, daha once baglanilan hesaba sessizce yeniden baglan.
+     *  - Daha once baglanmis oyuncu (durum "girisli" ya da sonHesap kayitli): SDK PrismioApp'te baslamistir,
+     *    isAuthenticated() sessiz girisin sonucunu verir. Pencere ACMAZ. Basarisizsa nedeni "tani" olarak saklanir
+     *    ve bir sonraki acilista tekrar denenir.
+     *  - Hic baglanmamis oyuncu: SDK baslamaz, hicbir pencere cikmaz; giris yalnizca Hesap ekranindan.
+     * Cevap: __pgDurum(girisli, oyuncuAdi, tani)
      */
     @JavascriptInterface
     public void durumSor() {
-        // Oyuncu daha once reddettiyse SDK acilista baslatilmadi (bkz. PrismioApp):
-        // Play Games'e hic dokunma, pencere acma. Sadece "bagli degil" de.
         if (!PrismioApp.sdkHazirMi()) {
-            jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
+            jsCagir("window.__pgDurum && window.__pgDurum(false,null," + metinKacir(pgDepo().getString("tani", "")) + ")");
             return;
         }
         etkinlik.runOnUiThread(() -> {
             try {
                 GamesSignInClient istemci = PlayGames.getGamesSignInClient(etkinlik);
                 istemci.isAuthenticated().addOnCompleteListener(gorev -> {
-                    boolean cevapAlindi = gorev.isSuccessful() && gorev.getResult() != null;
-                    boolean girisli = cevapAlindi && gorev.getResult().isAuthenticated();
+                    boolean girisli = gorev.isSuccessful()
+                            && gorev.getResult() != null
+                            && gorev.getResult().isAuthenticated();
                     if (!gorev.isSuccessful()) Log.w(ETIKET, "giris durumu alinamadi", gorev.getException());
-                    // Hata firlatan giris (yapilandirma/imza sorunu) da KESIN sayilir: durum cozulur, tekrar sorulmaz.
-                    pgDurumKaydet(girisli, cevapAlindi || !gorev.isSuccessful());
-                    if (girisli) oyuncuAdiyla(ad -> jsCagir("window.__pgDurum && window.__pgDurum(true," + metinKacir(ad) + ")"));
-                    else jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
+                    String tani = girisli ? "" : taniMetni(gorev);
+                    pgDurumKaydet(girisli, tani);
+                    if (girisli) {
+                        oyuncuAdiyla(ad -> {
+                            hesapKaydet(ad);
+                            jsCagir("window.__pgDurum && window.__pgDurum(true," + metinKacir(ad) + ",'')");
+                        });
+                    } else {
+                        jsCagir("window.__pgDurum && window.__pgDurum(false,null," + metinKacir(tani) + ")");
+                    }
                 });
             } catch (Throwable t) {
                 Log.w(ETIKET, "durumSor hatasi", t);
-                jsCagir("window.__pgDurum && window.__pgDurum(false,null)");
+                String tani = "hata: " + t.getClass().getSimpleName();
+                pgDurumKaydet(false, tani);
+                jsCagir("window.__pgDurum && window.__pgDurum(false,null," + metinKacir(tani) + ")");
             }
         });
     }
 
+    /** Son giris denemesinin sonucu (Hesap ekraninda tani olarak gosterilir). JS: PrismioNative.pgTani() */
+    @JavascriptInterface
+    public String pgTani() {
+        try { return pgDepo().getString("tani", ""); } catch (Throwable t) { return ""; }
+    }
     /**
      * Oyuncu "Giris yap" dedi. Play Games giris penceresi acilir.
      * signIn() arayuz actigi icin ANA IS PARCACIGINDA cagrilmali -
@@ -224,15 +238,16 @@ public class OyunKopru {
                     boolean ok = gorev.isSuccessful()
                             && gorev.getResult() != null
                             && gorev.getResult().isAuthenticated();
-                    if (ok) pgDurumKaydet(true, true);
+                    if (ok) pgDurumKaydet(true, "");
                     if (!ok) {
                         // En sik sebep: Play Console'da OAuth istemcisi / SHA-1 eksik
                         // ya da hesap test kullanicisi degil. Bkz. PLAY_GAMES_KURULUM.md
                         Log.w(ETIKET, "giris basarisiz", gorev.getException());
+                        pgDurumKaydet(false, taniMetni(gorev));
                         jsCagir("window.__pgGiris && window.__pgGiris(false,null)");
                         return;
                     }
-                    oyuncuAdiyla(ad -> jsCagir("window.__pgGiris && window.__pgGiris(true," + metinKacir(ad) + ")"));
+                    oyuncuAdiyla(ad -> { hesapKaydet(ad); jsCagir("window.__pgGiris && window.__pgGiris(true," + metinKacir(ad) + ")"); });
                 });
             } catch (Throwable t) {
                 Log.w(ETIKET, "girisYap hatasi", t);
@@ -243,33 +258,30 @@ public class OyunKopru {
 
     // ======================================================================
     //  GIRIS TERCIHI  (SharedPreferences "prismio_pg")
-    //   durum = ""        : hic sorulmadi / bilinmiyor  -> acilista SDK baslar
-    //           "girisli" : oyuncu bagli                -> acilista SDK baslar (sessiz giris)
-    //           "red"     : oyuncu reddetti/giris yok   -> acilista SDK BASLAMAZ, pencere cikmaz
-    //  "red"den cikis yalnizca oyuncu Hesap ekraninda "Giris yap"a basinca (girisYap).
+    //   durum    : "" (hic baglanmadi) | "girisli" (son denemede bagliydi)
+    //   sonHesap : en son baglanilan Play Games hesabinin adi. VARSA her acilista SDK baslar ve
+    //              o hesaba ARKA PLANDA, pencere acmadan yeniden baglanilir (PrismioApp.onCreate).
+    //   tani     : son denemenin sonucu ("" = basarili) - Hesap ekraninda gosterilir.
+    //  Bir kez baglanmis oyuncu "red"e DUSMEZ: her acilista tekrar denenir.
     // ======================================================================
     private SharedPreferences pgDepo() {
         return etkinlik.getSharedPreferences(PrismioApp.PG_DEPO, Context.MODE_PRIVATE);
     }
 
-    /**
-     * isAuthenticated() sonucunu hatirla.
-     * kesin = Play Games gercek bir cevap verdi (hata/zaman asimi degil).
-     * Cevrimdisiyken alinan "hayir" sayilmaz: ucak modunda acilan oyuncu "red"e dusmesin.
-     */
-    private void pgDurumKaydet(boolean girisli, boolean kesin) {
+    private void pgDurumKaydet(boolean girisli, String tani) {
         try {
             SharedPreferences d = pgDepo();
-            String onceki = d.getString("durum", "");
             SharedPreferences.Editor e = d.edit();
             if (girisli) {
-                e.putString("durum", "girisli").putInt("basarisiz", 0);
-            } else if (kesin && cevrimiciMi()) {
-                if ("girisli".equals(onceki)) {
-                    // Daha once bagliydi ama artik degil: hemen 'red'. Acilista bir daha SDK baslamaz, pencere cikmaz.
-                    e.putString("durum", "red").putInt("basarisiz", 0);
-                } else if (!"red".equals(onceki)) {
-                    e.putString("durum", "red");      // bir kez soruldu, giris yok: bir daha sorma
+                e.putString("durum", "girisli").putString("tani", "").putInt("basarisiz", 0).putBoolean("duraklat", false);
+            } else {
+                e.putString("tani", tani == null ? "" : tani);
+                // Cevrimdisiyken olan basarisizlik sayilmaz. Cevrimiciyken UST USTE 3 basarisizlik =
+                // sorun ayarlarda (imza/OAuth): otomatik deneme DURAKLAR, pencere her acilista cikmaz.
+                if (!"cevrimdisi".equals(tani)) {
+                    int n = d.getInt("basarisiz", 0) + 1;
+                    e.putInt("basarisiz", n);
+                    if (n >= 3) e.putBoolean("duraklat", true);
                 }
             }
             e.apply();
@@ -278,6 +290,26 @@ public class OyunKopru {
         }
     }
 
+    /** Basarili baglantidan sonra hesabi hatirla: sonraki acilislarda otomatik baglanilir. */
+    private void hesapKaydet(String ad) {
+        try {
+            pgDepo().edit().putString("sonHesap", (ad == null || ad.isEmpty()) ? "?" : ad).apply();
+        } catch (Throwable t) {
+            Log.w(ETIKET, "hesap kaydedilemedi", t);
+        }
+    }
+
+    private String taniMetni(com.google.android.gms.tasks.Task<?> gorev) {
+        try {
+            if (!cevrimiciMi()) return "cevrimdisi";
+            Exception ex = gorev.getException();
+            if (ex == null) return "oturum acik degil";
+            String m = ex.getClass().getSimpleName() + ": " + ex.getMessage();
+            return m.length() > 140 ? m.substring(0, 140) : m;
+        } catch (Throwable t) {
+            return "bilinmiyor";
+        }
+    }
     private boolean cevrimiciMi() {
         try {
             ConnectivityManager cm = (ConnectivityManager) etkinlik.getSystemService(Context.CONNECTIVITY_SERVICE);
