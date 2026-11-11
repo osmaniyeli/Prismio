@@ -185,8 +185,19 @@ public class OyunKopru {
     @JavascriptInterface
     public void durumSor() {
         if (!PrismioApp.sdkHazirMi()) {
-            jsCagir("window.__pgDurum && window.__pgDurum(false,null," + metinKacir(pgDepo().getString("tani", "")) + ")");
-            return;
+            SharedPreferences d0 = pgDepo();
+            boolean ilkKez = !d0.getBoolean("denendi", false) && !d0.contains("sonHesap")
+                    && !"girisli".equals(d0.getString("durum", ""));
+            if (ilkKez) {
+                // ILK GIRIS: Google'in normal giris/profil secme ekrani BIR KEZ acilir.
+                // "Devam" denirse hesap hatirlanir (sonHesap) ve sonraki acilislarda sessizce taninir.
+                // Reddedilirse "denendi" kalir: bir daha acilista sorulmaz (giris Ayarlar'dan).
+                d0.edit().putBoolean("denendi", true).apply();
+                etkinlik.runOnUiThread(() -> PrismioApp.sdkBaslat(etkinlik));
+            } else {
+                jsCagir("window.__pgDurum && window.__pgDurum(false,null," + metinKacir(d0.getString("tani", "")) + ")");
+                return;
+            }
         }
         etkinlik.runOnUiThread(() -> {
             try {
