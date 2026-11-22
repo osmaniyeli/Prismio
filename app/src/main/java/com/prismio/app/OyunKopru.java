@@ -709,6 +709,38 @@ public class OyunKopru {
             etkinlik.runOnUiThread(() -> ((MainActivity) etkinlik).bildirimIzniIste());
     }
 
+    // ======================================================================
+    //  GERI BILDIRIM + DEGERLENDIRME (oyun ici) - bkz. GeriBildirim
+    // ======================================================================
+    /**
+     * Oyuncunun mesajini arka planda yollar. json: {id,tur,mesaj,surum,dil,seviye}.
+     * Sonuc: window.__gbSonuc(id, "ok" | "red" | "ag").
+     */
+    @JavascriptInterface
+    public void geriBildirimGonder(final String json) {
+        if (json == null || json.isEmpty() || json.length() > 4000) return;
+        GeriBildirim.gonder(etkinlik.getApplicationContext(), json, (id, kod) ->
+                jsCagir("window.__gbSonuc && window.__gbSonuc(" + metinKacir(id) + "," + metinKacir(kod) + ")"));
+    }
+
+    /** Google Play'de bu uygulamanin sayfasini acar (degerlendirme icin). */
+    @JavascriptInterface
+    public void playDegerlendir() {
+        etkinlik.runOnUiThread(() -> {
+            String paket = etkinlik.getPackageName();
+            try {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + paket));
+                i.setPackage("com.android.vending");
+                etkinlik.startActivity(i);
+            } catch (Throwable t) {
+                try {
+                    etkinlik.startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=" + paket)));
+                } catch (Throwable t2) { Log.w(ETIKET, "Play acilamadi", t2); }
+            }
+        });
+    }
+
     /** Hakkinda ekrani icin GERCEK surum: "0.9.3 (1023)". */
     @JavascriptInterface
     public String uygulamaSurumu() {

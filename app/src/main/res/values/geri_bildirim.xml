@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  OYUN ICI GERI BILDIRIM
+  geri_bildirim_url     : Google Apps Script web uygulamasi adresi (.../exec)
+  geri_bildirim_anahtar : Apps Script'teki SECRET ile ayni gizli deger.
+  Bu anahtar uygulamanin icinde durur; sadece rastgele gonderimlere karsi basit bir kapidir
+  (sunucu gunde en fazla 300 kayit kabul eder). Degisirse Apps Script'teki SECRET'i de degistir.
+  Bos birakilirsa gonderim yapilmaz, oyun etkilenmez.
+-->
+<resources>
+    <string name="geri_bildirim_url" translatable="false">https://script.google.com/macros/s/AKfycbw9IEzN4tuZWaH-7avq5A5se2tVRWmbytR-lYiQhk0rVuNSQimf4zjAoUKfDf6ptg/exec</string>
+    <string name="geri_bildirim_anahtar" translatable="false">7f28be93599d901023a86bcaabf996dc62be9c65984465f5</string>
+</resources>

@@ -2483,6 +2483,51 @@
   /* . */
 
   /*@@CSS_BOLGE@@*/
+  /* ---------- TAHTA SADELESTIRME ---------- */
+  /* "Ayna yerlestir" dugmesi ve alt yazisi kaldirildi: aynayi kareye dokunmak yerlestirir/dondurur/kaldirir. */
+  #ek-oyun #btnYerlestir,#ek-oyun .og-yuva-alt{display:none!important}
+  /* "Tum kristalleri aydinlat." cumlesi kaldirildi; hedef gostergesi ortada kalir. */
+  #ek-oyun .og-hedef-yazi{display:none!important}
+  #ek-oyun .og-hedef-satir{justify-content:center}
+  /* yonlendirme satiri bosken yesil ok simgesi tek basina kalmasin (ipucu/hata mesaji gelince geri doner) */
+  #ek-oyun .ipucu:empty::before{display:none}
+  /* ---------- ALT BUTONLAR: BUYUK KARE + REKLAM ALANI ---------- */
+  #ek-oyun .oyunalt{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 0}
+  #ek-oyun .og-ayna-karo{grid-column:1/-1;flex:none;min-height:56px;justify-content:center}
+  #ek-oyun .og-arac-btn{aspect-ratio:1/1;min-height:0;min-width:0;padding:8px 4px;justify-content:center;gap:7px;
+    background:var(--yuzey);border:2px solid var(--metin);border-radius:16px;box-shadow:0 4px 0 var(--metin);font-size:.8rem}
+  #ek-oyun .og-arac-btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--metin);background:var(--yuzey)}
+  #ek-oyun .og-arac-btn:disabled{opacity:.45;box-shadow:0 4px 0 var(--cizgi);border-color:var(--cizgi)}
+  #ek-oyun .og-arac-btn .og-ikyer{display:flex;align-items:center;justify-content:center;height:36px}
+  #ek-oyun .og-arac-btn .og-ikyer svg,#ek-oyun .og-arac-btn .og-ikyer img{width:34px;height:34px}
+  #ek-oyun .og-et-kutu{display:flex;flex-direction:column;align-items:center;gap:1px}
+  /* altta banner reklam icin bos yer birakilir (320x50 siger) */
+  #ek-oyun .oyunalt::after{content:"";grid-column:1/-1;height:56px}
+  @media (max-height:760px){
+    #ek-oyun .oyunalt{gap:8px;margin-top:10px}
+    #ek-oyun .og-ayna-karo{min-height:48px;padding:6px 11px}
+    #ek-oyun .og-arac-btn{gap:4px;font-size:.72rem;padding:6px 3px}
+    #ek-oyun .og-arac-btn .og-ikyer{height:28px}
+    #ek-oyun .og-arac-btn .og-ikyer svg,#ek-oyun .og-arac-btn .og-ikyer img{width:28px;height:28px}
+    #ek-oyun .oyunalt::after{height:50px}
+  }
+  @media (max-height:660px){
+    #ek-oyun .oyunalt{gap:6px;margin-top:6px}
+    #ek-oyun .og-ayna-karo{min-height:42px}
+    #ek-oyun .og-arac-btn{border-radius:13px;box-shadow:0 3px 0 var(--metin)}
+    #ek-oyun .og-arac-btn .og-ikyer{height:22px}
+    #ek-oyun .og-arac-btn .og-ikyer svg,#ek-oyun .og-arac-btn .og-ikyer img{width:22px;height:22px}
+    #ek-oyun .oyunalt::after{height:44px}
+  }
+  /* ---------- GERI BILDIRIM + DEGERLENDIRME KARTI ---------- */
+  .gb-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:4px 0 10px}
+  .gb-chip{font:inherit;font-weight:900;font-size:.95rem;min-height:44px;padding:8px 16px;border-radius:999px;
+    border:2px solid var(--murekkep);background:var(--yuzey);color:var(--metin);cursor:pointer}
+  .gb-chip.sec{background:var(--sari);box-shadow:0 3px 0 var(--murekkep)}
+  .gb-metin{display:block;width:100%;min-height:112px;resize:none;border:2px solid var(--murekkep);border-radius:14px;
+    padding:12px;font:inherit;font-weight:700;font-size:1rem;color:var(--metin);background:var(--yuzey)}
+  .gb-metin:focus{outline:3px solid var(--yesil);outline-offset:1px}
+  .gb-say{text-align:right;font-size:.8rem;color:var(--metin-soft);margin:4px 2px 0}
   /*@@BOLGE_CSS_BASLA*/
   /* OYUN ZEMIN DESENI (a6): aktif bolgenin simgesi, tahta disinda, cok soluk.
      Tek katman (body::after), tek renk (--metin) mask-image ile. Yuksek kontrastta ve
@@ -2492,10 +2537,10 @@
     background:var(--metin);opacity:var(--bolge-opak,.08);
     -webkit-mask-image:var(--bolge-simge);mask-image:var(--bolge-simge);
     -webkit-mask-repeat:repeat;mask-repeat:repeat;
-    -webkit-mask-size:128px 128px;mask-size:128px 128px}
+    -webkit-mask-size:176px 176px;mask-size:176px 176px}
   @media (min-width:600px){
     html.oyunda[data-bolge-desen]:not(.yuksek-kontrast) body::after{
-      -webkit-mask-size:168px 168px;mask-size:168px 168px}}
+      -webkit-mask-size:232px 232px;mask-size:232px 232px}}
   html.yuksek-kontrast body::after{content:none!important;display:none!important}
   /*@@BOLGE_CSS_BITIS*/
   /* (bos - 'BOLGE' ajanina ayrildi) */
@@ -3014,6 +3059,11 @@
   <div class="ayar-kaydir">
     <div class="od-wrap">
       <div class="ayarlar od-ayar-ana" id="ayarAna"></div>
+      <button class="od-satir" id="btnGeriBildirim" type="button">
+        <span class="od-s-ik" id="gbIk"></span>
+        <span class="od-s-govde"><span class="od-s-ad" data-t="gb_ayar">Geri bildirim gönder</span><span class="od-s-alt" data-t="gb_ayar_ack">Hata, öneri ya da beğeni yaz</span></span>
+        <span class="od-ok" data-ik="chev" data-bk="22"></span>
+      </button>
       <button class="od-satir od-daha" id="ayarDaha" type="button" aria-expanded="false" aria-controls="ayarDahaKutu">
         <span class="od-s-ik" data-ik="sliders" data-bk="24"></span>
         <span class="od-s-govde"><span class="od-s-ad" data-t="ay_daha">Daha fazla ayar</span><span class="od-s-alt" data-t="ay_daha_ack">Ses tipi, erişim, hareket ve daha fazlası</span></span>
@@ -6890,7 +6940,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.11.2',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.11.3',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
@@ -9629,20 +9679,17 @@
     var kalanA=Math.max(0,hedef-kullanilan);
     var ip=$('ipucu');
     if(!state._ogr && !state.bitti && ip.className==='ipucu' && sim.count<tot){
-      if(kalanA===1) ip.textContent=T('og_bir_ayna');
-      else if(kalanA>1) ip.textContent=T('og_n_ayna',{n:kalanA});
+      ip.textContent='';   // "N ayna kaldi. Isigi yonlendir." cumlesi kaldirildi; kalan ayna sol kutuda gorunur
     }
     $('ogKalan').textContent='× '+kalanA;
     // secili yuva kaplamasi
     var svg=$('svg');
     if(_ogSec && (_ogSec.x>=n||_ogSec.y>=n||cellAt(_ogSec.x,_ogSec.y).t!==EMPTY)) _ogSec=null;
+    // Ayna kaldirilinca secim de, soluk (hayalet) ayna da kalmasin; secim yalniz aynali karede gorunur.
+    if(_ogSec && !state.mirrors[_ogSec.x+','+_ogSec.y]) _ogSec=null;
     if(_ogSec && !state.bitti){
       var sx=_ogSec.x, sy2=_ogSec.y, g=el('g',{'class':'og-sec','pointer-events':'none'});
       g.appendChild(el('rect',{x:sx*SZ+6,y:sy2*SZ+6,width:SZ-12,height:SZ-12,rx:14,'class':'og-sec-kutu'}));
-      if(!state.mirrors[sx+','+sy2]){
-        g.appendChild(el('line',{x1:sx*SZ+18,y1:sy2*SZ+SZ-18,x2:sx*SZ+SZ-18,y2:sy2*SZ+18,stroke:theme().frame,
-          'stroke-width':13,'stroke-linecap':'round','class':'og-sec-hayalet'}));
-      }
       svg.appendChild(g);
     }
     ogButonTazele();
@@ -9848,6 +9895,180 @@
   // .
   // .
   // .
+
+  // ==========================================================================
+  //  GERI BILDIRIM + DEGERLENDIRME KARTI (oyun ici)
+  //  - Ayarlar > "Geri bildirim gonder": tur + mesaj (en cok 500). Java arka planda Google Sheet'e yollar.
+  //  - Internet yoksa mesaj cihazda saklanir, baglaninca gonderilir (en cok 6 deneme).
+  //  - Degerlendirme karti: her 50. seviyede ve en az haftada bir, seviye bitisinden sonra
+  //    harita/menuye donulunce. IKI SECENEK DE HERKESE GORUNUR (Play'de degerlendir / geri bildirim).
+  //    Mutluyu magazaya, mutsuzu forma ayirmak (yorum suzme) Play kurallarina aykiri olabilecegi
+  //    icin bilerek YAPILMADI. "Play'de degerlendir" secilirse bir daha sorulmaz.
+  // ==========================================================================
+  (function(){
+    var K={
+      gb_ayar:{tr:"Geri bildirim gönder",en:"Send feedback",es:"Enviar comentarios",pt:"Enviar feedback",de:"Feedback senden",fr:"Envoyer un avis",ru:"Отправить отзыв",zhTW:"傳送意見",zhCN:"发送反馈",ja:"フィードバックを送る",ko:"의견 보내기",it:"Invia un commento",az:"Rəy göndər"},
+      gb_ayar_ack:{tr:"Hata, öneri ya da beğeni yaz",en:"Write a bug, idea or praise",es:"Escribe un error, idea o elogio",pt:"Escreva um erro, ideia ou elogio",de:"Fehler, Idee oder Lob schreiben",fr:"Écris un bug, une idée ou un éloge",ru:"Ошибка, идея или похвала",zhTW:"寫下錯誤、想法或讚美",zhCN:"写下错误、想法或赞美",ja:"不具合・アイデア・感想を送る",ko:"버그, 아이디어, 칭찬 보내기",it:"Scrivi un bug, un'idea o un complimento",az:"Xəta, ideya və ya tərif yaz"},
+      gb_baslik:{tr:"Geri bildirim",en:"Feedback",es:"Comentarios",pt:"Feedback",de:"Feedback",fr:"Commentaires",ru:"Отзыв",zhTW:"意見回饋",zhCN:"意见反馈",ja:"フィードバック",ko:"의견",it:"Commenti",az:"Rəy"},
+      gb_not:{tr:"Hata, öneri ya da beğeni yaz. Mesajla birlikte oyun sürümü, dil, seviye ve cihaz modeli gider. Kişisel bilgi yazma.",en:"Write a bug, an idea or a compliment. The game version, language, level and device model are sent with it. Please don't write personal details.",es:"Escribe un error, una idea o un elogio. Se envían con él la versión del juego, el idioma, el nivel y el modelo del dispositivo. No escribas datos personales.",pt:"Escreva um erro, uma ideia ou um elogio. A versão do jogo, o idioma, a fase e o modelo do aparelho vão junto. Não escreva dados pessoais.",de:"Schreib einen Fehler, eine Idee oder ein Lob. Spielversion, Sprache, Level und Gerätemodell werden mitgesendet. Bitte keine persönlichen Daten angeben.",fr:"Écris un bug, une idée ou un compliment. La version du jeu, la langue, le niveau et le modèle de l'appareil sont envoyés avec. N'écris pas de données personnelles.",ru:"Напиши об ошибке, идее или похвале. Вместе с сообщением отправляются версия игры, язык, уровень и модель устройства. Не пиши личные данные.",zhTW:"寫下錯誤、想法或讚美。訊息會一併傳送遊戲版本、語言、關卡與裝置型號。請不要寫個人資料。",zhCN:"写下错误、想法或赞美。消息会一并发送游戏版本、语言、关卡和设备型号。请不要写个人信息。",ja:"不具合・アイデア・感想を書いてください。ゲームのバージョン、言語、レベル、端末モデルも一緒に送られます。個人情報は書かないでください。",ko:"버그, 아이디어, 칭찬을 적어 주세요. 게임 버전, 언어, 레벨, 기기 모델이 함께 전송됩니다. 개인 정보는 적지 마세요.",it:"Scrivi un bug, un'idea o un complimento. Insieme al messaggio vengono inviati versione del gioco, lingua, livello e modello del dispositivo. Non scrivere dati personali.",az:"Xəta, ideya və ya təriflə bağlı yaz. Mesajla birlikdə oyun versiyası, dil, səviyyə və cihaz modeli göndərilir. Şəxsi məlumat yazma."},
+      gb_tur_hata:{tr:"Hata",en:"Bug",es:"Error",pt:"Erro",de:"Fehler",fr:"Bug",ru:"Ошибка",zhTW:"錯誤",zhCN:"错误",ja:"不具合",ko:"버그",it:"Bug",az:"Xəta"},
+      gb_tur_oneri:{tr:"Öneri",en:"Idea",es:"Idea",pt:"Ideia",de:"Idee",fr:"Idée",ru:"Идея",zhTW:"想法",zhCN:"想法",ja:"アイデア",ko:"아이디어",it:"Idea",az:"İdeya"},
+      gb_tur_begeni:{tr:"Beğeni",en:"Praise",es:"Elogio",pt:"Elogio",de:"Lob",fr:"Éloge",ru:"Похвала",zhTW:"讚美",zhCN:"赞美",ja:"感想",ko:"칭찬",it:"Complimento",az:"Tərif"},
+      gb_yer:{tr:"Buraya yaz (en çok 500 karakter)",en:"Write here (up to 500 characters)",es:"Escribe aquí (máx. 500 caracteres)",pt:"Escreva aqui (até 500 caracteres)",de:"Hier schreiben (max. 500 Zeichen)",fr:"Écris ici (500 caractères max.)",ru:"Пиши здесь (до 500 символов)",zhTW:"在這裡輸入（最多 500 字）",zhCN:"在这里输入（最多 500 字）",ja:"ここに入力（最大500文字）",ko:"여기에 입력 (최대 500자)",it:"Scrivi qui (max 500 caratteri)",az:"Bura yaz (ən çox 500 simvol)"},
+      gb_gonder:{tr:"Gönder",en:"Send",es:"Enviar",pt:"Enviar",de:"Senden",fr:"Envoyer",ru:"Отправить",zhTW:"傳送",zhCN:"发送",ja:"送信",ko:"보내기",it:"Invia",az:"Göndər"},
+      gb_vazgec:{tr:"Vazgeç",en:"Cancel",es:"Cancelar",pt:"Cancelar",de:"Abbrechen",fr:"Annuler",ru:"Отмена",zhTW:"取消",zhCN:"取消",ja:"キャンセル",ko:"취소",it:"Annulla",az:"Ləğv et"},
+      gb_tesekkur:{tr:"Teşekkürler, mesajın bize ulaştı.",en:"Thanks, your message reached us.",es:"Gracias, tu mensaje nos ha llegado.",pt:"Obrigado, sua mensagem chegou até nós.",de:"Danke, deine Nachricht ist angekommen.",fr:"Merci, ton message nous est parvenu.",ru:"Спасибо, твоё сообщение дошло.",zhTW:"謝謝，我們收到你的訊息了。",zhCN:"谢谢，我们收到你的消息了。",ja:"ありがとうございます。メッセージが届きました。",ko:"감사합니다. 메시지가 도착했어요.",it:"Grazie, il tuo messaggio è arrivato.",az:"Təşəkkürlər, mesajın bizə çatdı."},
+      gb_kuyruk:{tr:"Şu an gönderilemedi. Mesajın saklandı, bağlantı gelince yollanacak.",en:"Couldn't send now. Your message is saved and will be sent when you're online.",es:"No se pudo enviar ahora. Tu mensaje se guardó y se enviará cuando haya conexión.",pt:"Não foi possível enviar agora. Sua mensagem foi guardada e será enviada quando houver conexão.",de:"Senden gerade nicht möglich. Deine Nachricht ist gespeichert und wird bei Verbindung gesendet.",fr:"Envoi impossible pour l'instant. Ton message est conservé et partira dès que tu seras connecté.",ru:"Сейчас отправить не удалось. Сообщение сохранено и уйдёт, когда появится связь.",zhTW:"目前無法傳送。訊息已儲存，連線後會自動傳送。",zhCN:"目前无法发送。消息已保存，联网后会自动发送。",ja:"今は送信できません。メッセージは保存され、接続されたら送られます。",ko:"지금은 보낼 수 없어요. 메시지가 저장되었고 연결되면 전송됩니다.",it:"Impossibile inviare ora. Il messaggio è salvato e partirà quando sarai online.",az:"İndi göndərmək alınmadı. Mesajın saxlandı, bağlantı olanda göndəriləcək."},
+      gb_hata:{tr:"Gönderilemedi. Biraz sonra tekrar dene.",en:"Couldn't send. Try again in a bit.",es:"No se pudo enviar. Inténtalo de nuevo en un rato.",pt:"Não foi possível enviar. Tente de novo daqui a pouco.",de:"Senden fehlgeschlagen. Versuch es gleich noch einmal.",fr:"Envoi impossible. Réessaie dans un moment.",ru:"Не удалось отправить. Попробуй чуть позже.",zhTW:"傳送失敗，請稍後再試。",zhCN:"发送失败，请稍后再试。",ja:"送信できませんでした。しばらくしてからもう一度お試しください。",ko:"보내지 못했어요. 잠시 후 다시 시도해 주세요.",it:"Invio non riuscito. Riprova tra poco.",az:"Göndərmək alınmadı. Bir az sonra yenidən yoxla."},
+      gb_kisa:{tr:"Biraz daha yaz.",en:"Write a little more.",es:"Escribe un poco más.",pt:"Escreva um pouco mais.",de:"Schreib noch etwas mehr.",fr:"Écris un peu plus.",ru:"Напиши чуть подробнее.",zhTW:"再多寫一點。",zhCN:"再多写一点。",ja:"もう少し書いてください。",ko:"조금 더 적어 주세요.",it:"Scrivi ancora un po'.",az:"Bir az da yaz."},
+      rt_baslik:{tr:"Prismio'ya destek olur musun?",en:"Would you support Prismio?",es:"¿Quieres apoyar a Prismio?",pt:"Quer apoiar o Prismio?",de:"Möchtest du Prismio unterstützen?",fr:"Veux-tu soutenir Prismio ?",ru:"Поддержишь Prismio?",zhTW:"願意支持 Prismio 嗎？",zhCN:"愿意支持 Prismio 吗？",ja:"Prismioを応援してくれますか？",ko:"Prismio를 응원해 주시겠어요?",it:"Vuoi sostenere Prismio?",az:"Prismio-ya dəstək olarsan?"},
+      rt_ack:{tr:"Düşüncelerin oyunu daha iyi yapıyor.",en:"Your thoughts make the game better.",es:"Tus opiniones mejoran el juego.",pt:"Sua opinião melhora o jogo.",de:"Deine Meinung macht das Spiel besser.",fr:"Ton avis rend le jeu meilleur.",ru:"Твоё мнение делает игру лучше.",zhTW:"你的想法讓遊戲更好。",zhCN:"你的想法让游戏更好。",ja:"あなたの声がゲームをより良くします。",ko:"여러분의 의견이 게임을 더 좋게 만듭니다.",it:"La tua opinione migliora il gioco.",az:"Fikirlərin oyunu daha yaxşı edir."},
+      rt_play:{tr:"Google Play'de değerlendir",en:"Rate on Google Play",es:"Valorar en Google Play",pt:"Avaliar no Google Play",de:"Bei Google Play bewerten",fr:"Noter sur Google Play",ru:"Оценить в Google Play",zhTW:"在 Google Play 評分",zhCN:"在 Google Play 评分",ja:"Google Playで評価する",ko:"Google Play에서 평가하기",it:"Valuta su Google Play",az:"Google Play-də qiymətləndir"},
+      rt_form:{tr:"Geri bildirim gönder",en:"Send feedback",es:"Enviar comentarios",pt:"Enviar feedback",de:"Feedback senden",fr:"Envoyer un avis",ru:"Отправить отзыв",zhTW:"傳送意見",zhCN:"发送反馈",ja:"フィードバックを送る",ko:"의견 보내기",it:"Invia un commento",az:"Rəy göndər"},
+      rt_sonra:{tr:"Şimdi değil",en:"Not now",es:"Ahora no",pt:"Agora não",de:"Jetzt nicht",fr:"Pas maintenant",ru:"Не сейчас",zhTW:"現在不要",zhCN:"现在不要",ja:"今はしない",ko:"나중에",it:"Non ora",az:"İndi yox"}
+    };
+    for(var a in K){ if(!Object.prototype.hasOwnProperty.call(K,a)) continue;
+      for(var l in K[a]){ if(DILLER[l]) DILLER[l][a]=K[a][l]; } }
+  })();
+
+  var GB_KEY='prismio_gb', GB_KUYRUK='prismio_gb_kuyruk', GB_GUN=864e5;
+  var _gbGidiyor=false, _gbZA=0, _gbBekleyenId=null, _gbBekleyenGeri=null, _gbBekleyen=false;
+  function gbOku(){ try{ return JSON.parse(localStorage.getItem(GB_KEY)||'{}')||{}; }catch(e){ return {}; } }
+  function gbYaz(o){ try{ localStorage.setItem(GB_KEY,JSON.stringify(o)); }catch(e){} }
+  function gbKuyrukOku(){ try{ var a=JSON.parse(localStorage.getItem(GB_KUYRUK)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+  function gbKuyrukYaz(a){ try{ localStorage.setItem(GB_KUYRUK,JSON.stringify(a.slice(0,20))); }catch(e){} }
+  function gbVar(){ return !!(window.PrismioNative && window.PrismioNative.geriBildirimGonder); }
+  function gbYeniId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+  function gbPaket(tur,mesaj){
+    return {id:gbYeniId(), tur:tur, mesaj:mesaj, surum:'v'+(gercekSurum()||''), dil:_dil, seviye:String(state.enYuksek||1), deneme:0};
+  }
+  function gbSiradakiniGonder(){
+    if(_gbGidiyor || !gbVar()) return;
+    var k=gbKuyrukOku(); if(!k.length) return;
+    _gbGidiyor=true;
+    clearTimeout(_gbZA); _gbZA=setTimeout(function(){ _gbGidiyor=false; },30000);
+    try{ window.PrismioNative.geriBildirimGonder(JSON.stringify(k[0])); }catch(e){ _gbGidiyor=false; }
+  }
+  // Java sonucu bildirir: "ok" | "red" | "ag"
+  window.__gbSonuc=function(id,kod){
+    _gbGidiyor=false; clearTimeout(_gbZA);
+    var k=gbKuyrukOku(), i=-1;
+    for(var j=0;j<k.length;j++){ if(k[j].id===id){ i=j; break; } }
+    if(i>=0){
+      if(kod==='ok' || kod==='red') k.splice(i,1);
+      else { k[i].deneme=(k[i].deneme||0)+1; if(k[i].deneme>=6) k.splice(i,1); }
+      gbKuyrukYaz(k);
+    }
+    if(_gbBekleyenId===id && _gbBekleyenGeri){ var f=_gbBekleyenGeri; _gbBekleyenGeri=null; _gbBekleyenId=null; f(kod); }
+    if(kod==='ok' && gbKuyrukOku().length) setTimeout(gbSiradakiniGonder,400);
+  };
+  function gbIkon(ad,yedek,px){
+    try{ if(typeof ik3==='function' && IK3D && IK3D[ad]) return ik3(ad,px||48); }catch(e){}
+    return ogSvg(yedek,px?Math.round(px*.6):28);
+  }
+  (function(){ var gi=$('gbIk'); if(gi) gi.innerHTML=gbIkon('bulb_sari','bilgi',36); })();
+
+  function gbFormAc(){
+    ogKartHazirla('gb');
+    $('kIkon').hidden=false; $('kIkon').innerHTML=gbIkon('chat_mavi','bilgi');
+    $('kBaslik').textContent=T('gb_baslik');
+    $('kAlt').textContent=T('gb_not');
+    var secili='oneri', h=$('kHediye');
+    var chips=document.createElement('div'); chips.className='gb-chips';
+    ['hata','oneri','begeni'].forEach(function(t){
+      var b=document.createElement('button'); b.type='button';
+      b.className='gb-chip'+(t===secili?' sec':''); b.textContent=T('gb_tur_'+t);
+      b.addEventListener('click',function(){
+        secili=t;
+        Array.prototype.forEach.call(chips.children,function(c){ c.classList.remove('sec'); });
+        b.classList.add('sec');
+      });
+      chips.appendChild(b);
+    });
+    var ta=document.createElement('textarea'); ta.className='gb-metin'; ta.maxLength=500; ta.rows=4;
+    ta.placeholder=T('gb_yer'); ta.setAttribute('aria-label',T('gb_baslik'));
+    var say=document.createElement('div'); say.className='gb-say tnum'; say.textContent='0/500';
+    ta.addEventListener('input',function(){ say.textContent=ta.value.length+'/500'; });
+    h.appendChild(chips); h.appendChild(ta); h.appendChild(say);
+    var bt=$('kBtnler');
+    var gonder=ogDugme('yesil','',T('gb_gonder'),function(){
+      var metin=(ta.value||'').replace(/\s+/g,' ').trim();
+      if(metin.length<3){ kisaBildirim(T('gb_kisa')); return; }
+      if(!gbVar()){ kisaBildirim(T('gb_hata')); return; }
+      var p=gbPaket(secili,metin), k=gbKuyrukOku(); k.unshift(p); gbKuyrukYaz(k);
+      gonder.disabled=true; ta.disabled=true;
+      _gbBekleyenId=p.id;
+      var bitti=false;
+      var kapat=function(kod){
+        if(bitti) return; bitti=true; _gbBekleyenGeri=null; _gbBekleyenId=null;
+        katmanKapat();
+        kisaBildirim(kod==='ok'?T('gb_tesekkur'):(kod==='red'?T('gb_hata'):T('gb_kuyruk')));
+      };
+      _gbBekleyenGeri=kapat;
+      setTimeout(function(){ kapat('ag'); },25000);      // cevap gelmezse mesaj kuyrukta kalir
+      gbSiradakiniGonder();
+    });
+    bt.appendChild(gonder);
+    bt.appendChild(ogDugme('sade','',T('gb_vazgec'),function(){ katmanKapat(); }));
+    $('katman').classList.add('acik');
+  }
+
+  // ---- degerlendirme karti ----
+  function gbKartAc(){
+    var g=gbOku(); g.son=Date.now();
+    if(state.level%50===0 && state.level>(g.km||0)) g.km=state.level;
+    gbYaz(g);
+    ogKartHazirla('gbdeger');
+    $('kIkon').hidden=false; $('kIkon').innerHTML=gbIkon('star_sari','hediye');
+    $('kBaslik').textContent=T('rt_baslik');
+    $('kAlt').textContent=T('rt_ack');
+    var b=$('kBtnler');
+    b.appendChild(ogDugme('yesil','',T('rt_play'),function(){
+      var g2=gbOku(); g2.play=1; gbYaz(g2);
+      katmanKapat();
+      try{ window.PrismioNative.playDegerlendir(); }catch(e){}
+    }));
+    b.appendChild(ogDugme('sade','',T('rt_form'),function(){
+      var g2=gbOku(); g2.snooze=Date.now()+30*GB_GUN; gbYaz(g2);
+      gbFormAc();
+    }));
+    b.appendChild(ogDugme('sade','',T('rt_sonra'),function(){ katmanKapat(); }));
+    $('katman').classList.add('acik');
+  }
+  // Bolum cozulunce: kart gosterilmeli mi? (kart, harita/menuye donulunce acilir)
+  function gbSira(){
+    var g=gbOku(); if(g.play) return;
+    var simdi=Date.now();
+    if(!g.ilk){ g.ilk=simdi; gbYaz(g); }
+    if(g.snooze && simdi<g.snooze) return;
+    if((state.toplamCozulen||0)<5) return;
+    var gecen=simdi-(g.son||g.ilk);
+    var haftalik=gecen>=7*GB_GUN;
+    var kilometre=(state.level%50===0) && state.level>(g.km||0) && gecen>=2*GB_GUN;
+    if(haftalik || kilometre) _gbBekleyen=true;
+  }
+  function gbKartiGoster(){
+    if(!_gbBekleyen) return;
+    if(aktifEkran!=='harita' && aktifEkran!=='menu') return;
+    if($('katman').classList.contains('acik') || state._ogr) return;
+    _gbBekleyen=false; gbKartAc();
+  }
+  var _gbKaz0=kazandI;
+  kazandI=function(){
+    var r=_gbKaz0.apply(this,arguments);
+    try{ if(!state._ogr && state.mode!=='zaman') gbSira(); }catch(e){}
+    return r;
+  };
+  var _gbGit0=git;
+  git=function(e){
+    var r=_gbGit0.apply(this,arguments);
+    if(_gbBekleyen && (e==='harita' || e==='menu')) setTimeout(gbKartiGoster,700);
+    return r;
+  };
+  $('btnGeriBildirim').addEventListener('click',function(){ gbFormAc(); });
+  window.addEventListener('online',function(){ setTimeout(gbSiradakiniGonder,500); });
+  setTimeout(gbSiradakiniGonder,6000);
+  dilUygula();
 
   //@@JS_UI@@
   // ==========================================================================
@@ -11361,10 +11582,10 @@
   }
   function bolgeDesenKaro(i){
     var ic=bolgeIkonIc(i);
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">'+
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="176" height="176" viewBox="0 0 176 176">'+
       '<g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">'+
-      '<g stroke-width="2" transform="translate(14 12) rotate(-7 18 18) scale(.75)">'+ic+'</g>'+
-      '<g stroke-width="2.3" transform="translate(80 76) rotate(9 14 14) scale(.58)">'+ic+'</g>'+
+      '<g stroke-width="2" transform="translate(16 14) rotate(-7 24 24) scale(1.25)">'+ic+'</g>'+
+      '<g stroke-width="2.2" transform="translate(104 100) rotate(9 24 24) scale(.95)">'+ic+'</g>'+
       '</g></svg>';
     return 'url("data:image/svg+xml,'+encodeURIComponent(svg)+'")';
   }
@@ -11394,7 +11615,7 @@
       _bd.i=i;
     }
     r.setAttribute('data-bolge-desen', String(i));
-    r.style.setProperty('--bolge-opak', bolgeDesenKoyuMu() ? '.05' : '.08');
+    r.style.setProperty('--bolge-opak', bolgeDesenKoyuMu() ? '.11' : '.16');
   }
   // Tema degisince (koyu/acik) opaklik yeniden hesaplanir.
   try{
