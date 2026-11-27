@@ -1,0 +1,57 @@
+const puppeteer=require('puppeteer-core');
+const html=process.env.OYUN_HTML||process.argv[2]||'D:/Prismio/Prismio.html';
+const W=+(process.argv[3]||390), H=+(process.argv[4]||844);
+const out=process.env.PNG||'.';
+const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{
+  const b=await puppeteer.launch({executablePath:process.env.CHROME_PATH||'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',headless:'new',args:['--no-sandbox']});
+  const ctx=await b.createBrowserContext(); const p=await ctx.newPage();
+  await p.setViewport({width:W,height:H,deviceScaleFactor:1,isMobile:true,hasTouch:true});
+  const hata=[]; p.on('pageerror',e=>hata.push('PAGEERR '+e.message)); p.on('console',m=>{ if(m.type()==='error') hata.push('CONSOLE '+m.text()); });
+  const ok=(k,v)=>console.log((v?'OK   ':'HATA ')+k); let bad=0; const chk=(k,v)=>{ if(!v)bad++; ok(k,v); };
+  await p.goto('file:///'+html,{waitUntil:'load'});
+  await bekle(700);
+  chk('sinema acildi (ilk acilis)', await p.evaluate(()=>{const k=document.getElementById('sinema');return !k.hidden&&k.classList.contains('acik')}));
+  const kareler=[[900,'s1'],[3300,'s1b'],[2200,'s2'],[2600,'s3a'],[2600,'s3b'],[2200,'s4a'],[2400,'s4b'],[1800,'s5']];
+  let t=700;
+  for(const [dt,ad] of kareler){ await bekle(dt); await p.screenshot({path:`${out}/ac_${W}x${H}_${ad}.png`}); }
+  chk('son sahne: Baslat dugmesi gorunur', await p.evaluate(()=>{const e=document.getElementById('snBasla');if(!e)return false;const r=e.getBoundingClientRect();return r.width>40&&r.bottom<innerHeight}));
+  await p.click('#snBasla'); await bekle(1400);
+  const ek=await p.evaluate(()=>document.querySelector('.ekran.acik').id);
+  chk('sinematik sonrasi oyun ekrani: '+ek, ek==='ek-oyun');
+  chk('ogretici bolumu: Bolum 1 + 0/1 ayna', await p.evaluate(()=>document.getElementById('bolumNo').textContent.includes('1')&&/0\s*\/\s*1/.test(document.getElementById('bolumAlt').textContent)));
+  const ipu1=await p.evaluate(()=>document.getElementById('ipucu').textContent);
+  console.log('   rehber metni:',ipu1);
+  await p.screenshot({path:`${out}/ac_${W}x${H}_o1.png`});
+  const halka=async()=>p.evaluate(()=>{const h=document.querySelector('#ogrKatman .ogr-halka');const k=document.getElementById('ogrKatman');if(!h||k.hidden)return null;const r=h.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width}});
+  let h=await halka(); chk('el/halka gorunuyor', !!h);
+  const svgBox=await p.evaluate(()=>{const r=document.getElementById('svg').getBoundingClientRect();return [r.left,r.top,r.width]});
+  // halka tahtanin icinde ve dogru hucrede mi? (2,3)
+  const N=5, hu=svgBox[2]/N; const bx=Math.floor((h.x-svgBox[0])/hu), by=Math.floor((h.y-svgBox[1])/hu);
+  chk(`halka (2,3) hucresinde: (${bx},${by})`, bx===2&&by===3);
+  await p.touchscreen.tap(h.x,h.y); await bekle(500);
+  const ipu2=await p.evaluate(()=>document.getElementById('ipucu').textContent); console.log('   rehber 2:',ipu2);
+  chk('1. dokunustan sonra rehber "cevir"e gecti', ipu2!==ipu1);
+  await p.screenshot({path:`${out}/ac_${W}x${H}_o2.png`});
+  h=await halka(); await p.touchscreen.tap(h.x,h.y); await bekle(2600);
+  chk('ogretici kazanildi: tebrik karti', await p.evaluate(()=>!document.getElementById('ogrBravo').hidden));
+  chk('ogretici ilerleme yazmadi (kayit yok / enYuksek<=1)', await p.evaluate(()=>{try{const s=JSON.parse(localStorage.getItem('prismio_v2')||'{}');return !s.ogreticiBitti&&(s.enYuksek||1)<=1&&!(s.toplamCozulen>0)}catch(e){return true}}));
+  await p.screenshot({path:`${out}/ac_${W}x${H}_b.png`});
+  await p.click('#ogrBravoDevam'); await bekle(900);
+  chk('gercek 1. bolum: 3 ayna hedefi', await p.evaluate(()=>/0\s*\/\s*3/.test(document.getElementById('bolumAlt').textContent)));
+  await p.screenshot({path:`${out}/ac_${W}x${H}_g1.png`});
+  let adim=0;
+  while(adim<12){ h=await halka(); if(!h)break; await p.touchscreen.tap(h.x,h.y); await bekle(450); adim++; }
+  console.log('   rehber adim sayisi:',adim);
+  await bekle(3200);
+  await p.screenshot({path:`${out}/ac_${W}x${H}_g2.png`});
+  const son=await p.evaluate(()=>{const s=JSON.parse(localStorage.getItem('prismio_v2')||'{}');return {ob:s.ogreticiBitti,ng:s.nasilGordu,eh:s.enYuksek,tc:s.toplamCozulen}});
+  console.log('   kayit:',JSON.stringify(son));
+  chk('1. bolum kazanildi: ogreticiBitti kaydedildi', son.ob===1&&son.eh>=2);
+  await p.reload({waitUntil:'load'}); await bekle(2500);
+  chk('yeniden aciliste sinematik YOK', await p.evaluate(()=>document.getElementById('sinema').hidden));
+  chk('yeniden aciliste menu acik', await p.evaluate(()=>document.querySelector('.ekran.acik').id==='ek-menu'));
+  console.log(hata.length?hata.join('\n'):'JS hatasi yok'); if(hata.length)bad++;
+  console.log('SONUC:', bad?('SORUN '+bad):'HEPSI GECTI');
+  await b.close();
+})();

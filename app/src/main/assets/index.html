@@ -2483,6 +2483,9 @@
   /* . */
 
   /*@@CSS_BOLGE@@*/
+/* HAMLE SAYACI (0.11.4) */
+.hamle-sayac{margin-left:.55em;font-weight:800;opacity:.9;white-space:nowrap}
+.hamle-sayac.az{color:#B3261E;opacity:1}
   /* ---------- TAHTA SADELESTIRME ---------- */
   /* "Ayna yerlestir" dugmesi ve alt yazisi kaldirildi: aynayi kareye dokunmak yerlestirir/dondurur/kaldirir. */
   #ek-oyun #btnYerlestir,#ek-oyun .og-yuva-alt{display:none!important}
@@ -3594,6 +3597,7 @@
   };
   document.addEventListener('visibilitychange',function(){
     if(document.visibilityState==='hidden'){ clearTimeout(_aynaZaman); aynaYaz(); }
+    try{ if(window.__sesDurakla){ if(document.visibilityState==='hidden') window.__sesDurakla(); else window.__sesDevam(); } }catch(e){}
   });
   function load(){
     var d=null;
@@ -4056,6 +4060,7 @@
     // Calismayan anahtar, olmayan anahtardan kotudur: oyuncu uygulamayi
     // bozuk sanir ve guveni sarsilir.
     // Gercek muzik eklenince (ses dosyasi gerekir) geri gelecekler.
+    {grup:'Ses',       id:'muzik',     ad:'Müzik',tAd:'a_muzik',            aciklama:'Sakin arka plan müziği',tAciklama:'a_muzik_a',vars:true},
     {grup:'Ses',       id:'efekt',     ad:'Ses efektleri',tAd:'a_efekt',       aciklama:'Dokunma ve ödül sesleri',tAciklama:'a_efekt_a',vars:true},
     // Ses tipi: tema gibi. Ses dosyasi yok, ayni notalar uc farkli tinida sentezlenir.
     {grup:'Ses',       id:'sesTipi',   ad:'Ses tipi',tAd:'a_sestipi',          aciklama:'Efektlerin tınısı',tAciklama:'a_sestipi_a', vars:'cam', tip:'secim',
@@ -5693,6 +5698,31 @@
     return b + Math.max(1, Math.ceil(b * AYNA_LIMIT_ORAN));
   }
 
+  // ===== HAMLE SINIRI (0.11.4) =====
+  // Hamle = tahtada durumu degistiren her dokunus (ayna koy / cevir / kaldir).
+  // Sinir = en iyi cozumun dokunus sayisi (/ = 1, \ = 2) + pay. Ogretici ve 'zaman' modunda yok.
+  var HAMLE_AYAR={ pay:0.5, payMin:2, ek:5, isikBedel:25, reklamKota:5 };
+  function hamleCozum(){
+    var c=state.solution, n=0; if(!c) return 0;
+    for(var k in c){ if(Object.prototype.hasOwnProperty.call(c,k)) n += (c[k]==='\\') ? 2 : 1; }
+    return n;
+  }
+  function hamleVarMi(){
+    if(state.mode==='zaman' || state._ogr) return false;
+    return hamleCozum()>0;
+  }
+  function hamleSiniri(){
+    var c=hamleCozum(); if(!c) return 0;
+    return c + Math.max(HAMLE_AYAR.payMin, Math.ceil(c*HAMLE_AYAR.pay));
+  }
+  function hamleToplam(){ return hamleSiniri() + (state.hamleEk||0); }
+  function hamleKalan(){ return hamleToplam() - (state.hamle||0); }
+  function hamleEtiketHtml(){
+    if(!hamleVarMi()) return '';
+    var az = hamleKalan()<=3;
+    return ' <span class="hamle-sayac'+(az?' az':'')+'">'+htmlKacir(T('hamle_etiket',{k:(state.hamle||0),n:hamleToplam()}))+'</span>';
+  }
+
   function yildizSayisi(kullanilan,enIyi){
     var fazla=kullanilan-enIyi;
     if(fazla<=0)return 3;
@@ -5961,7 +5991,8 @@
     var ba=$('bolumAlt');
     ba.innerHTML = '<span class="ayna-sayac'+(fazlaMi?' fazla':'')+'">'+
                    kullanilan+' / '+hedef+'</span> '+htmlKacir(T('ayna'))+
-                   (limitVar ? ' <span class="ayna-limit">'+htmlKacir(T('sinir'))+'</span>' : '');
+                   (limitVar ? ' <span class="ayna-limit">'+htmlKacir(T('sinir'))+'</span>' : '')+
+                   hamleEtiketHtml();
     ba.setAttribute('aria-label', T('ayna_kullandin',{k:kullanilan,e:(state.best||0)}));
     $('tahtakutu').className='tahtakutu'+(mile?' buyuk':'')+(state.bitti?' kilitli':'');
     ['btnSifirla','btnIpucu'].forEach(function(id){ var e=$(id); if(e)e.disabled=!!state.bitti; });
@@ -6264,9 +6295,11 @@
     if(!u) return;
     if(tamam){
       urunOdulVer(u); magazaCiz(); titret('basari');
+      if(u.sonra){ try{ u.sonra(); }catch(e){} return; }         // oyun ici urunler (hamle, 2x odul) kendi arayuzunu gunceller
       magazaNotYaz(T('kazandin',{n:urunOdulMetni(u)}),'iyi');
     }else{
       magazaCiz();
+      if(u.hata){ try{ u.hata(); }catch(e){} return; }
       magazaNotYaz(T('reklam_olmadi'),'uyari');
     }
     if(aktifEkran==='isik'){            // isik ekrani acikken liste/rozet tazelensin + geri bildirim
@@ -6279,7 +6312,7 @@
   // Gunluk kota (ornek: odullu isik reklami gunde 5). Yerel takvim gunu; ekonomi korumasi.
   function kotaGun(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
   function kotaKullanilan(u){
-    var k=state.magaza && state.magaza[u.id+'_kota'];
+    var k=state.magaza && state.magaza[(u.kotaId||u.id)+'_kota'];
     return (k && k.g===kotaGun()) ? (k.n||0) : 0;
   }
   function urunHazirMi(u){
@@ -6307,7 +6340,8 @@
     }
     if(!state.magaza)state.magaza={};
     state.magaza[u.id]=Date.now();
-    if(u.kota) state.magaza[u.id+'_kota']={g:kotaGun(), n:kotaKullanilan(u)+1};
+    if(o.hamle) state.hamleEk=(state.hamleEk||0)+o.hamle;
+    if(u.kota) state.magaza[(u.kotaId||u.id)+'_kota']={g:kotaGun(), n:kotaKullanilan(u)+1};
     save(); rozetleriCiz();
   }
   function urunAl(u,btn){
@@ -6940,7 +6974,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.11.3',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.11.4',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
@@ -8882,6 +8916,7 @@
   // --- Ayar okuma: tek kapi ---
   function ayar(id){
     if(!state.ayar)state.ayar=varsayilanAyarlar();
+    if(id==='muzik' && state.ayar.muzik===undefined) return true;   // 0.11.4: eski kayitlarda da varsayilan acik
     return state.ayar[id];
   }
   function ayarKur(id,deger){
@@ -8946,6 +8981,7 @@
     r.classList.toggle('parcacik-yok', !ayar('parcacik'));
     r.classList.toggle('yuksek-kontrast', !!ayar('kontrast'));
     r.setAttribute('data-kalite', 'HIGH');
+    try{ if(typeof SES!=='undefined' && SES && SES.muzikGuncelle) SES.muzikGuncelle(); }catch(e){}
   }
 
   // --- Titresim (haptic). Cihaz desteklemiyorsa sessizce gecer. ---
@@ -9045,6 +9081,97 @@
               C2:1046.50, D2:1174.66, E2:1318.51, G2:1567.98,
               Gd:392.00, Ad:440.00, Cd:261.63 };
 
+
+    // ===== MUZIK (0.11.4) =====
+    // Prosedurel: ses dosyasi YOK. Yavas bir pad (C-G) + rastgele pentatonik cam cinlamalari,
+    // kisa yansimali. Efektlerle AYNI nota dizisi (C majör pentatonik) -> birbiriyle kavga etmez.
+    // Ayri 'muzik' ayari; arka plana gecince / reklam acilinca durur (Java onPause -> durakla).
+    var M={ana:null, pad:[], gecikme:null, zaman:0, calisiyor:false, dur:false};
+    var M_SEVIYE=0.6;
+    var M_NOTA=[523.25,587.33,659.25,783.99,880.00,1046.50,1174.66,1318.51];
+    function muzikSes(hedef,tau){
+      if(M.ana && ac){ try{ M.ana.gain.setTargetAtTime(hedef, ac.currentTime, tau); }catch(e){} }
+    }
+    function muzikHazir(){
+      var c=hazirla(); if(!c) return false;
+      if(M.ana) return true;
+      try{
+        M.ana=c.createGain(); M.ana.gain.value=0.0001; M.ana.connect(ana);
+        var gec=c.createDelay(1.5); gec.delayTime.value=0.42;
+        var fb=c.createGain(); fb.gain.value=0.36;
+        var lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1800;
+        gec.connect(lp); lp.connect(fb); fb.connect(gec); lp.connect(M.ana);
+        M.gecikme=gec;
+        [[130.81,0.50],[196.00,0.34],[261.63,0.20]].forEach(function(p,i){
+          var o=c.createOscillator(), g=c.createGain(), lfo=c.createOscillator(), lg=c.createGain();
+          o.type='sine'; o.frequency.value=p[0]; o.detune.value=(i-1)*4;
+          g.gain.value=p[1]*0.5;
+          lfo.type='sine'; lfo.frequency.value=0.05+i*0.021; lg.gain.value=p[1]*0.18;
+          lfo.connect(lg); lg.connect(g.gain);
+          o.connect(g); g.connect(M.ana); o.start(); lfo.start();
+          M.pad.push(o,lfo);
+        });
+        return true;
+      }catch(e){ M.ana=null; M.pad=[]; return false; }
+    }
+    function muzikYokEt(){
+      try{ M.pad.forEach(function(o){ try{ o.stop(); }catch(e){} }); }catch(e){}
+      try{ if(M.ana) M.ana.disconnect(); }catch(e){}
+      M.pad=[]; M.ana=null; M.gecikme=null;
+    }
+    function muzikCan(){
+      M.zaman=0;
+      if(!M.calisiyor || !M.ana || !ac) return;
+      try{
+        var f=M_NOTA[Math.floor(Math.random()*M_NOTA.length)]*(Math.random()<0.25?0.5:1);
+        var t=ac.currentTime+0.02;
+        var o=ac.createOscillator(), g=ac.createGain(), o2=ac.createOscillator(), g2=ac.createGain();
+        o.type='sine'; o.frequency.value=f; o2.type='sine'; o2.frequency.value=f*2;
+        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.5,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+2.6);
+        g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(0.12,t+0.01); g2.gain.exponentialRampToValueAtTime(0.0001,t+1.2);
+        o.connect(g); o2.connect(g2); g.connect(M.ana); g2.connect(M.ana);
+        if(M.gecikme) g.connect(M.gecikme);
+        o.start(t); o2.start(t); o.stop(t+2.7); o2.stop(t+1.3);
+      }catch(e){}
+      M.zaman=setTimeout(muzikCan, 2200+Math.random()*3800);
+    }
+    function muzikBaslat(){
+      if(!ayar('muzik') || M.dur) return;
+      if(!muzikHazir()) return;
+      M.calisiyor=true; uyandir(); muzikSes(M_SEVIYE,1.4);
+      if(!M.zaman) M.zaman=setTimeout(muzikCan, 900);
+    }
+    function muzikDur(){
+      M.calisiyor=false; if(M.zaman){ clearTimeout(M.zaman); M.zaman=0; }
+      muzikSes(0.0001,0.25);
+      setTimeout(function(){ if(!M.calisiyor) muzikYokEt(); },1600);
+    }
+    function muzikGuncelle(){
+      if(!ac) return;                       // ilk dokunustan once: orada baslar
+      if(ayar('muzik')) muzikBaslat(); else muzikDur();
+    }
+    // Bolum bitisi gibi efektlerde muzik kisa sure kisilir
+    function muzikDuck(){
+      if(!M.calisiyor || !M.ana || !ac) return;
+      try{
+        var t=ac.currentTime, g=M.ana.gain;
+        g.cancelScheduledValues(t); g.setValueAtTime(g.value,t);
+        g.linearRampToValueAtTime(M_SEVIYE*0.4,t+0.08); g.linearRampToValueAtTime(M_SEVIYE,t+1.4);
+      }catch(e){}
+    }
+    // Uygulama arka plana gidince / reklam acilinca (Java onPause): tamamen sustur ve baglami askiya al
+    function durakla(){
+      M.dur=true; if(!ac) return;
+      muzikSes(0.0001,0.05);
+      setTimeout(function(){ try{ if(M.dur && ac) ac.suspend(); }catch(e){} },140);
+    }
+    function devam(){
+      M.dur=false; if(!ac) return;
+      uyandir();
+      if(M.calisiyor){ muzikSes(M_SEVIYE,1.0); if(!M.zaman) M.zaman=setTimeout(muzikCan,700); }
+      else muzikBaslat();
+    }
+
     // Ses sozlugu. Titresim vokabuleriyle AYNI isimler -
     // tek cagri ikisini de tetikler, isimler dagilmaz.
     var SOZLUK = {
@@ -9059,7 +9186,8 @@
                            nota(N.E, .12, 'sine', .07, .7);
                            nota(N.G, .20, 'sine', .14, .7); },
       // Bolum bitisi: yukselen arpej. Oyunun en guzel ani, sesi de oyle olsun.
-      bitis:   function(){ nota(N.C,  .16, 'sine', 0,   .75);
+      bitis:   function(){ muzikDuck();
+                           nota(N.C,  .16, 'sine', 0,   .75);
                            nota(N.E,  .16, 'sine', .08, .75);
                            nota(N.G,  .16, 'sine', .16, .75);
                            nota(N.C2, .40, 'sine', .24, .85);
@@ -9080,6 +9208,7 @@
         try{ SOZLUK[ad](); }catch(e){}
       },
       uyandir: uyandir,
+      muzikBaslat: muzikBaslat, muzikGuncelle: muzikGuncelle, durakla: durakla, devam: devam,
       // Magaza onizlemesi: efekt ayari kapali olsa da dinletir (oyuncu bastı)
       dinlet: function(tip){
         uyandir();
@@ -9097,7 +9226,11 @@
     document.addEventListener('pointerdown', function bir(){
       document.removeEventListener('pointerdown', bir);
       if(ayar('efekt')) ac(); else SES.uyandir();
+      SES.muzikBaslat();
     }, {once:true, passive:true});
+    // Java onPause/onResume ve sayfa gorunurlugu icin
+    window.__sesDurakla=function(){ try{ SES.durakla(); }catch(e){} };
+    window.__sesDevam=function(){ try{ SES.devam(); }catch(e){} };
   })();
 
   // Titresim desenleri. Isimle cagrilir: titret('ayna')
@@ -9569,6 +9702,10 @@
       ipucu_bir_can:'İpucu {n} tələb edir',bedava_ipucu_bitti:'Pulsuz ipuçları bitdi. Növbəti {n} tələb edir.',
       no_ipucu_a:'Bir güzgünü düzgün yerə qoyur. Pulsuz haqdan sonra {n} tələb edir.'}
   };
+  var HAMLE_DIL={"tr": {"hamle_etiket": "Hamle {k}/{n}", "hamle_etiket_kisa": "Hamle", "hamle_bitti_bas": "Hamle bitti", "hamle_bitti_ack": "Birkaç hamle daha alıp devam edebilirsin.", "hamle_izle": "İzle · +{n} hamle", "hamle_isik": "{c} ışık · +{n} hamle", "hamle_tekrar": "Tekrar dene", "hamle_eklendi": "+{n} hamle eklendi", "odul_2x": "Işığı 2 katla · +{n}", "odul_2x_oldu": "Işık 2 katlandı"}, "en": {"hamle_etiket": "Moves {k}/{n}", "hamle_etiket_kisa": "Moves", "hamle_bitti_bas": "Out of moves", "hamle_bitti_ack": "Get a few more moves and keep going.", "hamle_izle": "Watch · +{n} moves", "hamle_isik": "{c} light · +{n} moves", "hamle_tekrar": "Try again", "hamle_eklendi": "+{n} moves added", "odul_2x": "Double the light · +{n}", "odul_2x_oldu": "Light doubled"}, "es": {"hamle_etiket": "Movimientos {k}/{n}", "hamle_etiket_kisa": "Movimientos", "hamle_bitti_bas": "Sin movimientos", "hamle_bitti_ack": "Consigue unos movimientos más y sigue.", "hamle_izle": "Ver · +{n} mov.", "hamle_isik": "{c} luz · +{n} mov.", "hamle_tekrar": "Reintentar", "hamle_eklendi": "+{n} movimientos", "odul_2x": "Duplica la luz · +{n}", "odul_2x_oldu": "Luz duplicada"}, "pt": {"hamle_etiket": "Jogadas {k}/{n}", "hamle_etiket_kisa": "Jogadas", "hamle_bitti_bas": "Sem jogadas", "hamle_bitti_ack": "Ganhe mais algumas jogadas e continue.", "hamle_izle": "Ver · +{n} jogadas", "hamle_isik": "{c} luz · +{n} jogadas", "hamle_tekrar": "Tentar de novo", "hamle_eklendi": "+{n} jogadas", "odul_2x": "Dobrar a luz · +{n}", "odul_2x_oldu": "Luz dobrada"}, "de": {"hamle_etiket": "Züge {k}/{n}", "hamle_etiket_kisa": "Züge", "hamle_bitti_bas": "Keine Züge mehr", "hamle_bitti_ack": "Hol dir ein paar Züge und mach weiter.", "hamle_izle": "Ansehen · +{n} Züge", "hamle_isik": "{c} Licht · +{n} Züge", "hamle_tekrar": "Nochmal", "hamle_eklendi": "+{n} Züge", "odul_2x": "Licht verdoppeln · +{n}", "odul_2x_oldu": "Licht verdoppelt"}, "fr": {"hamle_etiket": "Coups {k}/{n}", "hamle_etiket_kisa": "Coups", "hamle_bitti_bas": "Plus de coups", "hamle_bitti_ack": "Obtiens quelques coups de plus et continue.", "hamle_izle": "Voir · +{n} coups", "hamle_isik": "{c} lumière · +{n} coups", "hamle_tekrar": "Réessayer", "hamle_eklendi": "+{n} coups", "odul_2x": "Doubler la lumière · +{n}", "odul_2x_oldu": "Lumière doublée"}, "ru": {"hamle_etiket": "Ходы {k}/{n}", "hamle_etiket_kisa": "Ходы", "hamle_bitti_bas": "Ходы закончились", "hamle_bitti_ack": "Получи ещё несколько ходов и продолжай.", "hamle_izle": "Смотреть · +{n} ходов", "hamle_isik": "{c} света · +{n} ходов", "hamle_tekrar": "Ещё раз", "hamle_eklendi": "+{n} ходов", "odul_2x": "Удвоить свет · +{n}", "odul_2x_oldu": "Свет удвоен"}, "zhTW": {"hamle_etiket": "步數 {k}/{n}", "hamle_etiket_kisa": "步數", "hamle_bitti_bas": "步數用完了", "hamle_bitti_ack": "再獲得幾步，繼續挑戰。", "hamle_izle": "觀看 · +{n} 步", "hamle_isik": "{c} 光 · +{n} 步", "hamle_tekrar": "再試一次", "hamle_eklendi": "已增加 {n} 步", "odul_2x": "光芒加倍 · +{n}", "odul_2x_oldu": "光芒已加倍"}, "zhCN": {"hamle_etiket": "步数 {k}/{n}", "hamle_etiket_kisa": "步数", "hamle_bitti_bas": "步数用完了", "hamle_bitti_ack": "再获得几步，继续挑战。", "hamle_izle": "观看 · +{n} 步", "hamle_isik": "{c} 光 · +{n} 步", "hamle_tekrar": "再试一次", "hamle_eklendi": "已增加 {n} 步", "odul_2x": "光芒加倍 · +{n}", "odul_2x_oldu": "光芒已加倍"}, "ja": {"hamle_etiket": "手数 {k}/{n}", "hamle_etiket_kisa": "手数", "hamle_bitti_bas": "手数切れ", "hamle_bitti_ack": "あと数手を獲得して続けよう。", "hamle_izle": "視聴 · +{n}手", "hamle_isik": "光{c} · +{n}手", "hamle_tekrar": "もう一度", "hamle_eklendi": "+{n}手 追加", "odul_2x": "光を2倍に · +{n}", "odul_2x_oldu": "光が2倍に"}, "ko": {"hamle_etiket": "이동 {k}/{n}", "hamle_etiket_kisa": "이동", "hamle_bitti_bas": "이동 횟수 소진", "hamle_bitti_ack": "이동 횟수를 더 얻고 계속하세요.", "hamle_izle": "시청 · +{n}회", "hamle_isik": "빛 {c} · +{n}회", "hamle_tekrar": "다시 시도", "hamle_eklendi": "+{n}회 추가", "odul_2x": "빛 2배 · +{n}", "odul_2x_oldu": "빛이 2배가 되었어요"}, "it": {"hamle_etiket": "Mosse {k}/{n}", "hamle_etiket_kisa": "Mosse", "hamle_bitti_bas": "Mosse esaurite", "hamle_bitti_ack": "Ottieni qualche mossa in più e continua.", "hamle_izle": "Guarda · +{n} mosse", "hamle_isik": "{c} luce · +{n} mosse", "hamle_tekrar": "Riprova", "hamle_eklendi": "+{n} mosse", "odul_2x": "Raddoppia la luce · +{n}", "odul_2x_oldu": "Luce raddoppiata"}, "az": {"hamle_etiket": "Gediş {k}/{n}", "hamle_etiket_kisa": "Gediş", "hamle_bitti_bas": "Gedişlər bitdi", "hamle_bitti_ack": "Bir neçə gediş qazan və davam et.", "hamle_izle": "İzlə · +{n} gediş", "hamle_isik": "{c} işıq · +{n} gediş", "hamle_tekrar": "Yenidən cəhd et", "hamle_eklendi": "+{n} gediş əlavə olundu", "odul_2x": "İşığı 2 qat artır · +{n}", "odul_2x_oldu": "İşıq 2 qat oldu"}};
+  (function(){ for(var l in HAMLE_DIL){ if(DILLER[l]) Object.assign(DILLER[l], HAMLE_DIL[l]); } })();
+  var MUZIK_DIL={"tr": {"a_muzik": "Müzik", "a_muzik_a": "Sakin arka plan müziği"}, "en": {"a_muzik": "Music", "a_muzik_a": "Calm background music"}, "es": {"a_muzik": "Música", "a_muzik_a": "Música ambiental tranquila"}, "pt": {"a_muzik": "Música", "a_muzik_a": "Música ambiente tranquila"}, "de": {"a_muzik": "Musik", "a_muzik_a": "Ruhige Hintergrundmusik"}, "fr": {"a_muzik": "Musique", "a_muzik_a": "Musique d'ambiance calme"}, "ru": {"a_muzik": "Музыка", "a_muzik_a": "Спокойная фоновая музыка"}, "zhTW": {"a_muzik": "音樂", "a_muzik_a": "舒緩的背景音樂"}, "zhCN": {"a_muzik": "音乐", "a_muzik_a": "舒缓的背景音乐"}, "ja": {"a_muzik": "音楽", "a_muzik_a": "落ち着いたBGM"}, "ko": {"a_muzik": "음악", "a_muzik_a": "잔잔한 배경 음악"}, "it": {"a_muzik": "Musica", "a_muzik_a": "Musica di sottofondo rilassante"}, "az": {"a_muzik": "Musiqi", "a_muzik_a": "Sakit fon musiqisi"}};
+  (function(){ for(var l in MUZIK_DIL){ if(DILLER[l]) Object.assign(DILLER[l], MUZIK_DIL[l]); } })();
   (function(){
     for(var l in OG_DIL){
       if(!DILLER[l]) continue;
@@ -9596,10 +9733,19 @@
   var _ogCycle0=cycle;
   cycle=function(x,y){
     if(tahtaKilitli()) return;
+    // 0.11.4: hamle bittiyse dokunus islenmez, secenek karti acilir
+    if(hamleVarMi() && hamleKalan()<=0){ hamleBitti(); return; }
     var once=ogAyna();
     _ogSec={x:x,y:y};
     _ogCycle0(x,y);
-    if(ogAyna()!==once){ _ogGeri.push(once); if(_ogGeri.length>OG_GERI_MAX) _ogGeri.shift(); }
+    if(ogAyna()!==once){
+      _ogGeri.push(once); if(_ogGeri.length>OG_GERI_MAX) _ogGeri.shift();
+      state.hamle=(state.hamle||0)+1; draw();          // hamle sayaci tazelensin
+      if(hamleVarMi() && !state.bitti && hamleKalan()<=0){
+        // son hamle cozmediyse: isik yolu gorunsun, sonra secenek karti
+        setTimeout(function(){ if(hamleVarMi() && !state.bitti && hamleKalan()<=0) hamleBitti(); }, 750);
+      }
+    }
     else draw();            // ayna limiti vb. durumda secimi yine de goster
   };
   function ogGeriAl(){
@@ -9607,6 +9753,7 @@
     var s=_ogGeri.pop();
     try{ state.mirrors=JSON.parse(s); }catch(e){ return; }
     state._sonAyna=null;
+    state.hamle=Math.max(0,(state.hamle||0)-1);        // geri al hamleyi iade eder
     titret('hafif'); draw();
   }
   // Ipucuyla konan ayna eski anlik goruntulere de islenir: geri al, odenmis ipucunu silmesin.
@@ -9621,7 +9768,7 @@
     cycle(_ogSec.x,_ogSec.y);
   }
   var _ogLL0=loadLevel;
-  loadLevel=function(){ _ogGeri=[]; _ogSec=null; _ogLL0(); };
+  loadLevel=function(){ _ogGeri=[]; _ogSec=null; state.hamle=0; state.hamleEk=0; state._hamleKart=false; _ogLL0(); };
 
   // ---------- rozetler / etiketler ----------
   function ogRozetTazele(){
@@ -9715,7 +9862,7 @@
   }
   $('btnGeriAl').addEventListener('click',ogGeriAl);
   $('btnYerlestir').addEventListener('click',ogYerlestir);
-  $('btnSifirla').addEventListener('click',function(){ if(state.bitti)return; _ogGeri=[]; ogButonTazele(); });
+  $('btnSifirla').addEventListener('click',function(){ if(state.bitti)return; _ogGeri=[]; state.hamle=0; draw(); ogButonTazele(); });
 
   // ---------- diyalog (#katman) yardimcilari ----------
   var _ogSayacZaman=0;
@@ -9737,6 +9884,64 @@
   }
   function ogEk(ikonHtml,metin,sinif){
     return '<div class="og-ek'+(sinif?' '+sinif:'')+'">'+ikonHtml+'<span>'+htmlKacir(metin)+'</span></div>';
+  }
+  // ---------- hamle bitti karti (0.11.4) ----------
+  function hamleEkle(n){
+    state.hamleEk=(state.hamleEk||0)+n; state._hamleKart=false; save();
+    katmanKapat(); draw(); titret('basari'); kisaBildirim(T('hamle_eklendi',{n:n}));
+  }
+  function hamleBitti(){
+    if(state.bitti || state._hamleKart || !hamleVarMi()) return;
+    state._hamleKart=true;
+    ogKartHazirla('hamle');
+    $('kIkon').hidden=false; $('kIkon').innerHTML=ogSvg('geri',34);
+    $('kBaslik').textContent=T('hamle_bitti_bas');
+    $('kAlt').textContent=T('hamle_bitti_ack');
+    var b=$('kBtnler'), n=HAMLE_AYAR.ek;
+    if(reklamVarMi()){
+      var u={ id:'hamle_reklam', kotaId:'hamle_reklam', kota:HAMLE_AYAR.reklamKota, tip:'reklam', odul:{hamle:n} };
+      if(urunHazirMi(u)){
+        var rb=ogDugme('','oynat',T('hamle_izle',{n:n}),function(){
+          if(!reklamVarMi()){ kisaBildirim(T('reklam_olmadi')); return; }
+          rb.disabled=true; rb.querySelector('span').textContent=T('reklam_oynatiliyor');
+          u.sonra=function(){ state._hamleKart=false; save(); katmanKapat(); draw(); kisaBildirim(T('hamle_eklendi',{n:n})); };
+          u.hata=function(){ rb.disabled=false; rb.querySelector('span').textContent=T('hamle_izle',{n:n}); kisaBildirim(T('reklam_olmadi')); };
+          _reklamBekleyen=u;
+          try{ window.PrismioNative.reklamGoster(); }catch(e){ _reklamBekleyen=null; u.hata(); }
+        });
+        b.appendChild(rb);
+      }
+    }
+    b.appendChild(ogDugme('sari','gunes',T('hamle_isik',{c:HAMLE_AYAR.isikBedel,n:n}),function(){
+      if((state.coins||0) < HAMLE_AYAR.isikBedel){
+        titret('hata');
+        if(typeof yetersizIsikAc==='function') yetersizIsikAc(HAMLE_AYAR.isikBedel, T('hamle_etiket_kisa'));
+        return;
+      }
+      state.coins-=HAMLE_AYAR.isikBedel; rozetleriCiz(); hamleEkle(n);      // harcama: toplamIsik / rutbe etkilenmez
+    }));
+    b.appendChild(ogDugme('sade','sifirla',T('hamle_tekrar'),function(){ state._hamleKart=false; katmanKapat(); loadLevel(); }));
+    b.appendChild(ogDugme('metin','harita',T('og_harita'),function(){ state._hamleKart=false; katmanKapat(); git('harita'); }));
+    $('katman').classList.add('acik');
+  }
+  // Kazanma kartina "Isigi 2 katla" (ortak gunluk reklam kotasi: isik_reklam)
+  function ogIkiKat(kazanc,b){
+    if(!(kazanc>0) || !reklamVarMi()) return;
+    var u={ id:'isik_2x', kotaId:'isik_reklam', kota:5, tip:'reklam', odul:{isik:kazanc} };
+    if(!urunHazirMi(u)) return;
+    var kb=ogDugme('','oynat',T('odul_2x',{n:kazanc}),function(){
+      if(!reklamVarMi()){ kisaBildirim(T('reklam_olmadi')); return; }
+      kb.disabled=true; kb.querySelector('span').textContent=T('reklam_oynatiliyor');
+      u.sonra=function(){
+        $('kOdulSayi').textContent=kazanc*2;
+        if(kb.parentNode) kb.parentNode.removeChild(kb);
+        kisaBildirim(T('odul_2x_oldu'));
+      };
+      u.hata=function(){ kb.disabled=false; kb.querySelector('span').textContent=T('odul_2x',{n:kazanc}); kisaBildirim(T('reklam_olmadi')); };
+      _reklamBekleyen=u;
+      try{ window.PrismioNative.reklamGoster(); }catch(e){ _reklamBekleyen=null; u.hata(); }
+    });
+    b.insertBefore(kb,b.firstChild);
   }
   function ogYildizlar(y){
     var yol='<path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.95z"/>';
@@ -9779,6 +9984,7 @@
     b.appendChild(nB);
     b.appendChild(ogDugme('sade','sifirla',T('og_tekrar'),function(){ katmanKapat(); bolumBaslat(state.level); }));
     b.appendChild(ogDugme('metin','harita',T('og_harita'),function(){ katmanKapat(); git('harita'); }));
+    if(!state._tekrarOdulYok) ogIkiKat(kazanc,b);
     $('katman').classList.add('acik');
     if(ayar('otoGec') && state.mode!=='zaman'){
       var kalan=3, et=nB.querySelector('span');
@@ -11278,7 +11484,7 @@
 
   // ---------- AYARLAR ----------
   var _odAyarEski=ayarlarCiz;
-  var OD_ANA_IDLER=['efekt','haptic','dil','hatirlatma'];
+  var OD_ANA_IDLER=['efekt','muzik','haptic','dil','hatirlatma'];
   function odSwitchHtml(acik){
     return '<button type="button" class="od-anahtar" role="switch" aria-checked="'+(acik?'true':'false')+'"><span class="od-an-top">'+
       odIk('check',14,3).replace('class="od-ik"','class="od-ik ac"')+odIk('dash',14,3).replace('class="od-ik"','class="od-ik kp"')+'</span></button>';
@@ -11318,6 +11524,7 @@
     var chev='<span class="od-ok">'+odIk('chev',22)+'</span>';
     ana.innerHTML=
       odSatirHtml('vol',T('ag_ses'),durum('efekt','ay_ses_ack'),odSwitchHtml(acik('efekt')),'" data-od="efekt')+
+      odSatirHtml('vol',T('a_muzik'),durum('muzik','a_muzik_a'),odSwitchHtml(acik('muzik')),'" data-od="muzik')+
       odSatirHtml('vib',T('a_titresim'),durum('haptic','ay_tit_ack'),odSwitchHtml(acik('haptic')),'" data-od="haptic')+
       odSatirHtml('lang',T('dil')+' · '+suan.ad,T('ay_dil_ack'),chev,'" data-od="dil')+
       '<div class="od-dil-liste" id="odDilListe" hidden role="listbox"></div>'+
@@ -11329,7 +11536,7 @@
       var id=s.getAttribute('data-od');
       if(!s.querySelector('.od-anahtar')){ s.setAttribute('role','button'); s.setAttribute('tabindex','0'); }
       var tikla=function(){
-        if(id==='efekt'||id==='haptic'||id==='hatirlatma'){ odAyarCevir(id); ayarlarCiz(); return; }
+        if(id==='efekt'||id==='muzik'||id==='haptic'||id==='hatirlatma'){ odAyarCevir(id); ayarlarCiz(); return; }
         if(id==='dil'){ var l=$('odDilListe'); l.hidden=!l.hidden; titret('hafif'); return; }
         if(id==='pg'){ titret('hafif'); git('hesap'); return; }
         if(id==='gizlilik'){ titret('hafif'); gizlilikSheetAc(); }

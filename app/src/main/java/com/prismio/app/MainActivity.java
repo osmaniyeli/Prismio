@@ -221,11 +221,17 @@ public class MainActivity extends AppCompatActivity {
         if (web != null) web.evaluateJavascript("window.__bildirimIzni && window.__bildirimIzni(" + ok + ")", null);
     }
 
-    @Override protected void onPause()  { super.onPause();  web.onPause(); if (kopru != null) kopru.reklamDuraklat(true); }
+    @Override protected void onPause()  {
+        super.onPause();
+        // Muzigi once sustur (WebView onPause tek basina Web Audio'yu durdurmayabiliyor)
+        if (web != null) web.evaluateJavascript("window.__sesDurakla && window.__sesDurakla()", null);
+        web.onPause(); if (kopru != null) kopru.reklamDuraklat(true);
+    }
     @Override
     protected void onResume() {
         super.onResume();
         web.onResume();
+        web.evaluateJavascript("window.__sesDevam && window.__sesDevam()", null);
         if (kopru != null) kopru.reklamDuraklat(false);
         // D-107: Her one gelisinde satin alma durumu tazelenir.
         // Oyuncu Play'den iade aldiysa veya baska cihazda satin aldiysa

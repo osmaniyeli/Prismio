@@ -1,0 +1,8 @@
+{
+  "name": "prismio-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Prismio oyun dosyasi icin Chrome (puppeteer-core) testleri",
+  "scripts": { "test": "node calistir.js" },
+  "dependencies": { "puppeteer-core": "^24.0.0" }
+}

@@ -31,6 +31,10 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**.md'
+  pull_request:                 # yalniz test isi calisir; yayin YAPILMAZ
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
   workflow_dispatch:
     inputs:
       surum_adi:
@@ -47,7 +51,36 @@ permissions:
   contents: write          # etiket derlemesinde Releases'e yazmak icin
 
 jobs:
+  # ---------------- OTOMATIK TEST (CI) ----------------
+  # tests/oyun_kaynak.html (test kancali kaynak) Chrome'da puppeteer ile denenir.
+  # Biri kirilirsa "derle" HIC baslamaz: Play'e bozuk surum gitmez.
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: tests
+    steps:
+      - name: Kodu al
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+      - name: Bagimliliklar
+        run: npm ci
+      - name: Testler
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node calistir.js
+      - name: Test bitti (ozet)
+        if: always()
+        run: echo "tests/oyun_kaynak.html uzerinde calisti"
+
   derle:
+    if: github.event_name != 'pull_request'
+    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
