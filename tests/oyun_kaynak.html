@@ -2486,6 +2486,21 @@
   /* . */
 
   /*@@CSS_BOLGE@@*/
+/* SIRALAMA (0.13) */
+.sr-input{width:100%;box-sizing:border-box;margin:6px 0 4px;padding:14px 16px;border:2px solid var(--cizgi);border-radius:14px;background:var(--yuzey);color:var(--metin);font:inherit;font-size:1.05rem;font-weight:700;text-align:center}
+.sr-input:focus{outline:3px solid var(--vurgu,#C24A3E);outline-offset:1px}
+.sr-hata{min-height:1.3em;color:#B3261E;font-size:.88rem;font-weight:700;text-align:center;margin:2px 0 6px}
+.sr-sekmeler{display:flex;gap:6px;margin:4px 0 10px}
+.sr-sekmeler button{flex:1;min-height:40px;border:2px solid var(--cizgi);border-radius:12px;background:var(--yuzey);color:var(--metin-soft);font:inherit;font-weight:800;font-size:.9rem}
+.sr-sekmeler button.acik{background:var(--metin);color:var(--zemin);border-color:var(--metin)}
+.sr-liste{max-height:36vh;overflow:auto;text-align:left;-webkit-overflow-scrolling:touch}
+.sr-satir{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;font-weight:700;font-size:.95rem}
+.sr-satir:nth-child(odd){background:rgba(0,0,0,.04)}
+.sr-satir.ben{background:#FBE9A7;color:#26221E}
+.sr-no{flex:0 0 2em;text-align:right;opacity:.65;font-variant-numeric:tabular-nums}
+.sr-ad{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-puan{flex:0 0 auto;font-variant-numeric:tabular-nums}
+.sr-bos,.sr-ayrac{padding:14px;text-align:center;opacity:.7;font-weight:700}
 /* HAMLE SAYACI (0.11.4) */
 .hamle-sayac{margin-left:.55em;font-weight:800;opacity:.9;white-space:nowrap}
 .hamle-sayac.az{color:#B3261E;opacity:1}
@@ -2553,6 +2568,54 @@
   /* . */
   /* . */
   /* . */
+  /* ===== ISIK BEKCISI (bk): yuz animasyonlari, kart simgesi, Lig bolumu, odul satiri ===== */
+  .bk-yuz{display:block;overflow:visible}
+  .bk-yuz .bk-parla{transform-box:fill-box;transform-origin:center;animation:bkParla 2.6s ease-in-out infinite}
+  .bk-yuz .bk-tw{transform-box:fill-box;transform-origin:center;animation:bkTw 1.8s ease-in-out infinite}
+  .bk-yuz .bk-z{animation:bkZ 2.8s ease-in-out infinite}
+  .bk-yuz.bk-e-sevinc{animation:bkZipla .6s ease-out 2}
+  .bk-yuz.bk-e-saskin{animation:bkSars .5s ease-in-out 2}
+  .bk-yuz.bk-e-uykulu{animation:bkSalla 3.4s ease-in-out infinite;transform-origin:50% 90%}
+  @keyframes bkParla{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+  @keyframes bkTw{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
+  @keyframes bkZ{0%,100%{opacity:.35;transform:translateY(1.5px)}50%{opacity:1;transform:translateY(-1.5px)}}
+  @keyframes bkZipla{0%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}
+  @keyframes bkSars{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+  @keyframes bkSalla{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+  html.az-hareket .bk-yuz,html.az-hareket .bk-yuz *,html.animasyon-yok .bk-yuz,html.animasyon-yok .bk-yuz *{animation:none!important}
+  @media (prefers-reduced-motion:reduce){.bk-yuz,.bk-yuz *{animation:none!important}}
+  #katman[data-og] .og-ikon.bk{background:none;width:auto;height:auto;margin:0 auto 4px;justify-content:center}
+  @media (max-height:700px){#katman .og-ikon.bk .bk-yuz{width:52px;height:52px}}
+  @media (max-height:640px){#katman .og-ikon.bk .bk-yuz{width:40px;height:40px}#katman[data-og] .og-ikon.bk{margin-bottom:0}}
+  #katman .og-ek.bk svg{flex:0 0 auto}
+  .bk-oe-ek{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 16px;padding:12px 16px;text-align:left;
+    background:var(--od-nane);border:2px solid var(--od-ink);border-radius:14px;box-shadow:0 4px 0 var(--od-ink);
+    font-size:.88rem;font-weight:800;line-height:1.3}
+  .bk-oe-ek[hidden]{display:none}
+  .bk-oe-ek svg,.bk-oe-ek .bk-oe-ik{flex:0 0 auto}
+  #bkBolum{margin:0}
+  .bk-kart{background:var(--yuzey);border-radius:var(--kart-kose,18px);padding:14px;box-shadow:0 4px 0 var(--cizgi);margin:0 0 14px}
+  .bk-ust{display:flex;align-items:center;gap:14px;margin:0 0 4px}
+  .bk-buyuk{flex:0 0 auto;width:100px;height:100px;display:flex;align-items:center;justify-content:center;
+    background:var(--zemin-alt);border-radius:22px}
+  .bk-metin b{display:block;font-size:1.2rem;font-weight:900;line-height:1.15}
+  .bk-metin span{display:block;margin-top:4px;font-size:.8rem;font-weight:800;color:var(--metin-soft)}
+  .bk-baslik{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:12px 0 8px;
+    font-size:.72rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--metin-soft)}
+  .bk-satir{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  .bk-oge{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px 5px;min-height:44px;min-width:0;
+    border:2px solid transparent;border-radius:12px;background:var(--zemin-alt);color:var(--metin);font:inherit;cursor:pointer}
+  .bk-oge small{font-size:.64rem;font-weight:800;line-height:1.15;text-align:center;overflow-wrap:anywhere;max-width:100%}
+  .bk-oge.sec{border-color:var(--metin);box-shadow:0 2px 0 var(--metin)}
+  .bk-oge:active,.bk-fz:active{transform:translateY(2px)}
+  .bk-oge:focus-visible,.bk-fz:focus-visible{outline:3px solid var(--sari);outline-offset:2px}
+  .bk-oge.bk-kilit{opacity:.45}
+  .bk-oge.bk-kilit .bk-yuz{filter:grayscale(1)}
+  svg.bk-fener.bk-kilit{filter:grayscale(1);opacity:.35}
+  .bk-izgara{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px 4px}
+  .bk-fz{display:flex;align-items:center;justify-content:center;padding:4px 0;min-height:48px;border:0;border-radius:12px;background:none;cursor:pointer}
+  .bk-not{margin:10px 2px 0;font-size:.74rem;font-weight:700;line-height:1.4;color:var(--metin-soft)}
+
 /*@@IKON3D_CSS_BEGIN*/
   /* ================= IKON3D (3D kil ikonlar) ================= */
   .i3d{display:inline-block;vertical-align:middle;object-fit:contain;flex:0 0 auto;max-width:none;
@@ -3005,6 +3068,7 @@
         <div class="lig-hedef" id="ligHedef"></div>
         <div class="lig-sira" id="ligSira"></div>
       </div>
+      <div id="bkBolum"></div>
       <div id="ligListe"></div>
       <div class="lig-not" data-t="lig_ack"></div>
       <div style="height:10px"></div>
@@ -3508,7 +3572,10 @@
              // can + para + mod
              lives:5,livesAt:0,coins:0,mistakes:0,loopSeen:false,
              ipucuStok:0,     // magazadan alinan ipucu stogu (once bundan dusulur)
+             siralama:null,     // 0.13: {id,sir,ad} takma adli siralama profili (sir = sunucunun urettigi gizli anahtar)
              hikayeGorulen:{},  // 0.12: bolge giris kartlari {bolge:1}; bir kez gosterilir
+             bekci:{fener:'kehribar',gorulen:{},acik:{},sesParca:0},   // 0.14: Isik Bekcisi kozmetigi (secili fener rengi, gorulen ifadeler, surprizle acilan renkler, ses rengi parcasi)
+             fenerler:{},       // 0.14: mekan fenerleri {bolgeNo:1} (bolgenin son bolumu bitince yanar)
              canStok:0,       // MAX_LIVES ustune tasan satin alinmis yedek can (canKaybet once bundan dusurur)
              mode:'yolculuk',tLeft:0,tScore:0,tTimer:null,tTohum:0,tBaslangic:1};
   var MAX_LIVES=5, LIFE_MS=4*60*60*1000, MISTAKE_LIMIT=2, TIME_SEC=180;
@@ -3545,7 +3612,7 @@
   var SAVE_ALANLAR=['siparisler','level','enYuksek','theme','unlocked','shapes','lives','livesAt',
                     'coins','stars','decos','decoAktif','basari','gorev','ayar','sayac',
                     'magaza','dunyaAcildi','oynamaSn','seri','plus','toplamCozulen','nasilGordu','ogreticiBitti','toplamIsik',
-                    'paket','paketSecim','ipucuStok','canStok','hikayeGorulen'];
+                    'paket','paketSecim','ipucuStok','canStok','hikayeGorulen','siralama','bekci','fenerler'];
 
   function save(){
     try{
@@ -3703,6 +3770,20 @@
       state.sayac[k]=Math.max(0, sayi(state.sayac[k],0,0));
     });
     state.magaza    = nesne(d.magaza,{});
+    state.hikayeGorulen = nesne(d.hikayeGorulen,{});     // 0.12: bolge giris kartlari (yeniden acilista tekrar gosterilmesin)
+    // 0.14: Isik Bekcisi (tip/aralik dogrulamali; bilinmeyen anahtar atilir)
+    var _bkR=['kehribar','nane','gul','gok','mor'], _bkI=['notr','sevinc','saskin','uykulu','kararli'], _bkK=nesne(d.bekci,{});
+    state.bekci={fener:(typeof _bkK.fener==='string' && _bkR.indexOf(_bkK.fener)>=0)?_bkK.fener:'kehribar', gorulen:{}, acik:{}, sesParca:sayi(_bkK.sesParca,0,0,2)};
+    _bkI.forEach(function(x){ if(nesne(_bkK.gorulen,{})[x]) state.bekci.gorulen[x]=1; });
+    _bkR.forEach(function(x){ if(x!=='kehribar' && nesne(_bkK.acik,{})[x]) state.bekci.acik[x]=1; });
+    state.fenerler={};
+    var _bkF=nesne(d.fenerler,{});
+    for(var _bt in _bkF){ var _bn=+_bt; if(_bkF[_bt] && _bn>=1 && _bn<=100 && Math.floor(_bn)===_bn) state.fenerler[_bn]=1; }
+    bekciGeriDoldur();     // eski surumde biten bolgelerin fenerleri sessizce yanar
+    // 0.13: takma adli siralama profili {id,sir,ad}; gecersizse yok sayilir
+    var _sp=nesne(d.siralama,null);
+    state.siralama = (_sp && typeof _sp.id==='string' && _sp.id.length>8 && _sp.id.length<64 && typeof _sp.sir==='string' && _sp.sir.length>8 && _sp.sir.length<128 && typeof _sp.ad==='string')
+                     ? {id:_sp.id, sir:_sp.sir, ad:_sp.ad.slice(0,16)} : null;
     state.dunyaAcildi = d.dunyaAcildi?1:0;
     state.oynamaSn  = Math.max(0, sayi(d.oynamaSn,0,0));
 
@@ -4041,7 +4122,17 @@
     {id:'a-temaall',ad:'Tam Koleksiyon',tAd:'b_tam_kolek', aciklama:'Bütün temaları aç.',tAciklama:'ba_tamkolek',              hedef:10,  grup:'kolek',
      kontrol:function(st){ var n=0; for(var k in (st.unlocked||{}))n++; return n; }},
     {id:'a-dekoall',ad:'Dünya Tamam',tAd:'b_dunya_tamam',    aciklama:'Bütün dünya parçalarını aç.',tAciklama:'ba_dunyatam',     hedef:14,  grup:'kolek',
-     kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }}
+     kontrol:function(st){ var n=0; for(var k in (st.decos||{}))n++; return n; }},
+
+    // --- ISIK BEKCISI (0.14): mekan fenerleri + bekci ifadeleri/renkleri. Isik odulu YOK (kozmetik/koleksiyon). ---
+    {id:'a-fener10', ad:'Mekân Koleksiyoncusu',tAd:'b_fener10', aciklama:'10 mekân feneri yak.',tAciklama:'ba_fener10', hedef:10, grup:'kolek',
+     kontrol:function(st){ return bekciSayiFener(st); }},
+    {id:'a-fener50', ad:'Fener Ustası',tAd:'b_fener50',         aciklama:'50 mekân feneri yak.',tAciklama:'ba_fener50', hedef:50, grup:'kolek',
+     kontrol:function(st){ return bekciSayiFener(st); }},
+    {id:'a-ifade5',  ad:'Bekçinin Yüzleri',tAd:'b_ifade5',      aciklama:'Bekçinin 5 farklı ifadesini gör.',tAciklama:'ba_ifade5', hedef:5, grup:'kolek',
+     kontrol:function(st){ return bekciSayiIfade(st); }},
+    {id:'a-fener-renk', ad:'Renkli Fener',tAd:'b_fener_renk',   aciklama:'3 fener rengi aç.',tAciklama:'ba_fener_renk', hedef:3, grup:'kolek',
+     kontrol:function(st){ return bekciSayiRenk(); }}
   ];
 
   // D-106: Basarim gruplari. Odul Odasi bunlara gore bolumlenir.
@@ -6077,6 +6168,8 @@
     if(mile && ilkCozum)kazanc+=25;
     state._tekrarOdulYok = (!ilkCozum && kazanc===0);
     state._rutbeAtladi = isikKazan(kazanc);
+    // 0.14: bolgenin son bolumu -> mekan feneri yanar (ilk kez; +5 isik bonus). Sonuc kartinda ogEk satiri.
+    state._bkFener = (state.mode==='yolculuk' && bolgeSonMu(state.level)) ? bekciFenerVer(getDifficultyTier(state.level)) : null;
 
     var hediye=null;
     if(mile){
@@ -7138,7 +7231,7 @@
   //  Ayrica oyuncunun kendi ilerlemesini tek yerde gormesi guven verir.
   // ==========================================================================
   var YAPIM={
-    surum:'0.12.0',      // tarayici icin; uygulamada gercek surum Android'den okunur
+    surum:'0.12.1',      // tarayici icin; uygulamada gercek surum Android'den okunur
     yapim:'',           // bos = "Hakkinda" ekraninda bu satir hic cikmaz
     studyo:'Prismio',
     yil:'2026',
@@ -8362,6 +8455,7 @@
          '</div>';
     }
     ls.innerHTML=h;
+    bekciEkranCiz();
   }
   // Menudeki kucuk rutbe rozeti
   function rutbeRozetCiz(){
@@ -8968,6 +9062,264 @@
     });
     if(yeni.length){ save(); pgBasariGonder(yeni.map(function(a){ return a.id; })); }
     return yeni;
+  }
+
+  // ==========================================================================
+  //  ISIK BEKCISI: karakter, 5 ifade, fener rengi, mekan fenerleri, surpriz oduller  (0.14, onek "bk")
+  // --------------------------------------------------------------------------
+  //  bekciYuz(ifade,boy[,fenerId])  TEK kaynak: tum bekci yuzleri bundan gelir (satir ici SVG, emoji YOK).
+  //    ifade: notr | sevinc | saskin | uykulu | kararli
+  //    Kullanim: bolge giris karti (kararli), sonuc karti (3 yildiz sevinc, digeri notr),
+  //              hamle bitti (saskin), can bitti (uykulu), Lig ekrani.
+  //  state.bekci  = {fener:'kehribar', gorulen:{ifade:1}, acik:{renk:1}, sesParca:0}   (kozmetik)
+  //  state.fenerler = {bolgeNo:1}  mekan fenerleri (100 mekan, bolgenin son bolumu bitince, bir kez)
+  //  Odul dengesi: fener basina ILK yanista +5 isik (toplam <= 500 isik / 1000 bolum); gerisi kozmetik.
+  //  Reklama bagli DEGIL: surpriz oduller ve fenerler reklam olmadan da tam calisir.
+  // ==========================================================================
+  var BK_CIZGI='#2B2433';
+  var BK_IFADELER=['notr','sevinc','saskin','uykulu','kararli'];
+  var BK_FENERLER=[
+    {id:'kehribar',renk:'#F5B83A',koyu:'#D98A12',esik:0},
+    {id:'nane',    renk:'#7BDDAA',koyu:'#2E9E6B',esik:3},
+    {id:'gul',     renk:'#FF8FA3',koyu:'#E04868',esik:8},
+    {id:'gok',     renk:'#7CC4FF',koyu:'#2F7FD1',esik:15},
+    {id:'mor',     renk:'#C79BFF',koyu:'#8A55D6',esik:30}
+  ];
+  var BK_FENER_BONUS=5;
+  var BK_SES_SIRA=['ahsap','retro'];     // surpriz "ses rengi parcasi" ile acilan ucretli ses tipleri (3 parca = 1 tip)
+  var BK_SURPRIZ={seri:30, gorev:12};    // gunluk odul alinirken kozmetik cikma ihtimali (%), gun + kaynak tohumlu
+  var _bkSay=0, _bkIfadeSec='notr';
+
+  function bekciFenerBul(id){
+    for(var i=0;i<BK_FENERLER.length;i++) if(BK_FENERLER[i].id===id) return BK_FENERLER[i];
+    return BK_FENERLER[0];
+  }
+  function bekciAksesuar(f){
+    var O=BK_CIZGI, a='stroke="'+O+'" stroke-width="1.3" stroke-linejoin="round" fill="'+f.renk+'"';
+    if(f.id==='nane') return '<path d="M43.5 22.5q5.5-1.5 7 3.6q-5.6 1.6-7-3.6z" '+a+'/><path d="M44 24.5l4 .8" fill="none" stroke="'+O+'" stroke-width="1" stroke-linecap="round"/>';
+    if(f.id==='gul')  return '<path d="M46.5 28.3c-4-3.2-6.2-.3-3.8 1.9l3.8 3.2l3.8-3.2c2.4-2.2.2-5.1-3.8-1.9z" '+a+' transform="translate(0 -5.6)"/>';
+    if(f.id==='gok')  return '<path d="M47 19.6l1.5 3.1l3.4.5l-2.5 2.4l.6 3.4l-3-1.6l-3 1.6l.6-3.4l-2.5-2.4l3.4-.5z" '+a+'/>';
+    if(f.id==='mor')  return '<path d="M47.5 19.5a5 5 0 1 0 2.8 8.6a4 4 0 0 1-2.8-8.6z" '+a+'/>';
+    return '';
+  }
+  function bekciYuz(ifade, boy, fenerId){
+    if(BK_IFADELER.indexOf(ifade)<0) ifade='notr';
+    var f=bekciFenerBul(fenerId||(state.bekci&&state.bekci.fener)), u='bk'+(++_bkSay), O=BK_CIZGI, b=boy||48;
+    var parla={notr:.8,sevinc:1,saskin:.5,uykulu:.25,kararli:1}[ifade];
+    var s='<svg class="bk-yuz bk-e-'+ifade+'" data-ik3="0" viewBox="-1 -3 66 68" width="'+b+'" height="'+b+'" aria-hidden="true" focusable="false">'+
+      '<defs>'+
+      '<radialGradient id="'+u+'s" cx=".36" cy=".3" r=".9"><stop offset="0" stop-color="#FFF0DB"/><stop offset=".55" stop-color="#F9D4A8"/><stop offset="1" stop-color="#E6A877"/></radialGradient>'+
+      '<linearGradient id="'+u+'c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6476DA"/><stop offset="1" stop-color="#36449C"/></linearGradient>'+
+      '<linearGradient id="'+u+'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4B5BB5"/><stop offset="1" stop-color="#2C3780"/></linearGradient>'+
+      '<radialGradient id="'+u+'g"><stop offset="0" stop-color="'+f.renk+'" stop-opacity=".95"/><stop offset=".55" stop-color="'+f.renk+'" stop-opacity=".35"/><stop offset="1" stop-color="'+f.renk+'" stop-opacity="0"/></radialGradient>'+
+      '<linearGradient id="'+u+'l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6D6"/><stop offset="1" stop-color="'+f.renk+'"/></linearGradient>'+
+      '</defs>';
+    s+='<circle class="bk-parla" cx="32" cy="10" r="'+(ifade==='sevinc'?17:14)+'" fill="url(#'+u+'g)" opacity="'+parla+'"/>';
+    s+='<path d="M7 64C7 53 17 49 32 49s25 4 25 15z" fill="url(#'+u+'k)" stroke="'+O+'" stroke-width="2.4" stroke-linejoin="round"/>';
+    s+='<path d="M13 60.5c1.5-5 6-8 11-8.6" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.2" stroke-linecap="round"/>';
+    s+='<circle cx="14.7" cy="36" r="3.1" fill="#F2C08E" stroke="'+O+'" stroke-width="2"/><circle cx="49.3" cy="36" r="3.1" fill="#F2C08E" stroke="'+O+'" stroke-width="2"/>';
+    s+='<circle cx="32" cy="35" r="17.5" fill="url(#'+u+'s)" stroke="'+O+'" stroke-width="2.4"/>';
+    s+='<path d="M20.5 51.5Q32 59.5 43.5 51.5L45 56Q32 65 19 56z" fill="#F5C93F" stroke="'+O+'" stroke-width="2" stroke-linejoin="round"/>';
+    s+='<path d="M24 54.8q8 3.2 16 0" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.4" stroke-linecap="round"/>';
+    s+='<path d="M14.6 33C13.5 22 21 15.4 32 15.4S50.5 22 49.4 33C44.5 29.6 38.5 28.2 32 28.2S19.5 29.6 14.6 33z" fill="url(#'+u+'c)" stroke="'+O+'" stroke-width="2.4" stroke-linejoin="round"/>';
+    s+='<path d="M14.8 31.4C20 28.2 25.6 26.8 32 26.8S44 28.2 49.2 31.4L49.4 33.6C44.5 30.2 38.5 28.8 32 28.8S19.5 30.2 14.6 33.6z" fill="#F2D58A" stroke="'+O+'" stroke-width="1.6" stroke-linejoin="round"/>';
+    s+='<path d="M21 20.5c3-2.5 6.5-3.6 10-3.6" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2.2" stroke-linecap="round"/>';
+    s+=bekciAksesuar(f);
+    s+='<path d="M28.6 5.8C28.6-.4 35.4-.4 35.4 5.8" fill="none" stroke="'+O+'" stroke-width="1.9" stroke-linecap="round"/>';
+    s+='<rect x="25.6" y="4.6" width="12.8" height="3" rx="1.3" fill="#8C6B4F" stroke="'+O+'" stroke-width="1.6"/>';
+    s+='<path d="M26.8 7.6h10.4l1 6.4H25.8z" fill="url(#'+u+'l)" stroke="'+O+'" stroke-width="1.8" stroke-linejoin="round" opacity="'+(ifade==='uykulu'?.85:1)+'"/>';
+    s+='<path d="M32 8.9c1.9 1.7 2.5 3 2.5 4.1 0 1.6-1.1 2.3-2.5 2.3s-2.5-.7-2.5-2.3c0-1.1.6-2.4 2.5-4.1z" fill="#FFF3C4" opacity="'+(ifade==='uykulu'?.45:.95)+'"/>';
+    s+='<rect x="25" y="13.2" width="14" height="2.8" rx="1.2" fill="#8C6B4F" stroke="'+O+'" stroke-width="1.6"/>';
+    var G=O, yuz='';
+    var ya=(ifade==='sevinc'?.7:.42);
+    var yanak='<ellipse cx="21.2" cy="42" rx="3.2" ry="2.1" fill="#FF8FA0" opacity="'+ya+'"/><ellipse cx="42.8" cy="42" rx="3.2" ry="2.1" fill="#FF8FA0" opacity="'+ya+'"/>';
+    var kas=function(d){ return '<path d="'+d+'" fill="none" stroke="'+G+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'; };
+    var goz=function(cx,cy,rx,ry){ return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="'+G+'"/><circle cx="'+(cx-.8)+'" cy="'+(cy-1)+'" r=".95" fill="#fff"/>'; };
+    if(ifade==='notr'){
+      yuz=yanak+goz(25.6,37,2.1,2.7)+goz(38.4,37,2.1,2.7)+kas('M22.4 32.2q3.1-1.7 6.2-.2')+kas('M35.4 32q3.1-1.5 6.2.2')+
+          '<path d="M28.6 43.6q3.4 2.2 6.8 0" fill="none" stroke="'+G+'" stroke-width="1.9" stroke-linecap="round"/>';
+    } else if(ifade==='sevinc'){
+      yuz=yanak+'<path d="M22.4 38.2q3.2-5 6.4 0M35.2 38.2q3.2-5 6.4 0" fill="none" stroke="'+G+'" stroke-width="2.3" stroke-linecap="round"/>'+
+          kas('M22 31.6q3.3-2.6 6.6-.6')+kas('M35.4 31q3.3-2 6.6.6')+
+          '<path d="M26.4 42.2h11.2c0 5.2-2.6 7.4-5.6 7.4s-5.6-2.2-5.6-7.4z" fill="#6B2D3F" stroke="'+G+'" stroke-width="1.8" stroke-linejoin="round"/>'+
+          '<path d="M29.2 47.6q2.8-2 5.6 0q-1 1.8-2.8 1.8t-2.8-1.8z" fill="#FF7B8F"/>'+
+          '<g class="bk-tw" fill="#F5C93F" stroke="'+O+'" stroke-width="1"><path d="M55 22l1.2 2.8l2.8 1.2l-2.8 1.2L55 30l-1.2-2.8L51 26l2.8-1.2z"/><path d="M9.5 21l.9 2.1l2.1.9l-2.1.9l-.9 2.1l-.9-2.1l-2.1-.9l2.1-.9z"/></g>';
+    } else if(ifade==='saskin'){
+      yuz=yanak+
+          '<circle cx="25.6" cy="37.2" r="4" fill="#fff" stroke="'+G+'" stroke-width="1.9"/><circle cx="38.4" cy="37.2" r="4" fill="#fff" stroke="'+G+'" stroke-width="1.9"/>'+
+          '<circle cx="26.2" cy="37.8" r="1.7" fill="'+G+'"/><circle cx="37.8" cy="37.8" r="1.7" fill="'+G+'"/>'+
+          kas('M21.2 30q4-3.6 8-.8')+kas('M34.8 29.2q4-2.8 8 .8')+
+          '<ellipse cx="32" cy="45.6" rx="2.5" ry="3.1" fill="#6B2D3F" stroke="'+G+'" stroke-width="1.8"/>'+
+          '<path d="M52.4 21.5q4 5.6 0 8.4q-4-2.8 0-8.4z" fill="#9AD9FF" stroke="'+O+'" stroke-width="1.4" stroke-linejoin="round"/>';
+    } else if(ifade==='uykulu'){
+      yuz=yanak+'<path d="M22.4 37q3.2 3 6.4 0M35.2 37q3.2 3 6.4 0" fill="none" stroke="'+G+'" stroke-width="2.3" stroke-linecap="round"/>'+
+          kas('M22.4 33.6h6.4')+kas('M35.2 33.6h6.4')+
+          '<ellipse cx="32" cy="45" rx="2.1" ry="1.7" fill="#6B2D3F" stroke="'+G+'" stroke-width="1.6"/>'+
+          '<g class="bk-z" fill="none" stroke="#8D95D8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M51 18h5.4l-5.4 6.2h5.4"/><path d="M46.4 10.8h3.6l-3.6 4.2h3.6"/></g>';
+    } else {
+      yuz=yanak+goz(25.6,37.6,2,2.5)+goz(38.4,37.6,2,2.5)+kas('M21.6 31.2l7.4 2.2')+kas('M42.4 31.2l-7.4 2.2')+
+          '<path d="M27.8 43.6q4.6 3.6 8.8-1.4" fill="none" stroke="'+G+'" stroke-width="1.9" stroke-linecap="round"/>'+
+          '<g class="bk-tw" fill="#F5C93F" stroke="'+O+'" stroke-width="1"><path d="M53 17l1 2.4l2.4 1l-2.4 1l-1 2.4l-1-2.4l-2.4-1l2.4-1z"/></g>';
+    }
+    return s+yuz+'</svg>';
+  }
+
+  // ---------- mekan feneri (muhur): 100 mekan, renk = bolge temasi, ikon = BOLGE_IKON ----------
+  function fenerSimgesi(tier, px, kilitli){
+    var n=BOLGE_ADLARI.length, i=((tier-1)%n+n)%n;
+    var m=BOLGE_DONGU.length, d=BOLGE_DONGU[(((tier-1)%m)+m)%m], ui=temaBul(d.tema).ui, O=BK_CIZGI;
+    var a=ui.vurgu, c=ui.vurguAlt, g=ui.ikinci;
+    return '<svg class="bk-fener'+(kilitli?' bk-kilit':'')+'" data-ik3="0" viewBox="0 0 48 54" width="'+px+'" height="'+Math.round(px*54/48)+'" aria-hidden="true" focusable="false">'+
+      '<circle cx="24" cy="5.2" r="3.4" fill="none" stroke="'+O+'" stroke-width="2"/>'+
+      '<circle cx="24" cy="32" r="20" fill="'+c+'" stroke="'+O+'" stroke-width="2.2"/>'+
+      '<circle cx="24" cy="30.4" r="18" fill="'+a+'"/>'+
+      '<circle cx="24" cy="30.6" r="15" fill="none" stroke="'+g+'" stroke-width="1.5" stroke-dasharray="2.4 2.6" stroke-linecap="round"/>'+
+      '<path d="M10.6 22.6A15 15 0 0 1 20 13.6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2.2" stroke-linecap="round"/>'+
+      '<g transform="translate(10.2 17.2) scale(.58)" fill="none" stroke="#FFF9EC" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" style="color:#FFF9EC">'+bolgeIkonIc(i)+'</g>'+
+      '</svg>';
+  }
+
+  // ---------- durum yardimcilari ----------
+  function bekciDurum(){
+    var b=state.bekci;
+    if(!b || typeof b!=='object'){ b=state.bekci={fener:'kehribar',gorulen:{},acik:{},sesParca:0}; }
+    if(!b.gorulen) b.gorulen={};
+    if(!b.acik) b.acik={};
+    if(typeof b.sesParca!=='number') b.sesParca=0;
+    return b;
+  }
+  function bekciSayiFener(st){ var n=0; for(var k in ((st||state).fenerler||{})) n++; return n; }
+  function bekciSayiIfade(st){ var n=0; for(var k in (((st||state).bekci||{}).gorulen||{})) n++; return n; }
+  function bekciRenkAcikMi(id){
+    var f=bekciFenerBul(id); if(!f.esik) return true;
+    return !!(bekciDurum().acik[id]) || bekciSayiFener()>=f.esik;
+  }
+  function bekciSayiRenk(){          // varsayilan renk haric acilan renk sayisi
+    var n=0; for(var i=1;i<BK_FENERLER.length;i++) if(bekciRenkAcikMi(BK_FENERLER[i].id)) n++;
+    return n;
+  }
+  // Onceki surumlerde bitmis bolgelerin fenerleri sessizce yanar (bonus/kutlama yok).
+  function bekciGeriDoldur(){
+    var son=Math.min(BOLGE_ADLARI.length, getDifficultyTier(state.enYuksek||1)-1);
+    if(!state.fenerler || typeof state.fenerler!=='object') state.fenerler={};
+    for(var t=1;t<=son;t++) state.fenerler[t]=1;
+  }
+  // Bolgenin son bolumu kazanilinca cagrilir. Ilk kez ise fener yanar + kucuk bonus.
+  function bekciFenerVer(tier){
+    if(!(tier>=1 && tier<=BOLGE_ADLARI.length)) return null;
+    if(!state.fenerler || typeof state.fenerler!=='object') state.fenerler={};
+    if(state.fenerler[tier]) return null;
+    state.fenerler[tier]=1;
+    var r=isikKazan(BK_FENER_BONUS);
+    if(r) state._rutbeAtladi=r;
+    return {tier:tier, bonus:BK_FENER_BONUS, ad:T('bolge_'+(tier-1))};
+  }
+  function bekciGorulduIsaretle(ifade){
+    var b=bekciDurum(); if(b.gorulen[ifade]) return;
+    b.gorulen[ifade]=1; save();
+    try{ basariTara(); }catch(e){}
+  }
+  // Kart (#katman) ustundeki bekci yuzu. Her kartta className sifirlanir (ogKartHazirla).
+  function bekciKartaYaz(ifade, boy){
+    var k=$('kIkon'); if(!k) return;
+    k.className='og-ikon bk'; k.hidden=false; k.innerHTML=bekciYuz(ifade,boy||64);
+    bekciGorulduIsaretle(ifade);
+  }
+
+  // ---------- surpriz oduller (gunluk gorev / seri odulu): isik haricinde kozmetik ----------
+  function bekciHash(s){
+    var h=2166136261;
+    for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+    return h>>>0;
+  }
+  function bekciSonrakiSes(){
+    for(var i=0;i<BK_SES_SIRA.length;i++) if(!paketVar('ses',BK_SES_SIRA[i])) return BK_SES_SIRA[i];
+    return null;
+  }
+  // Saf hesap: ayni gun + ayni kaynak her zaman ayni sonucu verir (yeniden deneyerek zar atilamaz).
+  // anahtar: 'seri' | 'gorev:<id>'. Donus: null | {tur:'fener',id} | {tur:'ses',id}
+  function bekciSurprizHesapla(anahtar, gun){
+    var kaynak=String(anahtar).split(':')[0], yuzde=BK_SURPRIZ[kaynak]||0;
+    var h=bekciHash((gun||bugununAnahtari())+'|'+anahtar);
+    if(!yuzde || (h%100)>=yuzde) return null;
+    var sira=((h>>>8)%2) ? ['fener','ses'] : ['ses','fener'];
+    for(var i=0;i<sira.length;i++){
+      if(sira[i]==='fener'){
+        for(var j=1;j<BK_FENERLER.length;j++) if(!bekciRenkAcikMi(BK_FENERLER[j].id)) return {tur:'fener', id:BK_FENERLER[j].id};
+      } else {
+        var s=bekciSonrakiSes(); if(s) return {tur:'ses', id:s};
+      }
+    }
+    return null;
+  }
+  // Uygular ve odul kartinda gosterilecek satiri ({ikon,metin}) dondurur.
+  function bekciSurprizVer(anahtar, gun){
+    var r=bekciSurprizHesapla(anahtar, gun); if(!r) return null;
+    var b=bekciDurum(), ik, metin;
+    if(r.tur==='fener'){
+      b.acik[r.id]=1;
+      ik=bekciYuz('sevinc',30,r.id); metin=T('bk_surpriz_fener',{ad:T('bk_f_'+r.id)});
+    } else {
+      b.sesParca=(b.sesParca||0)+1;
+      if(b.sesParca>=3){
+        b.sesParca-=3;
+        if(!state.paket) paketVarsayilan();
+        state.paket.ses[r.id]=1;
+        metin=T('bk_surpriz_ses_acildi',{ad:paketAd('ses',r.id)});
+      } else metin=T('bk_surpriz_ses',{a:b.sesParca,b:3});
+      ik=odIk('vol',26);
+    }
+    save();
+    try{ basariTara(); }catch(e){}
+    return {ikon:ik, metin:metin, tur:r.tur, id:r.id};
+  }
+
+  // ---------- Lig ekraninda bekci bolumu ----------
+  function bekciEkranCiz(){
+    var k=$('bkBolum'); if(!k) return;
+    var b=bekciDurum(), n=BOLGE_ADLARI.length, fs=bekciSayiFener(), gs=bekciSayiIfade(), i, h='';
+    if(!b.gorulen[_bkIfadeSec]) _bkIfadeSec='notr';
+    h+='<div class="bk-kart"><div class="bk-ust"><div class="bk-buyuk">'+bekciYuz(_bkIfadeSec,92)+'</div>'+
+       '<div class="bk-metin"><b>'+htmlKacir(T('bk_baslik'))+'</b><span>'+htmlKacir(T('bk_ifade_say',{a:gs,b:BK_IFADELER.length}))+'</span></div></div>';
+    h+='<div class="bk-baslik"><span>'+htmlKacir(T('bk_ifadeler'))+'</span></div><div class="bk-satir">';
+    for(i=0;i<BK_IFADELER.length;i++){
+      var e=BK_IFADELER[i], gor=!!b.gorulen[e];
+      h+='<button type="button" class="bk-oge bk-if'+(gor?'':' bk-kilit')+(gor&&e===_bkIfadeSec?' sec':'')+'" data-bk="if" data-v="'+e+'" aria-pressed="'+(gor&&e===_bkIfadeSec?'true':'false')+'" aria-label="'+htmlKacir(T('bk_if_'+e)+(gor?'':' · '+T('bk_if_kilit')))+'">'+
+         bekciYuz(e,44)+'<small>'+htmlKacir(T('bk_if_'+e))+'</small></button>';
+    }
+    h+='</div><div class="bk-baslik"><span>'+htmlKacir(T('bk_fener_rengi'))+'</span></div><div class="bk-satir">';
+    for(i=0;i<BK_FENERLER.length;i++){
+      var f=BK_FENERLER[i], acik=bekciRenkAcikMi(f.id), sec=(b.fener===f.id);
+      h+='<button type="button" class="bk-oge bk-renk'+(acik?'':' bk-kilit')+(sec?' sec':'')+'" data-bk="renk" data-v="'+f.id+'" aria-pressed="'+(sec?'true':'false')+'" aria-label="'+htmlKacir(T('bk_f_'+f.id)+(acik?'':' · '+T('bk_esik',{n:f.esik})))+'">'+
+         bekciYuz('notr',44,f.id)+'<small>'+htmlKacir(acik?T('bk_f_'+f.id):T('bk_esik',{n:f.esik}))+'</small></button>';
+    }
+    h+='</div>';
+    if((b.sesParca||0)>0 && bekciSonrakiSes()) h+='<p class="bk-not">'+htmlKacir(T('bk_ses_parca',{a:b.sesParca,b:3}))+'</p>';
+    h+='</div><div class="bk-kart"><div class="bk-baslik"><span>'+htmlKacir(T('bk_koleksiyon'))+'</span><span class="tnum">'+htmlKacir(T('bk_koleksiyon_say',{a:fs,b:n}))+'</span></div><div class="bk-izgara">';
+    for(i=1;i<=n;i++){
+      var yanik=!!(state.fenerler&&state.fenerler[i]), ad=T('bolge_'+(i-1));
+      h+='<button type="button" class="bk-fz" data-bk="f" data-v="'+i+'" aria-label="'+htmlKacir(ad+(yanik?'':' · '+T('bk_fener_yok')))+'">'+fenerSimgesi(i,44,!yanik)+'</button>';
+    }
+    h+='</div><p class="bk-not">'+htmlKacir(T('bk_koleksiyon_ack'))+'</p></div>';
+    k.innerHTML=h;
+    if(!k._bkBagli){
+      k._bkBagli=1;
+      k.addEventListener('click',function(ev){
+        var t=ev.target.closest?ev.target.closest('[data-bk]'):null; if(!t) return;
+        var tur=t.getAttribute('data-bk'), v=t.getAttribute('data-v'), bb=bekciDurum();
+        if(tur==='if'){
+          if(!bb.gorulen[v]){ kisaBildirim(T('bk_if_kilit')); return; }
+          _bkIfadeSec=v; titret('hafif'); bekciEkranCiz();
+        } else if(tur==='renk'){
+          var ff=bekciFenerBul(v);
+          if(!bekciRenkAcikMi(v)){ titret('hata'); kisaBildirim(T('bk_kilitli',{n:ff.esik})); return; }
+          bb.fener=v; save(); titret('hafif'); kisaBildirim(T('bk_secildi',{ad:T('bk_f_'+v)})); bekciEkranCiz();
+        } else if(tur==='f'){
+          var no=+v, yanik2=!!(state.fenerler&&state.fenerler[no]);
+          kisaBildirim(T('bolge_'+(no-1))+(yanik2?'':' · '+T('bk_fener_yok')));
+        }
+      });
+    }
   }
 
   // --- Gunluk gorev ---
@@ -10026,6 +10378,10 @@
   (function(){ for(var l in HAMLE_DIL){ if(DILLER[l]) Object.assign(DILLER[l], HAMLE_DIL[l]); } })();
   var HIKAYE_DIL={"tr": {"hk_sablon_giris": "{ad} karardı. Işığı geri getir.", "hk_sablon_cikis": "{ad} yeniden aydınlandı.", "hk_basla": "Işığı getir", "hk_giris_0": "Saat Kulesi'nin çarkları durdu, meydan karanlıkta. Işığı yeniden yürüt.", "hk_cikis_0": "Çarklar yeniden döndü. Saat Kulesi aydınlık.", "hk_giris_1": "Galata'nın tepesinde fener sönmüş. Kristalleri yak, yollar yeniden görünsün.", "hk_cikis_1": "Fener yeniden yanıyor. Galata yolcularını görüyor.", "hk_giris_2": "Ayasofya'nın kubbesine gölge çökmüş. Işığı kubbeye ulaştır.", "hk_cikis_2": "Kubbe ışıkla doldu. Ayasofya nefes alıyor.", "hk_giris_3": "Kapadokya'nın vadilerinde ışık kaybolmuş. Kayaların arasından yol bul.", "hk_cikis_3": "Vadiler aydınlandı. Kapadokya sabahı bekliyor.", "hk_giris_4": "Kız Kulesi denizin ortasında karanlıkta. Işığı suyun üstünden taşı.", "hk_cikis_4": "Kız Kulesi yeniden parlıyor. Işık Bekçisi nöbette.", "hk_giris_5": "Boğaz Köprüsü'nün ışıkları söndü. İki yakayı yeniden bağla.", "hk_cikis_5": "Köprü ışığını geri aldı. İki yaka yeniden bağlı.", "hk_giris_6": "Dolmabahçe'nin salonlarında lambalar yanmıyor. Her kristali yak.", "hk_cikis_6": "Salonlar aydınlandı. Dolmabahçe parlıyor.", "hk_giris_7": "Sultanahmet'in kubbeleri karanlıkta. Işığı kubbeden kubbeye taşı.", "hk_cikis_7": "Kubbeler birer birer yandı. Sultanahmet ışıkla dolu.", "hk_giris_8": "Topkapı'nın avluları gölgeye gömülmüş. Işığı avlulara ulaştır.", "hk_cikis_8": "Avlular aydınlık. Topkapı'nın ışığı geri döndü.", "hk_giris_9": "Yerebatan'ın sütunları karanlıkta. Işığı suyun altına indir.", "hk_cikis_9": "Sütunlar ışıkta. Yerebatan'da yansımalar parlıyor."}, "en": {"hk_sablon_giris": "{ad} has gone dark. Bring the light back.", "hk_sablon_cikis": "{ad} is lit again.", "hk_basla": "Bring the light", "hk_giris_0": "The Clock Tower's gears have stopped and the square is dark. Set the light moving again.", "hk_cikis_0": "The gears turn again. The Clock Tower is bright.", "hk_giris_1": "The lantern on Galata's top has gone out. Light the crystals so the way shows again.", "hk_cikis_1": "The lantern burns again. Galata can see its travellers.", "hk_giris_2": "A shadow has settled on Hagia Sophia's dome. Carry the light up to it.", "hk_cikis_2": "The dome is full of light. Hagia Sophia breathes.", "hk_giris_3": "The light has left the valleys of Cappadocia. Find a path between the rocks.", "hk_cikis_3": "The valleys are lit. Cappadocia waits for morning.", "hk_giris_4": "The Maiden's Tower stands dark in the middle of the sea. Carry the light across the water.", "hk_cikis_4": "The Maiden's Tower shines again. The Light Keeper is on watch.", "hk_giris_5": "The Bosphorus Bridge has gone dark. Join the two shores again.", "hk_cikis_5": "The bridge has its light back. The two shores are joined again.", "hk_giris_6": "The lamps in Dolmabahçe's halls are out. Light every crystal.", "hk_cikis_6": "The halls are lit. Dolmabahçe shines.", "hk_giris_7": "Sultanahmet's domes are dark. Pass the light from dome to dome.", "hk_cikis_7": "The domes lit up one by one. Sultanahmet is full of light.", "hk_giris_8": "Topkapı's courtyards are buried in shadow. Bring the light to each one.", "hk_cikis_8": "The courtyards are bright. Topkapı's light is back.", "hk_giris_9": "The columns of the Basilica Cistern are dark. Lower the light beneath the water.", "hk_cikis_9": "The columns are in the light. Reflections glow in the Basilica Cistern."}, "es": {"hk_sablon_giris": "{ad} se ha quedado a oscuras. Devuelve la luz.", "hk_sablon_cikis": "{ad} brilla de nuevo.", "hk_basla": "Traer la luz"}, "pt": {"hk_sablon_giris": "{ad} ficou às escuras. Traga a luz de volta.", "hk_sablon_cikis": "{ad} brilha de novo.", "hk_basla": "Trazer a luz"}, "de": {"hk_sablon_giris": "{ad} liegt im Dunkeln. Bring das Licht zurück.", "hk_sablon_cikis": "{ad} leuchtet wieder.", "hk_basla": "Licht bringen"}, "fr": {"hk_sablon_giris": "{ad} est plongé dans le noir. Rends-lui la lumière.", "hk_sablon_cikis": "{ad} brille de nouveau.", "hk_basla": "Rallumer"}, "ru": {"hk_sablon_giris": "{ad} погрузился во тьму. Верни свет.", "hk_sablon_cikis": "{ad} снова освещён.", "hk_basla": "Вернуть свет"}, "zhTW": {"hk_sablon_giris": "{ad}陷入了黑暗。把光帶回來。", "hk_sablon_cikis": "{ad}重新亮起來了。", "hk_basla": "帶回光"}, "zhCN": {"hk_sablon_giris": "{ad}陷入了黑暗。把光带回来。", "hk_sablon_cikis": "{ad}重新亮起来了。", "hk_basla": "带回光"}, "ja": {"hk_sablon_giris": "{ad}は闇に沈みました。光を取り戻そう。", "hk_sablon_cikis": "{ad}に再び光が灯りました。", "hk_basla": "光を取り戻す"}, "ko": {"hk_sablon_giris": "{ad}이(가) 어둠에 잠겼어요. 빛을 되찾아 주세요.", "hk_sablon_cikis": "{ad}에 다시 빛이 돌아왔어요.", "hk_basla": "빛 되찾기"}, "it": {"hk_sablon_giris": "{ad} è piombato nel buio. Riporta la luce.", "hk_sablon_cikis": "{ad} brilla di nuovo.", "hk_basla": "Riporta la luce"}, "az": {"hk_sablon_giris": "{ad} qaranlığa bürünüb. İşığı geri qaytar.", "hk_sablon_cikis": "{ad} yenidən işıqlandı.", "hk_basla": "İşığı gətir"}};
   (function(){ for(var l in HIKAYE_DIL){ if(DILLER[l]) Object.assign(DILLER[l], HIKAYE_DIL[l]); } })();
+  var BEKCI_DIL={"tr": {"bk_baslik": "Işık Bekçisi","bk_ifadeler": "İfadeler","bk_ifade_say": "{a}/{b} ifade görüldü","bk_if_notr": "Dikkatli","bk_if_sevinc": "Sevinçli","bk_if_saskin": "Şaşkın","bk_if_uykulu": "Uykulu","bk_if_kararli": "Kararlı","bk_if_kilit": "Oyunda henüz görmedin","bk_fener_rengi": "Fener rengi","bk_f_kehribar": "Kehribar","bk_f_nane": "Nane","bk_f_gul": "Gül","bk_f_gok": "Gök","bk_f_mor": "Mor","bk_esik": "{n} fener","bk_kilitli": "{n} mekân feneri yak ya da sürpriz ödülünü bekle.","bk_secildi": "Fener rengi: {ad}","bk_koleksiyon": "Mekân fenerleri","bk_koleksiyon_say": "{a}/{b} fener","bk_koleksiyon_ack": "Bir bölgenin son bölümünü bitirince o mekânın feneri yanar.","bk_fener_yok": "Henüz yanmadı","bk_fener_kazandin": "Mekân feneri yandı: {ad} · +{n} ışık","bk_surpriz_fener": "Sürpriz: yeni fener rengi, {ad}","bk_surpriz_ses": "Sürpriz: ses rengi parçası {a}/{b}","bk_surpriz_ses_acildi": "Sürpriz: yeni ses tipi açıldı, {ad}","bk_ses_parca": "Ses rengi parçaları: {a}/{b}","b_fener10": "Mekân Koleksiyoncusu","ba_fener10": "10 mekân feneri yak.","b_fener50": "Fener Ustası","ba_fener50": "50 mekân feneri yak.","b_ifade5": "Bekçinin Yüzleri","ba_ifade5": "Bekçinin 5 farklı ifadesini gör.","b_fener_renk": "Renkli Fener","ba_fener_renk": "3 fener rengi aç."},"en": {"bk_baslik": "Light Keeper","bk_ifadeler": "Expressions","bk_ifade_say": "{a}/{b} expressions seen","bk_if_notr": "Alert","bk_if_sevinc": "Joyful","bk_if_saskin": "Surprised","bk_if_uykulu": "Sleepy","bk_if_kararli": "Determined","bk_if_kilit": "Not seen in the game yet","bk_fener_rengi": "Lantern color","bk_f_kehribar": "Amber","bk_f_nane": "Mint","bk_f_gul": "Rose","bk_f_gok": "Sky","bk_f_mor": "Violet","bk_esik": "{n} lanterns","bk_kilitli": "Light {n} place lanterns or wait for a surprise reward.","bk_secildi": "Lantern color: {ad}","bk_koleksiyon": "Place lanterns","bk_koleksiyon_say": "{a}/{b} lanterns","bk_koleksiyon_ack": "Finish the last level of a region and that place's lantern lights up.","bk_fener_yok": "Not lit yet","bk_fener_kazandin": "Place lantern lit: {ad} · +{n} light","bk_surpriz_fener": "Surprise: new lantern color, {ad}","bk_surpriz_ses": "Surprise: sound color piece {a}/{b}","bk_surpriz_ses_acildi": "Surprise: new sound style unlocked, {ad}","bk_ses_parca": "Sound color pieces: {a}/{b}","b_fener10": "Place Collector","ba_fener10": "Light 10 place lanterns.","b_fener50": "Lantern Master","ba_fener50": "Light 50 place lanterns.","b_ifade5": "Faces of the Keeper","ba_ifade5": "See all 5 expressions of the Keeper.","b_fener_renk": "Colorful Lantern","ba_fener_renk": "Unlock 3 lantern colors."},"es": {"bk_baslik": "Guardián de la Luz","bk_ifadeler": "Expresiones","bk_ifade_say": "{a}/{b} expresiones vistas","bk_if_notr": "Atento","bk_if_sevinc": "Alegre","bk_if_saskin": "Sorprendido","bk_if_uykulu": "Soñoliento","bk_if_kararli": "Decidido","bk_if_kilit": "Aún no lo has visto","bk_fener_rengi": "Color del farol","bk_f_kehribar": "Ámbar","bk_f_nane": "Menta","bk_f_gul": "Rosa","bk_f_gok": "Cielo","bk_f_mor": "Violeta","bk_esik": "{n} faroles","bk_kilitli": "Enciende {n} faroles de lugares o espera un premio sorpresa.","bk_secildi": "Color del farol: {ad}","bk_koleksiyon": "Faroles de lugares","bk_koleksiyon_say": "{a}/{b} faroles","bk_koleksiyon_ack": "Termina el último nivel de una región y se enciende el farol de ese lugar.","bk_fener_yok": "Aún apagado","bk_fener_kazandin": "Farol encendido: {ad} · +{n} de luz","bk_surpriz_fener": "Sorpresa: nuevo color de farol, {ad}","bk_surpriz_ses": "Sorpresa: pieza de color de sonido {a}/{b}","bk_surpriz_ses_acildi": "Sorpresa: nuevo tipo de sonido desbloqueado, {ad}","bk_ses_parca": "Piezas de color de sonido: {a}/{b}","b_fener10": "Coleccionista de lugares","ba_fener10": "Enciende 10 faroles de lugares.","b_fener50": "Maestro de los faroles","ba_fener50": "Enciende 50 faroles de lugares.","b_ifade5": "Los rostros del Guardián","ba_ifade5": "Ve las 5 expresiones del Guardián.","b_fener_renk": "Farol de colores","ba_fener_renk": "Desbloquea 3 colores de farol."},"pt": {"bk_baslik": "Guardião da Luz","bk_ifadeler": "Expressões","bk_ifade_say": "{a}/{b} expressões vistas","bk_if_notr": "Atento","bk_if_sevinc": "Alegre","bk_if_saskin": "Surpreso","bk_if_uykulu": "Sonolento","bk_if_kararli": "Determinado","bk_if_kilit": "Ainda não viu","bk_fener_rengi": "Cor da lanterna","bk_f_kehribar": "Âmbar","bk_f_nane": "Menta","bk_f_gul": "Rosa","bk_f_gok": "Céu","bk_f_mor": "Violeta","bk_esik": "{n} lanternas","bk_kilitli": "Acenda {n} lanternas de lugares ou espere um prêmio surpresa.","bk_secildi": "Cor da lanterna: {ad}","bk_koleksiyon": "Lanternas de lugares","bk_koleksiyon_say": "{a}/{b} lanternas","bk_koleksiyon_ack": "Termine a última fase de uma região e a lanterna daquele lugar se acende.","bk_fener_yok": "Ainda apagada","bk_fener_kazandin": "Lanterna acesa: {ad} · +{n} de luz","bk_surpriz_fener": "Surpresa: nova cor de lanterna, {ad}","bk_surpriz_ses": "Surpresa: peça de cor de som {a}/{b}","bk_surpriz_ses_acildi": "Surpresa: novo tipo de som desbloqueado, {ad}","bk_ses_parca": "Peças de cor de som: {a}/{b}","b_fener10": "Colecionador de lugares","ba_fener10": "Acenda 10 lanternas de lugares.","b_fener50": "Mestre das lanternas","ba_fener50": "Acenda 50 lanternas de lugares.","b_ifade5": "Os rostos do Guardião","ba_ifade5": "Veja as 5 expressões do Guardião.","b_fener_renk": "Lanterna colorida","ba_fener_renk": "Desbloqueie 3 cores de lanterna."},"de": {"bk_baslik": "Lichtwächter","bk_ifadeler": "Ausdrücke","bk_ifade_say": "{a}/{b} Ausdrücke gesehen","bk_if_notr": "Aufmerksam","bk_if_sevinc": "Fröhlich","bk_if_saskin": "Überrascht","bk_if_uykulu": "Müde","bk_if_kararli": "Entschlossen","bk_if_kilit": "Noch nicht gesehen","bk_fener_rengi": "Laternenfarbe","bk_f_kehribar": "Bernstein","bk_f_nane": "Minze","bk_f_gul": "Rosé","bk_f_gok": "Himmel","bk_f_mor": "Violett","bk_esik": "{n} Laternen","bk_kilitli": "Entzünde {n} Ortslaternen oder warte auf eine Überraschung.","bk_secildi": "Laternenfarbe: {ad}","bk_koleksiyon": "Ortslaternen","bk_koleksiyon_say": "{a}/{b} Laternen","bk_koleksiyon_ack": "Schließe das letzte Level einer Region ab, und die Laterne dieses Ortes leuchtet auf.","bk_fener_yok": "Noch nicht entzündet","bk_fener_kazandin": "Ortslaterne leuchtet: {ad} · +{n} Licht","bk_surpriz_fener": "Überraschung: neue Laternenfarbe, {ad}","bk_surpriz_ses": "Überraschung: Klangfarben-Teil {a}/{b}","bk_surpriz_ses_acildi": "Überraschung: neue Klangart freigeschaltet, {ad}","bk_ses_parca": "Klangfarben-Teile: {a}/{b}","b_fener10": "Ortssammler","ba_fener10": "Entzünde 10 Ortslaternen.","b_fener50": "Laternenmeister","ba_fener50": "Entzünde 50 Ortslaternen.","b_ifade5": "Gesichter des Wächters","ba_ifade5": "Sieh alle 5 Ausdrücke des Wächters.","b_fener_renk": "Bunte Laterne","ba_fener_renk": "Schalte 3 Laternenfarben frei."},"fr": {"bk_baslik": "Gardien de la Lumière","bk_ifadeler": "Expressions","bk_ifade_say": "{a}/{b} expressions vues","bk_if_notr": "Attentif","bk_if_sevinc": "Joyeux","bk_if_saskin": "Surpris","bk_if_uykulu": "Endormi","bk_if_kararli": "Déterminé","bk_if_kilit": "Pas encore vu","bk_fener_rengi": "Couleur de la lanterne","bk_f_kehribar": "Ambre","bk_f_nane": "Menthe","bk_f_gul": "Rose","bk_f_gok": "Ciel","bk_f_mor": "Violet","bk_esik": "{n} lanternes","bk_kilitli": "Allume {n} lanternes de lieux ou attends une surprise.","bk_secildi": "Couleur de la lanterne : {ad}","bk_koleksiyon": "Lanternes des lieux","bk_koleksiyon_say": "{a}/{b} lanternes","bk_koleksiyon_ack": "Termine le dernier niveau d'une région et la lanterne de ce lieu s'allume.","bk_fener_yok": "Pas encore allumée","bk_fener_kazandin": "Lanterne allumée : {ad} · +{n} de lumière","bk_surpriz_fener": "Surprise : nouvelle couleur de lanterne, {ad}","bk_surpriz_ses": "Surprise : fragment de couleur sonore {a}/{b}","bk_surpriz_ses_acildi": "Surprise : nouveau type de son débloqué, {ad}","bk_ses_parca": "Fragments de couleur sonore : {a}/{b}","b_fener10": "Collectionneur de lieux","ba_fener10": "Allume 10 lanternes de lieux.","b_fener50": "Maître des lanternes","ba_fener50": "Allume 50 lanternes de lieux.","b_ifade5": "Les visages du Gardien","ba_ifade5": "Découvre les 5 expressions du Gardien.","b_fener_renk": "Lanterne colorée","ba_fener_renk": "Débloque 3 couleurs de lanterne."},"ru": {"bk_baslik": "Хранитель света","bk_ifadeler": "Выражения","bk_ifade_say": "Выражений увидено: {a}/{b}","bk_if_notr": "Внимательный","bk_if_sevinc": "Радостный","bk_if_saskin": "Удивлённый","bk_if_uykulu": "Сонный","bk_if_kararli": "Решительный","bk_if_kilit": "Ещё не видел","bk_fener_rengi": "Цвет фонаря","bk_f_kehribar": "Янтарный","bk_f_nane": "Мятный","bk_f_gul": "Розовый","bk_f_gok": "Небесный","bk_f_mor": "Фиолетовый","bk_esik": "{n} фонарей","bk_kilitli": "Зажги {n} фонарей мест или дождись сюрприза.","bk_secildi": "Цвет фонаря: {ad}","bk_koleksiyon": "Фонари мест","bk_koleksiyon_say": "{a}/{b} фонарей","bk_koleksiyon_ack": "Пройди последний уровень региона — и фонарь этого места загорится.","bk_fener_yok": "Ещё не зажжён","bk_fener_kazandin": "Фонарь зажжён: {ad} · +{n} света","bk_surpriz_fener": "Сюрприз: новый цвет фонаря — {ad}","bk_surpriz_ses": "Сюрприз: часть цвета звука {a}/{b}","bk_surpriz_ses_acildi": "Сюрприз: открыт новый тип звука — {ad}","bk_ses_parca": "Части цвета звука: {a}/{b}","b_fener10": "Коллекционер мест","ba_fener10": "Зажги 10 фонарей мест.","b_fener50": "Мастер фонарей","ba_fener50": "Зажги 50 фонарей мест.","b_ifade5": "Лица Хранителя","ba_ifade5": "Увидь все 5 выражений Хранителя.","b_fener_renk": "Цветной фонарь","ba_fener_renk": "Открой 3 цвета фонаря."},"zhTW": {"bk_baslik": "光之守護者","bk_ifadeler": "表情","bk_ifade_say": "已見過 {a}/{b} 種表情","bk_if_notr": "專注","bk_if_sevinc": "開心","bk_if_saskin": "驚訝","bk_if_uykulu": "想睡","bk_if_kararli": "堅定","bk_if_kilit": "尚未見過","bk_fener_rengi": "燈籠顏色","bk_f_kehribar": "琥珀","bk_f_nane": "薄荷","bk_f_gul": "玫瑰","bk_f_gok": "天藍","bk_f_mor": "紫羅蘭","bk_esik": "{n} 盞燈","bk_kilitli": "點亮 {n} 盞地標燈籠，或等待驚喜獎勵。","bk_secildi": "燈籠顏色：{ad}","bk_koleksiyon": "地標燈籠","bk_koleksiyon_say": "{a}/{b} 盞","bk_koleksiyon_ack": "完成一個區域的最後一關，該地標的燈籠就會亮起。","bk_fener_yok": "尚未點亮","bk_fener_kazandin": "地標燈籠已點亮：{ad} · +{n} 光","bk_surpriz_fener": "驚喜：新的燈籠顏色「{ad}」","bk_surpriz_ses": "驚喜：音色碎片 {a}/{b}","bk_surpriz_ses_acildi": "驚喜：解鎖新音效類型「{ad}」","bk_ses_parca": "音色碎片：{a}/{b}","b_fener10": "地標收藏家","ba_fener10": "點亮 10 盞地標燈籠。","b_fener50": "燈籠大師","ba_fener50": "點亮 50 盞地標燈籠。","b_ifade5": "守護者的表情","ba_ifade5": "看到守護者的 5 種表情。","b_fener_renk": "彩色燈籠","ba_fener_renk": "解鎖 3 種燈籠顏色。"},"zhCN": {"bk_baslik": "光之守护者","bk_ifadeler": "表情","bk_ifade_say": "已见过 {a}/{b} 种表情","bk_if_notr": "专注","bk_if_sevinc": "开心","bk_if_saskin": "惊讶","bk_if_uykulu": "想睡","bk_if_kararli": "坚定","bk_if_kilit": "尚未见过","bk_fener_rengi": "灯笼颜色","bk_f_kehribar": "琥珀","bk_f_nane": "薄荷","bk_f_gul": "玫瑰","bk_f_gok": "天蓝","bk_f_mor": "紫罗兰","bk_esik": "{n} 盏灯","bk_kilitli": "点亮 {n} 盏地标灯笼，或等待惊喜奖励。","bk_secildi": "灯笼颜色：{ad}","bk_koleksiyon": "地标灯笼","bk_koleksiyon_say": "{a}/{b} 盏","bk_koleksiyon_ack": "完成一个区域的最后一关，该地标的灯笼就会亮起。","bk_fener_yok": "尚未点亮","bk_fener_kazandin": "地标灯笼已点亮：{ad} · +{n} 光","bk_surpriz_fener": "惊喜：新的灯笼颜色“{ad}”","bk_surpriz_ses": "惊喜：音色碎片 {a}/{b}","bk_surpriz_ses_acildi": "惊喜：解锁新音效类型“{ad}”","bk_ses_parca": "音色碎片：{a}/{b}","b_fener10": "地标收藏家","ba_fener10": "点亮 10 盏地标灯笼。","b_fener50": "灯笼大师","ba_fener50": "点亮 50 盏地标灯笼。","b_ifade5": "守护者的表情","ba_ifade5": "看到守护者的 5 种表情。","b_fener_renk": "彩色灯笼","ba_fener_renk": "解锁 3 种灯笼颜色。"},"ja": {"bk_baslik": "光の番人","bk_ifadeler": "表情","bk_ifade_say": "表情 {a}/{b} 種を見た","bk_if_notr": "注意深い","bk_if_sevinc": "うれしい","bk_if_saskin": "びっくり","bk_if_uykulu": "ねむい","bk_if_kararli": "決意","bk_if_kilit": "まだ見ていません","bk_fener_rengi": "ランタンの色","bk_f_kehribar": "琥珀","bk_f_nane": "ミント","bk_f_gul": "ローズ","bk_f_gok": "空色","bk_f_mor": "バイオレット","bk_esik": "ランタン{n}個","bk_kilitli": "名所のランタンを{n}個灯すか、サプライズ報酬を待とう。","bk_secildi": "ランタンの色：{ad}","bk_koleksiyon": "名所のランタン","bk_koleksiyon_say": "{a}/{b}個","bk_koleksiyon_ack": "地域の最後のステージをクリアすると、その名所のランタンが灯ります。","bk_fener_yok": "まだ灯っていません","bk_fener_kazandin": "ランタン点灯：{ad} · +{n} 光","bk_surpriz_fener": "サプライズ：新しいランタンの色「{ad}」","bk_surpriz_ses": "サプライズ：音色のかけら {a}/{b}","bk_surpriz_ses_acildi": "サプライズ：新しいサウンドタイプ「{ad}」を解放","bk_ses_parca": "音色のかけら：{a}/{b}","b_fener10": "名所コレクター","ba_fener10": "名所のランタンを10個灯す。","b_fener50": "ランタンの達人","ba_fener50": "名所のランタンを50個灯す。","b_ifade5": "番人の表情","ba_ifade5": "番人の5つの表情を見る。","b_fener_renk": "カラフルなランタン","ba_fener_renk": "ランタンの色を3つ解放する。"},"ko": {"bk_baslik": "빛의 파수꾼","bk_ifadeler": "표정","bk_ifade_say": "표정 {a}/{b}개 확인","bk_if_notr": "주의 깊음","bk_if_sevinc": "기쁨","bk_if_saskin": "놀람","bk_if_uykulu": "졸림","bk_if_kararli": "결연함","bk_if_kilit": "아직 보지 못했어요","bk_fener_rengi": "등불 색상","bk_f_kehribar": "호박색","bk_f_nane": "민트","bk_f_gul": "장미","bk_f_gok": "하늘색","bk_f_mor": "보라","bk_esik": "등불 {n}개","bk_kilitli": "명소 등불 {n}개를 밝히거나 깜짝 보상을 기다리세요.","bk_secildi": "등불 색상: {ad}","bk_koleksiyon": "명소 등불","bk_koleksiyon_say": "{a}/{b}개","bk_koleksiyon_ack": "지역의 마지막 레벨을 끝내면 그 명소의 등불이 켜져요.","bk_fener_yok": "아직 켜지지 않았어요","bk_fener_kazandin": "명소 등불 점등: {ad} · +{n} 빛","bk_surpriz_fener": "깜짝 보상: 새 등불 색상 {ad}","bk_surpriz_ses": "깜짝 보상: 음색 조각 {a}/{b}","bk_surpriz_ses_acildi": "깜짝 보상: 새 사운드 종류 {ad} 해금","bk_ses_parca": "음색 조각: {a}/{b}","b_fener10": "명소 수집가","ba_fener10": "명소 등불 10개를 밝히세요.","b_fener50": "등불 달인","ba_fener50": "명소 등불 50개를 밝히세요.","b_ifade5": "파수꾼의 표정","ba_ifade5": "파수꾼의 표정 5가지를 모두 확인하세요.","b_fener_renk": "알록달록 등불","ba_fener_renk": "등불 색상 3개를 해금하세요."},"it": {"bk_baslik": "Custode della Luce","bk_ifadeler": "Espressioni","bk_ifade_say": "{a}/{b} espressioni viste","bk_if_notr": "Attento","bk_if_sevinc": "Gioioso","bk_if_saskin": "Sorpreso","bk_if_uykulu": "Assonnato","bk_if_kararli": "Deciso","bk_if_kilit": "Non ancora visto","bk_fener_rengi": "Colore della lanterna","bk_f_kehribar": "Ambra","bk_f_nane": "Menta","bk_f_gul": "Rosa","bk_f_gok": "Cielo","bk_f_mor": "Viola","bk_esik": "{n} lanterne","bk_kilitli": "Accendi {n} lanterne dei luoghi o aspetta un premio a sorpresa.","bk_secildi": "Colore della lanterna: {ad}","bk_koleksiyon": "Lanterne dei luoghi","bk_koleksiyon_say": "{a}/{b} lanterne","bk_koleksiyon_ack": "Finisci l'ultimo livello di una regione e si accende la lanterna di quel luogo.","bk_fener_yok": "Non ancora accesa","bk_fener_kazandin": "Lanterna accesa: {ad} · +{n} di luce","bk_surpriz_fener": "Sorpresa: nuovo colore di lanterna, {ad}","bk_surpriz_ses": "Sorpresa: frammento di colore sonoro {a}/{b}","bk_surpriz_ses_acildi": "Sorpresa: nuovo tipo di suono sbloccato, {ad}","bk_ses_parca": "Frammenti di colore sonoro: {a}/{b}","b_fener10": "Collezionista di luoghi","ba_fener10": "Accendi 10 lanterne dei luoghi.","b_fener50": "Maestro delle lanterne","ba_fener50": "Accendi 50 lanterne dei luoghi.","b_ifade5": "I volti del Custode","ba_ifade5": "Scopri tutte e 5 le espressioni del Custode.","b_fener_renk": "Lanterna colorata","ba_fener_renk": "Sblocca 3 colori di lanterna."},"az": {"bk_baslik": "İşıq Gözətçisi","bk_ifadeler": "İfadələr","bk_ifade_say": "{a}/{b} ifadə görüldü","bk_if_notr": "Diqqətli","bk_if_sevinc": "Sevincli","bk_if_saskin": "Təəccüblü","bk_if_uykulu": "Yuxulu","bk_if_kararli": "Qərarlı","bk_if_kilit": "Hələ görməmisən","bk_fener_rengi": "Fənər rəngi","bk_f_kehribar": "Kəhrəba","bk_f_nane": "Nanə","bk_f_gul": "Gül","bk_f_gok": "Göy","bk_f_mor": "Bənövşəyi","bk_esik": "{n} fənər","bk_kilitli": "{n} məkan fənəri yandır və ya sürpriz mükafatı gözlə.","bk_secildi": "Fənər rəngi: {ad}","bk_koleksiyon": "Məkan fənərləri","bk_koleksiyon_say": "{a}/{b} fənər","bk_koleksiyon_ack": "Bölgənin son bölməsini bitirəndə həmin məkanın fənəri yanır.","bk_fener_yok": "Hələ yanmayıb","bk_fener_kazandin": "Məkan fənəri yandı: {ad} · +{n} işıq","bk_surpriz_fener": "Sürpriz: yeni fənər rəngi, {ad}","bk_surpriz_ses": "Sürpriz: səs rəngi parçası {a}/{b}","bk_surpriz_ses_acildi": "Sürpriz: yeni səs tipi açıldı, {ad}","bk_ses_parca": "Səs rəngi parçaları: {a}/{b}","b_fener10": "Məkan Kolleksiyaçısı","ba_fener10": "10 məkan fənəri yandır.","b_fener50": "Fənər Ustası","ba_fener50": "50 məkan fənəri yandır.","b_ifade5": "Gözətçinin Üzləri","ba_ifade5": "Gözətçinin 5 fərqli ifadəsini gör.","b_fener_renk": "Rəngarəng Fənər","ba_fener_renk": "3 fənər rəngi aç."}};
+  (function(){ for(var l in BEKCI_DIL){ if(DILLER[l]) Object.assign(DILLER[l], BEKCI_DIL[l]); } })();
+  var SIRALAMA_DIL={"tr": {"sr_baslik": "Sıralama", "sr_alt": "Takma adınla haftalık ve aylık sıralamaya katıl.", "sr_ad_baslik": "Takma adını seç", "sr_ad_ack": "3–16 karakter. Takma adın ve ilerlemen herkese açık sıralamada görünür; gerçek adını yazma.", "sr_ad_ipucu": "Takma ad", "sr_katil": "Katıl", "sr_hafta": "Hafta", "sr_ay": "Ay", "sr_genel": "Genel", "sr_not_hafta": "Bu hafta ilerlediğin bölüm sayısı. Pazartesi sıfırlanır.", "sr_not_ay": "Bu ay ilerlediğin bölüm sayısı.", "sr_not_genel": "Ulaşılan en yüksek bölüm.", "sr_bos": "Henüz kimse yok.", "sr_ag": "Bağlanılamadı. Biraz sonra tekrar dene.", "sr_ad_dolu": "Bu ad alınmış.", "sr_ad_gecersiz": "Bu ad kullanılamaz. 3–16 harf, rakam ya da boşluk kullan.", "sr_cok_sik": "Adı haftada bir değiştirebilirsin.", "sr_degistir": "Adı değiştir", "sr_cik": "Sıralamadan çık", "sr_cik_emin": "Emin misin? Kaydın silinir.", "sr_cikti": "Sıralamadan çıktın.", "sr_sen": "Sen", "sr_yukleniyor": "Yükleniyor…"}, "en": {"sr_baslik": "Ranking", "sr_alt": "Join the weekly and monthly ranking with a nickname.", "sr_ad_baslik": "Choose a nickname", "sr_ad_ack": "3–16 characters. Your nickname and progress appear in the public ranking; don't use your real name.", "sr_ad_ipucu": "Nickname", "sr_katil": "Join", "sr_hafta": "Week", "sr_ay": "Month", "sr_genel": "All time", "sr_not_hafta": "Levels you advanced this week. Resets on Monday.", "sr_not_ay": "Levels you advanced this month.", "sr_not_genel": "Highest level reached.", "sr_bos": "Nobody yet.", "sr_ag": "Couldn't connect. Try again in a moment.", "sr_ad_dolu": "That name is taken.", "sr_ad_gecersiz": "That name can't be used. Use 3–16 letters, digits or spaces.", "sr_cok_sik": "You can change your name once a week.", "sr_degistir": "Change name", "sr_cik": "Leave ranking", "sr_cik_emin": "Are you sure? Your record will be deleted.", "sr_cikti": "You left the ranking.", "sr_sen": "You", "sr_yukleniyor": "Loading…"}, "es": {"sr_baslik": "Clasificación", "sr_alt": "Únete a la clasificación semanal y mensual con un apodo.", "sr_ad_baslik": "Elige un apodo", "sr_ad_ack": "De 3 a 16 caracteres. Tu apodo y tu progreso aparecen en la clasificación pública; no uses tu nombre real.", "sr_ad_ipucu": "Apodo", "sr_katil": "Unirme", "sr_hafta": "Semana", "sr_ay": "Mes", "sr_genel": "Total", "sr_not_hafta": "Niveles que avanzaste esta semana. Se reinicia el lunes.", "sr_not_ay": "Niveles que avanzaste este mes.", "sr_not_genel": "Nivel más alto alcanzado.", "sr_bos": "Todavía no hay nadie.", "sr_ag": "No se pudo conectar. Inténtalo en un momento.", "sr_ad_dolu": "Ese nombre ya está en uso.", "sr_ad_gecersiz": "Ese nombre no se puede usar. Usa de 3 a 16 letras, números o espacios.", "sr_cok_sik": "Puedes cambiar el nombre una vez por semana.", "sr_degistir": "Cambiar nombre", "sr_cik": "Salir de la clasificación", "sr_cik_emin": "¿Seguro? Se borrará tu registro.", "sr_cikti": "Saliste de la clasificación.", "sr_sen": "Tú", "sr_yukleniyor": "Cargando…"}, "pt": {"sr_baslik": "Classificação", "sr_alt": "Entre na classificação semanal e mensal com um apelido.", "sr_ad_baslik": "Escolha um apelido", "sr_ad_ack": "De 3 a 16 caracteres. Seu apelido e seu progresso aparecem na classificação pública; não use seu nome real.", "sr_ad_ipucu": "Apelido", "sr_katil": "Entrar", "sr_hafta": "Semana", "sr_ay": "Mês", "sr_genel": "Geral", "sr_not_hafta": "Fases que você avançou nesta semana. Reinicia na segunda.", "sr_not_ay": "Fases que você avançou neste mês.", "sr_not_genel": "Fase mais alta alcançada.", "sr_bos": "Ninguém ainda.", "sr_ag": "Não foi possível conectar. Tente de novo em instantes.", "sr_ad_dolu": "Esse nome já está em uso.", "sr_ad_gecersiz": "Esse nome não pode ser usado. Use de 3 a 16 letras, números ou espaços.", "sr_cok_sik": "Você pode trocar o nome uma vez por semana.", "sr_degistir": "Trocar nome", "sr_cik": "Sair da classificação", "sr_cik_emin": "Tem certeza? Seu registro será apagado.", "sr_cikti": "Você saiu da classificação.", "sr_sen": "Você", "sr_yukleniyor": "Carregando…"}, "de": {"sr_baslik": "Rangliste", "sr_alt": "Tritt mit einem Spitznamen der Wochen- und Monatsrangliste bei.", "sr_ad_baslik": "Wähle einen Spitznamen", "sr_ad_ack": "3–16 Zeichen. Dein Spitzname und dein Fortschritt erscheinen in der öffentlichen Rangliste; nutze nicht deinen echten Namen.", "sr_ad_ipucu": "Spitzname", "sr_katil": "Beitreten", "sr_hafta": "Woche", "sr_ay": "Monat", "sr_genel": "Gesamt", "sr_not_hafta": "Level, die du diese Woche geschafft hast. Montags zurückgesetzt.", "sr_not_ay": "Level, die du diesen Monat geschafft hast.", "sr_not_genel": "Höchstes erreichtes Level.", "sr_bos": "Noch niemand.", "sr_ag": "Keine Verbindung. Versuch es gleich noch einmal.", "sr_ad_dolu": "Dieser Name ist vergeben.", "sr_ad_gecersiz": "Dieser Name ist nicht erlaubt. Nutze 3–16 Buchstaben, Ziffern oder Leerzeichen.", "sr_cok_sik": "Du kannst den Namen einmal pro Woche ändern.", "sr_degistir": "Namen ändern", "sr_cik": "Rangliste verlassen", "sr_cik_emin": "Sicher? Dein Eintrag wird gelöscht.", "sr_cikti": "Du hast die Rangliste verlassen.", "sr_sen": "Du", "sr_yukleniyor": "Lädt…"}, "fr": {"sr_baslik": "Classement", "sr_alt": "Rejoins le classement hebdomadaire et mensuel avec un pseudo.", "sr_ad_baslik": "Choisis un pseudo", "sr_ad_ack": "3 à 16 caractères. Ton pseudo et ta progression apparaissent dans le classement public ; n'utilise pas ton vrai nom.", "sr_ad_ipucu": "Pseudo", "sr_katil": "Rejoindre", "sr_hafta": "Semaine", "sr_ay": "Mois", "sr_genel": "Général", "sr_not_hafta": "Niveaux gagnés cette semaine. Remis à zéro le lundi.", "sr_not_ay": "Niveaux gagnés ce mois-ci.", "sr_not_genel": "Niveau le plus élevé atteint.", "sr_bos": "Personne pour l'instant.", "sr_ag": "Connexion impossible. Réessaie dans un instant.", "sr_ad_dolu": "Ce nom est déjà pris.", "sr_ad_gecersiz": "Ce nom n'est pas utilisable. Utilise 3 à 16 lettres, chiffres ou espaces.", "sr_cok_sik": "Tu peux changer de nom une fois par semaine.", "sr_degistir": "Changer de nom", "sr_cik": "Quitter le classement", "sr_cik_emin": "Tu es sûr ? Ton enregistrement sera supprimé.", "sr_cikti": "Tu as quitté le classement.", "sr_sen": "Toi", "sr_yukleniyor": "Chargement…"}, "ru": {"sr_baslik": "Рейтинг", "sr_alt": "Участвуй в недельном и месячном рейтинге под псевдонимом.", "sr_ad_baslik": "Выбери псевдоним", "sr_ad_ack": "3–16 символов. Твой псевдоним и прогресс видны в открытом рейтинге; не используй настоящее имя.", "sr_ad_ipucu": "Псевдоним", "sr_katil": "Участвовать", "sr_hafta": "Неделя", "sr_ay": "Месяц", "sr_genel": "Всего", "sr_not_hafta": "Уровни, пройденные на этой неделе. Сбрасывается в понедельник.", "sr_not_ay": "Уровни, пройденные в этом месяце.", "sr_not_genel": "Самый высокий достигнутый уровень.", "sr_bos": "Пока никого нет.", "sr_ag": "Не удалось подключиться. Попробуй чуть позже.", "sr_ad_dolu": "Это имя занято.", "sr_ad_gecersiz": "Это имя нельзя использовать. Используй 3–16 букв, цифр или пробелов.", "sr_cok_sik": "Имя можно менять раз в неделю.", "sr_degistir": "Сменить имя", "sr_cik": "Выйти из рейтинга", "sr_cik_emin": "Уверен? Твоя запись будет удалена.", "sr_cikti": "Ты вышел из рейтинга.", "sr_sen": "Ты", "sr_yukleniyor": "Загрузка…"}, "zhTW": {"sr_baslik": "排行榜", "sr_alt": "用暱稱加入每週與每月排行榜。", "sr_ad_baslik": "選擇暱稱", "sr_ad_ack": "3–16 個字元。你的暱稱與進度會顯示在公開排行榜上；請勿使用真實姓名。", "sr_ad_ipucu": "暱稱", "sr_katil": "加入", "sr_hafta": "本週", "sr_ay": "本月", "sr_genel": "總榜", "sr_not_hafta": "本週前進的關卡數。每週一重置。", "sr_not_ay": "本月前進的關卡數。", "sr_not_genel": "到達的最高關卡。", "sr_bos": "還沒有人。", "sr_ag": "無法連線，請稍後再試。", "sr_ad_dolu": "這個名稱已被使用。", "sr_ad_gecersiz": "無法使用這個名稱。請用 3–16 個字母、數字或空格。", "sr_cok_sik": "名稱每週只能更改一次。", "sr_degistir": "更改名稱", "sr_cik": "退出排行榜", "sr_cik_emin": "確定嗎？你的紀錄將被刪除。", "sr_cikti": "你已退出排行榜。", "sr_sen": "你", "sr_yukleniyor": "載入中…"}, "zhCN": {"sr_baslik": "排行榜", "sr_alt": "用昵称加入每周和每月排行榜。", "sr_ad_baslik": "选择昵称", "sr_ad_ack": "3–16 个字符。你的昵称和进度会显示在公开排行榜上；请勿使用真实姓名。", "sr_ad_ipucu": "昵称", "sr_katil": "加入", "sr_hafta": "本周", "sr_ay": "本月", "sr_genel": "总榜", "sr_not_hafta": "本周前进的关卡数。每周一重置。", "sr_not_ay": "本月前进的关卡数。", "sr_not_genel": "到达的最高关卡。", "sr_bos": "还没有人。", "sr_ag": "无法连接，请稍后再试。", "sr_ad_dolu": "这个名称已被使用。", "sr_ad_gecersiz": "无法使用这个名称。请用 3–16 个字母、数字或空格。", "sr_cok_sik": "名称每周只能修改一次。", "sr_degistir": "修改名称", "sr_cik": "退出排行榜", "sr_cik_emin": "确定吗？你的记录将被删除。", "sr_cikti": "你已退出排行榜。", "sr_sen": "你", "sr_yukleniyor": "加载中…"}, "ja": {"sr_baslik": "ランキング", "sr_alt": "ニックネームで週間・月間ランキングに参加しよう。", "sr_ad_baslik": "ニックネームを決める", "sr_ad_ack": "3〜16文字。ニックネームと進行状況は公開ランキングに表示されます。本名は使わないでください。", "sr_ad_ipucu": "ニックネーム", "sr_katil": "参加", "sr_hafta": "今週", "sr_ay": "今月", "sr_genel": "総合", "sr_not_hafta": "今週進めたステージ数。月曜にリセットされます。", "sr_not_ay": "今月進めたステージ数。", "sr_not_genel": "到達した最高ステージ。", "sr_bos": "まだ誰もいません。", "sr_ag": "接続できませんでした。少ししてからもう一度お試しください。", "sr_ad_dolu": "この名前は使われています。", "sr_ad_gecersiz": "この名前は使えません。3〜16文字の文字・数字・スペースを使ってください。", "sr_cok_sik": "名前は週に1回だけ変更できます。", "sr_degistir": "名前を変更", "sr_cik": "ランキングから退出", "sr_cik_emin": "本当に退出しますか？記録は削除されます。", "sr_cikti": "ランキングから退出しました。", "sr_sen": "あなた", "sr_yukleniyor": "読み込み中…"}, "ko": {"sr_baslik": "순위", "sr_alt": "닉네임으로 주간·월간 순위에 참여하세요.", "sr_ad_baslik": "닉네임 정하기", "sr_ad_ack": "3~16자. 닉네임과 진행 상황이 공개 순위에 표시됩니다. 실명은 사용하지 마세요.", "sr_ad_ipucu": "닉네임", "sr_katil": "참여", "sr_hafta": "주간", "sr_ay": "월간", "sr_genel": "전체", "sr_not_hafta": "이번 주에 진행한 레벨 수. 월요일에 초기화돼요.", "sr_not_ay": "이번 달에 진행한 레벨 수.", "sr_not_genel": "도달한 최고 레벨.", "sr_bos": "아직 아무도 없어요.", "sr_ag": "연결할 수 없어요. 잠시 후 다시 시도하세요.", "sr_ad_dolu": "이미 사용 중인 이름이에요.", "sr_ad_gecersiz": "사용할 수 없는 이름이에요. 3~16자의 글자, 숫자, 공백을 사용하세요.", "sr_cok_sik": "이름은 일주일에 한 번만 바꿀 수 있어요.", "sr_degistir": "이름 변경", "sr_cik": "순위에서 나가기", "sr_cik_emin": "정말요? 기록이 삭제돼요.", "sr_cikti": "순위에서 나갔어요.", "sr_sen": "나", "sr_yukleniyor": "불러오는 중…"}, "it": {"sr_baslik": "Classifica", "sr_alt": "Entra nella classifica settimanale e mensile con un soprannome.", "sr_ad_baslik": "Scegli un soprannome", "sr_ad_ack": "Da 3 a 16 caratteri. Il tuo soprannome e i tuoi progressi compaiono nella classifica pubblica; non usare il tuo nome reale.", "sr_ad_ipucu": "Soprannome", "sr_katil": "Partecipa", "sr_hafta": "Settimana", "sr_ay": "Mese", "sr_genel": "Generale", "sr_not_hafta": "Livelli avanzati questa settimana. Si azzera il lunedì.", "sr_not_ay": "Livelli avanzati questo mese.", "sr_not_genel": "Livello più alto raggiunto.", "sr_bos": "Ancora nessuno.", "sr_ag": "Impossibile connettersi. Riprova tra poco.", "sr_ad_dolu": "Questo nome è già in uso.", "sr_ad_gecersiz": "Questo nome non può essere usato. Usa da 3 a 16 lettere, numeri o spazi.", "sr_cok_sik": "Puoi cambiare nome una volta a settimana.", "sr_degistir": "Cambia nome", "sr_cik": "Esci dalla classifica", "sr_cik_emin": "Sei sicuro? Il tuo record verrà eliminato.", "sr_cikti": "Sei uscito dalla classifica.", "sr_sen": "Tu", "sr_yukleniyor": "Caricamento…"}, "az": {"sr_baslik": "Reytinq", "sr_alt": "Ləqəblə həftəlik və aylıq reytinqə qoşul.", "sr_ad_baslik": "Ləqəb seç", "sr_ad_ack": "3–16 simvol. Ləqəbin və irəliləyişin açıq reytinqdə görünür; real adından istifadə etmə.", "sr_ad_ipucu": "Ləqəb", "sr_katil": "Qoşul", "sr_hafta": "Həftə", "sr_ay": "Ay", "sr_genel": "Ümumi", "sr_not_hafta": "Bu həftə keçdiyin bölmələr. Bazar ertəsi sıfırlanır.", "sr_not_ay": "Bu ay keçdiyin bölmələr.", "sr_not_genel": "Çatdığın ən yüksək bölmə.", "sr_bos": "Hələ heç kim yoxdur.", "sr_ag": "Qoşulmaq alınmadı. Bir az sonra yenidən cəhd et.", "sr_ad_dolu": "Bu ad artıq götürülüb.", "sr_ad_gecersiz": "Bu addan istifadə etmək olmaz. 3–16 hərf, rəqəm və ya boşluq işlət.", "sr_cok_sik": "Adı həftədə bir dəfə dəyişə bilərsən.", "sr_degistir": "Adı dəyiş", "sr_cik": "Reytinqdən çıx", "sr_cik_emin": "Əminsən? Qeydin silinəcək.", "sr_cikti": "Reytinqdən çıxdın.", "sr_sen": "Sən", "sr_yukleniyor": "Yüklənir…"}};
+  (function(){ for(var l in SIRALAMA_DIL){ if(DILLER[l]) Object.assign(DILLER[l], SIRALAMA_DIL[l]); } })();
   var MUZIK_DIL={"tr": {"a_muzik": "Müzik", "a_muzik_a": "Sakin arka plan müziği"}, "en": {"a_muzik": "Music", "a_muzik_a": "Calm background music"}, "es": {"a_muzik": "Música", "a_muzik_a": "Música ambiental tranquila"}, "pt": {"a_muzik": "Música", "a_muzik_a": "Música ambiente tranquila"}, "de": {"a_muzik": "Musik", "a_muzik_a": "Ruhige Hintergrundmusik"}, "fr": {"a_muzik": "Musique", "a_muzik_a": "Musique d'ambiance calme"}, "ru": {"a_muzik": "Музыка", "a_muzik_a": "Спокойная фоновая музыка"}, "zhTW": {"a_muzik": "音樂", "a_muzik_a": "舒緩的背景音樂"}, "zhCN": {"a_muzik": "音乐", "a_muzik_a": "舒缓的背景音乐"}, "ja": {"a_muzik": "音楽", "a_muzik_a": "落ち着いたBGM"}, "ko": {"a_muzik": "음악", "a_muzik_a": "잔잔한 배경 음악"}, "it": {"a_muzik": "Musica", "a_muzik_a": "Musica di sottofondo rilassante"}, "az": {"a_muzik": "Musiqi", "a_muzik_a": "Sakit fon musiqisi"}};
   (function(){ for(var l in MUZIK_DIL){ if(DILLER[l]) Object.assign(DILLER[l], MUZIK_DIL[l]); } })();
   (function(){
@@ -10193,7 +10549,7 @@
     ogKartDurdur(); otoGecDur();
     var k=$('katman'); k.setAttribute('data-og',mod);
     ['kKapat','kIkon','kUstEt','kSayac','kMini','kMiniAc'].forEach(function(i){ $(i).hidden=true; });
-    $('kIkon').innerHTML='';
+    $('kIkon').innerHTML=''; $('kIkon').className='og-ikon';
     $('kBaslik').textContent=''; $('kAlt').textContent=''; $('kYildiz').innerHTML='';
     $('kHediye').innerHTML=''; $('kOdul').style.display='none'; $('kBtnler').innerHTML='';
   }
@@ -10217,7 +10573,7 @@
     state.hikayeGorulen[zone.tier]=1; save();
     ogKartHazirla('hikaye');
     $('kUstEt').hidden=false; $('kUstEt').textContent=T('og_bolum_et',{b:ogPad(zone.tier),n:lv});
-    $('kIkon').hidden=false; $('kIkon').innerHTML=ogSvg('gunes',34);
+    bekciKartaYaz('kararli',72);
     $('kBaslik').textContent=zone.ad;
     $('kAlt').textContent=hikayeMetin('giris',zone);
     $('kBtnler').appendChild(ogDugme('sagok','sagok',T('hk_basla'),function(){ katmanKapat(); }));
@@ -10232,7 +10588,7 @@
     if(state.bitti || state._hamleKart || !hamleVarMi()) return;
     state._hamleKart=true;
     ogKartHazirla('hamle');
-    $('kIkon').hidden=false; $('kIkon').innerHTML=ogSvg('geri',34);
+    bekciKartaYaz('saskin',72);
     $('kBaslik').textContent=T('hamle_bitti_bas');
     $('kAlt').textContent=T('hamle_bitti_ack');
     var b=$('kBtnler'), n=HAMLE_AYAR.ek;
@@ -10296,6 +10652,7 @@
   // ---------- seviye tamamlandi ----------
   sonucKart=function(y,kullanilan,kazanc,hediye,mile){
     ogKartHazirla('sonuc');
+    bekciKartaYaz(y>=3?'sevinc':'notr',56);
     var zone=zoneOfLevel(state.level);
     $('kUstEt').hidden=false; $('kUstEt').textContent=T('og_bolum_et',{b:ogPad(zone.tier),n:state.level});
     $('kBaslik').textContent = mile ? T('buyuk_bitti') : T('og_seviye_bitti');
@@ -10308,6 +10665,10 @@
     if(hediye) ek+=ogEk(ogSvg('hediye'),T('tema_acildi',{ad:tad(hediye)}));
     if(state._tekrarOdulYok) ek+=ogEk(ogSvg('bilgi'),T('tekrar_odul_yok'));
     if(state.mode==='yolculuk' && bolgeSonMu(state.level)) ek+=ogEk(ogSvg('gunes'),hikayeMetin('cikis',zone));
+    if(state._bkFener){
+      ek+=ogEk(fenerSimgesi(state._bkFener.tier,26,false),T('bk_fener_kazandin',{ad:state._bkFener.ad,n:state._bkFener.bonus}),'bk');
+      state._bkFener=null;
+    }
     if(state._rutbeAtladi){
       ek+=ogEk(rutbeSVG(rutbeIndex(),20),T('rutbe_yukseldi',{ad:T(state._rutbeAtladi.tAd)}),'rutbe');
       state._rutbeAtladi=null;
@@ -10348,7 +10709,7 @@
   canYokKart=function(){
     ogKartHazirla('can');
     $('kKapat').hidden=false;
-    $('kIkon').hidden=false; $('kIkon').innerHTML=ogSvg('kalp',34);
+    bekciKartaYaz('uykulu',72);
     $('kBaslik').textContent=T('og_can_bas');
     $('kAlt').textContent=T('og_can_ack');
     $('kSayac').hidden=false; $('kSayacEt').textContent=T('og_sonraki_can'); $('kSayacSure').textContent=ogSayacMetni();
@@ -10614,6 +10975,129 @@
   window.addEventListener('online',function(){ setTimeout(gbSiradakiniGonder,500); });
   setTimeout(gbSiradakiniGonder,6000);
   dilUygula();
+
+
+  // ===== SIRALAMA (0.13) =====
+  // Takma adli haftalik / aylik / genel siralama. Sunucu: Supabase; yalniz 5 RPC (Java'da beyaz liste).
+  // Gonderilen: takma ad, ulasilan seviye, toplam isik, rastgele oyuncu kimligi + sunucunun urettigi gizli anahtar.
+  // E-posta/ad/reklam kimligi YOK. Cevrimdisiyken sessizce atlanir; seviye mutlak deger oldugu icin sonraki gonderim telafi eder.
+  var SR={ istek:{}, say:0, sonGonder:0, zaman:0, sekme:'hafta' };
+  // Sunucu tanimli degilse (adres/anahtar bos) ya da eski kabukta siralama gorunmez ve hicbir istek yapilmaz.
+  function srHazir(){
+    try{ return !!(window.PrismioNative && window.PrismioNative.takmaHazir && window.PrismioNative.takmaHazir()); }catch(e){ return false; }
+  }
+  function srIstek(fn,arg,cb){
+    var id='sr'+(++SR.say);
+    SR.istek[id]=cb;
+    try{
+      if(window.PrismioNative && window.PrismioNative.takmaIstek){
+        window.PrismioNative.takmaIstek(JSON.stringify({id:id,fn:fn,arg:arg})); return;
+      }
+    }catch(e){}
+    delete SR.istek[id]; cb('ag',null);
+  }
+  window.__takmaSonuc=function(id,kod,govde){
+    var cb=SR.istek[id]; delete SR.istek[id]; if(!cb) return;
+    var o=null; try{ o=JSON.parse(govde); }catch(e){}
+    cb(kod,o);
+  };
+  function srProfil(){ return (state.siralama && state.siralama.id) ? state.siralama : null; }
+  function srSeviye(){ return Math.max(1, state.enYuksek||1); }
+  function srGonder(zorla){
+    var p=srProfil(); if(!p || !srHazir()) return;
+    var simdi=Date.now();
+    if(!zorla && simdi-SR.sonGonder<20000){
+      if(!SR.zaman) SR.zaman=setTimeout(function(){ SR.zaman=0; srGonder(true); },21000);
+      return;
+    }
+    SR.sonGonder=simdi;
+    srIstek('oyuncu_guncelle',{p_id:p.id,p_sir:p.sir,p_seviye:srSeviye(),p_isik:state.toplamIsik||0},function(kod,o){
+      if(kod==='ok' && o && o.ok===false && o.hata==='yetki'){ state.siralama=null; save(); }   // kayit sunucuda yok: yerel profili birak
+    });
+  }
+  // yalniz test kancasi: yayin surumunden otomatik temizlenir (tek satir, sonunda yorum olmamali)
+  window.pr_srSifirla=function(){ SR.sonGonder=0; if(SR.zaman){ clearTimeout(SR.zaman); SR.zaman=0; } };
+  var _srK0=kazandI;
+  kazandI=function(k){ _srK0(k); try{ srGonder(false); }catch(e){} };
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'){ try{ srGonder(false); }catch(e){} } });
+  setTimeout(function(){ try{ srGonder(false); }catch(e){} },5000);
+
+  function srKart(){
+    ogKartHazirla('siralama'); $('kKapat').hidden=false;
+    $('kIkon').hidden=false; $('kIkon').innerHTML=ogSvg('tac',34);
+  }
+  function srAc(){
+    if(!srProfil()) srAdEkrani('kayit'); else srListe(SR.sekme||'hafta');
+  }
+  function srAdEkrani(mod,mesaj,deger){
+    srKart();
+    $('kBaslik').textContent=T('sr_ad_baslik'); $('kAlt').textContent=T('sr_ad_ack');
+    $('kHediye').innerHTML='<input id="srAd" class="sr-input" type="text" maxlength="16" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+htmlKacir(T('sr_ad_ipucu'))+'" aria-label="'+htmlKacir(T('sr_ad_ipucu'))+'"><div class="sr-hata" id="srHata" role="alert"></div>';
+    var inp=$('srAd'); inp.value=deger||(mod==='degistir'&&srProfil()?srProfil().ad:''); $('srHata').textContent=mesaj||'';
+    var b=$('kBtnler');
+    var tamam=ogDugme('sagok','sagok',T(mod==='degistir'?'sr_degistir':'sr_katil'),function(){
+      var ad=(inp.value||'').replace(/\s+/g,' ').trim();
+      if(ad.length<3){ $('srHata').textContent=T('sr_ad_gecersiz'); return; }
+      tamam.disabled=true; $('srHata').textContent='';
+      var p=srProfil();
+      var tamamlandi=function(kod,o){
+        tamam.disabled=false;
+        if(kod!=='ok'||!o){ $('srHata').textContent=T('sr_ag'); return; }
+        if(o.ok){
+          if(mod==='degistir' && p){ p.ad=o.takma_ad; state.siralama=p; }
+          else state.siralama={id:o.id,sir:o.sir,ad:o.takma_ad};
+          save(); titret('basari'); srListe(mod==='degistir'?SR.sekme:'hafta');
+        } else {
+          var h=o.hata;
+          $('srHata').textContent=T(h==='ad_dolu'?'sr_ad_dolu':(h==='cok_sik'?'sr_cok_sik':'sr_ad_gecersiz'));
+        }
+      };
+      if(mod==='degistir' && p) srIstek('ad_degistir',{p_id:p.id,p_sir:p.sir,p_yeni:ad},tamamlandi);
+      else srIstek('oyuncu_kaydet',{p_takma_ad:ad,p_seviye:srSeviye(),p_isik:state.toplamIsik||0},tamamlandi);
+    });
+    b.appendChild(tamam);
+    $('katman').classList.add('acik');
+    setTimeout(function(){ try{ inp.focus(); }catch(e){} },250);
+  }
+  function srListe(sekme){
+    SR.sekme=sekme; var p=srProfil();
+    srKart();
+    $('kBaslik').textContent=T('sr_baslik');
+    $('kAlt').textContent=T(sekme==='hafta'?'sr_not_hafta':(sekme==='ay'?'sr_not_ay':'sr_not_genel'));
+    $('kHediye').innerHTML='<div class="sr-sekmeler" role="tablist">'+['hafta','ay','genel'].map(function(x){
+      return '<button type="button" role="tab" data-sr="'+x+'" aria-selected="'+(x===sekme)+'" class="'+(x===sekme?'acik':'')+'">'+htmlKacir(T('sr_'+x))+'</button>'; }).join('')+
+      '</div><div class="sr-liste" id="srListe" aria-live="polite"></div>';
+    [].forEach.call($('kHediye').querySelectorAll('[data-sr]'),function(bt){ bt.addEventListener('click',function(){ srListe(bt.getAttribute('data-sr')); }); });
+    var b=$('kBtnler');
+    b.appendChild(ogDugme('sade','sifirla',T('sr_degistir'),function(){ srAdEkrani('degistir'); }));
+    var cik=ogDugme('metin','x',T('sr_cik'),function(){
+      if(!cik._emin){ cik._emin=true; cik.querySelector('span').textContent=T('sr_cik_emin'); return; }
+      var q=srProfil(); if(!q){ katmanKapat(); return; }
+      cik.disabled=true;
+      srIstek('oyuncu_sil',{p_id:q.id,p_sir:q.sir},function(kod,o){
+        cik.disabled=false;
+        if(kod==='ok' && o && o.ok!==false || (kod==='ok' && o && o.hata==='yetki')){ state.siralama=null; save(); katmanKapat(); kisaBildirim(T('sr_cikti')); }
+        else kisaBildirim(T('sr_ag'));
+      });
+    });
+    b.appendChild(cik);
+    $('katman').classList.add('acik');
+    var el=$('srListe'); el.textContent=T('sr_yukleniyor');
+    srIstek('siralama',{p_donem:sekme,p_id:p.id,p_sir:p.sir},function(kod,o){
+      var e2=$('srListe'); if(!e2 || SR.sekme!==sekme) return;
+      if(kod!=='ok'||!o||!o.ok){ e2.textContent=T('sr_ag'); return; }
+      var ad=(p.ad||'').toLowerCase(), h='';
+      function satir(r,ben){
+        var puan = sekme==='genel' ? r.seviye : ('+'+r.puan);
+        return '<div class="sr-satir'+(ben?' ben':'')+'"><span class="sr-no">'+r.sira+'</span><span class="sr-ad">'+htmlKacir(r.ad)+(ben?' · '+htmlKacir(T('sr_sen')):'')+'</span><span class="sr-puan">'+htmlKacir(String(puan))+'</span></div>';
+      }
+      var liste=o.liste||[], benVar=false;
+      liste.forEach(function(r){ var b2=(String(r.ad).toLowerCase()===ad); if(b2) benVar=true; h+=satir(r,b2); });
+      if(!liste.length) h='<div class="sr-bos">'+htmlKacir(T('sr_bos'))+'</div>';
+      if(o.ben && !benVar) h+='<div class="sr-ayrac">…</div>'+satir(o.ben,true);
+      e2.innerHTML=h;
+    });
+  }
 
   //@@JS_UI@@
   // ==========================================================================
@@ -11547,7 +12031,7 @@
     var d0=odSeriDurum(), n=seriOdulAl(); if(!n) return;
     var sonra=state.coins;
     rozetleriCiz();
-    odulEfektiGoster({n:n, ad:T('od_seri_bas',{n:d0.n}), ack:T('od_seri_ack',{n:d0.n,m:n}), onceki:sonra-n, sonra:sonra});
+    odulEfektiGoster({n:n, ad:T('od_seri_bas',{n:d0.n}), ack:T('od_seri_ack',{n:d0.n,m:n}), onceki:sonra-n, sonra:sonra, ek:bekciSurprizVer('seri')});
     basariEkraniCiz();
   }
 
@@ -11587,7 +12071,7 @@
     var sonra=state.coins;
     rozetleriCiz();
     var ad=g?tad(g):'';
-    odulEfektiGoster({n:n, ad:ad, ack:T('od_gorev_ack',{ad:ad,n:n}), onceki:sonra-n, sonra:sonra});
+    odulEfektiGoster({n:n, ad:ad, ack:T('od_gorev_ack',{ad:ad,n:n}), onceki:sonra-n, sonra:sonra, ek:bekciSurprizVer('gorev:'+id)});
     gorevlerCiz(); odIlkIsikCiz(); odSeriCiz();
   }
   function odIlkIsikCiz(){
@@ -11739,6 +12223,7 @@
         '<div class="oe-parca" id="oeParca"></div></div>'+
       '<h2 class="oe-baslik" id="oeBaslik"></h2><p class="oe-ack" id="oeAck"></p>'+
       '<div class="oe-kart">'+odIk('ccheck',28)+'<div><b id="oeAd"></b><small id="oeSay"></small></div></div>'+
+      '<div class="bk-oe-ek" id="oeEk" hidden></div>'+
       '<button type="button" class="od-btn" id="oeDevam">'+odIk('arrowr',22)+'<span id="oeDevamY"></span></button></div>';
     document.body.appendChild(el);
     el.addEventListener('click',function(){
@@ -11771,6 +12256,7 @@
     $('oeBaslik').textContent=o.baslik||T('od_efekt_baslik');
     $('oeAck').textContent=o.ack||'';
     $('oeAd').textContent=o.ad||'';
+    var _oek=$('oeEk'); if(_oek){ _oek.innerHTML=o.ek?('<span class="bk-oe-ik">'+o.ek.ikon+'</span><span>'+htmlKacir(o.ek.metin)+'</span>'):''; _oek.hidden=!o.ek; }
     $('oeSay').textContent=T('od_alindi_say',{a:onceki,n:n,b:sonra});
     $('oeDevamY').textContent=T('od_devam');
     $('oePara').textContent=az?sonra:onceki;
@@ -11869,6 +12355,7 @@
       '<div class="od-dil-liste" id="odDilListe" hidden role="listbox"></div>'+
       odSatirHtml('pad',pgAd,pgAlt,chev,' pg" data-od="pg')+
       odSatirHtml('bell',T('ay_hatirlaticilar'),durum('hatirlatma','ay_hat_ack'),odSwitchHtml(acik('hatirlatma')),'" data-od="hatirlatma')+
+      (srHazir() ? odSatirHtml('star',T('sr_baslik'),T('sr_alt'),chev,'" data-od="siralama') : '')+
       odSatirHtml('shield',T('ay_gizlilik'),T('ay_gz_ack'),chev,'" data-od="gizlilik');
     // satirlar button olsun diye div'ler role=button; anahtarsizlar klavyeyle de acilir
     [].forEach.call(ana.querySelectorAll('.od-satir'),function(s){
@@ -11876,6 +12363,7 @@
       if(!s.querySelector('.od-anahtar')){ s.setAttribute('role','button'); s.setAttribute('tabindex','0'); }
       var tikla=function(){
         if(id==='efekt'||id==='muzik'||id==='haptic'||id==='hatirlatma'){ odAyarCevir(id); ayarlarCiz(); return; }
+        if(id==='siralama'){ titret('hafif'); srAc(); return; }
         if(id==='dil'){ var l=$('odDilListe'); l.hidden=!l.hidden; titret('hafif'); return; }
         if(id==='pg'){ titret('hafif'); git('hesap'); return; }
         if(id==='gizlilik'){ titret('hafif'); gizlilikSheetAc(); }
@@ -12719,6 +13207,13 @@ var IK3DT={
   window.pr_rutbeOran=rutbeOran;
   window.pr_harca=function(n){ state.coins-=n; save(); rozetleriCiz(); return state.coins; };
   window.pr_solve=function(){ state.mirrors={}; for(var k in state.solution)state.mirrors[k]=state.solution[k]; draw(); };
+  window.pr_bekciYuz=bekciYuz;
+  window.pr_bekciFenerler=function(){ return {fenerler:state.fenerler, sayi:bekciSayiFener()}; };
+  window.pr_bekciSurpriz=bekciSurprizHesapla;
+  window.pr_bekciSurprizVer=bekciSurprizVer;
+  window.pr_bekciEkranCiz=bekciEkranCiz;
+  window.pr_bekciFenerVer=bekciFenerVer;
+  window.pr_fenerSimgesi=fenerSimgesi;
   window.pr_state=function(){ return state; };
   window.pr_sim=function(){ return simulate(state.mirrors); };
   window.analyzeLevel=analyzeLevel;

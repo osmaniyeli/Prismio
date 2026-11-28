@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const kok = path.resolve(__dirname, '..');
 process.env.OYUN_HTML = process.env.OYUN_HTML || path.join(__dirname, 'oyun_kaynak.html').replace(/\\/g, '/');
-const testler = (process.env.TESTLER || 'regresyon,tahta_test,kare_test,gb_test,dil_gb,ilk_acilis,hamle_test,muzik_test,hikaye_test')
+const testler = (process.env.TESTLER || 'regresyon,tahta_test,kare_test,gb_test,dil_gb,ilk_acilis,hamle_test,muzik_test,hikaye_test,bekci_test')
   .split(',').filter(t => fs.existsSync(path.join(__dirname, t + '.js')));
 let basarisiz = 0;
 for (const t of testler) {
