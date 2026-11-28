@@ -31,10 +31,21 @@ let bad = 0; const chk = (k, v) => { if (!v) bad++; console.log((v ? 'OK   ' : '
   // 1) ilk dokunustan once muzik yok, sonra baslar (varsayilan acik, eski kayitta 'muzik' yok)
   let p = await yeni();
   chk('dokunmadan once ses baglami yok / muzik baslamadi', (await osc(p)) === 0);
-  await p.mouse.click(200, 400); await bekle(1500);
+  // nötr ilk dokunus (menudeki bir dugmeye basip ekran degistirmesin)
+  await p.evaluate(() => document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))); await bekle(1500);
   chk('ilk dokunus: pad kuruldu (6 osilator)', (await osc(p)) >= 6);
   await bekle(6500);
   chk('birkac sn sonra cam cinlamalari eklendi', (await osc(p)) >= 8);
+
+  // 1b) 0.12.2: lobide hareketli parca (cok nota), oyun ekraninda sakin parca (az nota); geri donunce tekrar hareketli
+  { const o0 = await osc(p); await bekle(3000); const lobiHiz = (await osc(p)) - o0;
+    chk('lobi: hareketli parca (3 sn icinde cok nota: ' + lobiHiz + ')', lobiHiz >= 12);
+    await p.evaluate(() => window.pr_git('oyun')); await bekle(1500);
+    const o1 = await osc(p); await bekle(3000); const oyunHiz = (await osc(p)) - o1;
+    chk('oyun: sakin parca (3 sn icinde az nota: ' + oyunHiz + ')', oyunHiz <= 6 && oyunHiz < lobiHiz / 3);
+    await p.evaluate(() => window.pr_git('menu')); await bekle(1500);
+    const o2 = await osc(p); await bekle(3000);
+    chk('menuye donunce hareketli parca geri geldi', (await osc(p)) - o2 >= 12); }
 
   // 2) ayardan kapat -> cinlamalar durur; ac -> tekrar baslar
   await p.evaluate(() => window.pr_git('ayar')); await bekle(600);
