@@ -86,6 +86,7 @@ jobs:
     env:
       PLAY_VAR: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
       IMZA_VAR: ${{ secrets.IMZA_ANAHTARI != '' }}
+      FTL_VAR: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON != '' }}
 
     steps:
       - name: Kodu al
@@ -209,6 +210,42 @@ jobs:
           path: cikti/
           if-no-files-found: error
           retention-days: 30
+
+      # ---------------- CIHAZ CIFTLIGI (Firebase Test Lab) ----------------
+      # Temiz AAB, Google'in cihaz cifliginde "Robo" testiyle (ekranlarda kendi kendine gezer) acilip denenir.
+      # Secret'lar (FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_PROJECT_ID) yoksa adim ATLANIR: yayin hatti bozulmaz.
+      # Varsayilan: yalniz RAPORLAR (hata verse de yayin durmaz). Cokme olursa yayin DURSUN istersen
+      # Settings > Secrets and variables > Actions > Variables: TESTLAB_ENGELLE = true
+      - name: Cihaz ciftligi atlandi mi?
+        if: env.FTL_VAR != 'true'
+        run: |
+          echo "::notice::FIREBASE_SERVICE_ACCOUNT_JSON yok, cihaz ciftligi testi atlandi (kurulum: FIREBASE_TESTLAB_KURULUM.md)"
+
+      - name: Google Cloud girisi
+        if: env.IMZA_VAR == 'true' && env.FTL_VAR == 'true'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+      - name: gcloud
+        if: env.IMZA_VAR == 'true' && env.FTL_VAR == 'true'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Test Lab - Robo (farkli cihazlar)
+        if: env.IMZA_VAR == 'true' && env.FTL_VAR == 'true'
+        continue-on-error: ${{ vars.TESTLAB_ENGELLE != 'true' }}
+        run: |
+          # Cihaz kimlikleri zamanla degisir: hangileri var, gunluge yazilir (ayarlamak icin)
+          gcloud firebase test android models list --project "${{ secrets.FIREBASE_PROJECT_ID }}" \
+            --format="table(codename,name,form,supportedVersionIds.list())" --limit=40 || true
+          gcloud firebase test android run \
+            --project "${{ secrets.FIREBASE_PROJECT_ID }}" \
+            --type robo \
+            --app app/build/outputs/bundle/release/app-release.aab \
+            --device model=Pixel2,version=30,locale=tr,orientation=portrait \
+            --device model=Pixel2,version=28,locale=en,orientation=portrait \
+            --timeout 4m \
+            --num-flaky-test-attempts 1
 
       # ---------------- PLAY CONSOLE ----------------
       # Dahili test kanalina yukler. Kosul: imzali + servis hesabi secret'i var.
