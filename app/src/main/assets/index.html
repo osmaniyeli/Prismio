@@ -9456,7 +9456,7 @@
     // Ayri 'muzik' ayari; arka plana gecince / reklam acilinca durur (Java onPause -> durakla).
     // 0.12.2: IKI parca. 'lobi' (menu, harita, magaza... oyun disindaki her ekran) = hareketli, ritimli;
     // 'oyun' (tahta ekrani) = sakin pad + cam cinlamalari. Gecis yumusak (capraz solma).
-    var M={ana:null, pad:[], gecikme:null, zaman:0, calisiyor:false, dur:false, mod:'lobi', padG:null, lobiG:null, gurultu:null};
+    var M={ana:null, pad:[], gecikme:null, zaman:0, calisiyor:false, dur:false, mod:'lobi', padG:null, lobiG:null, oyunG:null, gurultu:null};
     var LB={zaman:0, adim:0, sonraki:0};
     var M_SEVIYE=0.6;
     var LB_ADIM=60/112/2;                   // 112 BPM, sekizlik adim
@@ -9479,8 +9479,11 @@
         var lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1800;
         gec.connect(lp); lp.connect(fb); fb.connect(gec); lp.connect(M.ana);
         M.gecikme=gec;
-        M.padG=c.createGain(); M.padG.gain.value=(M.mod==='lobi'?0.22:1); M.padG.connect(M.ana);
-        M.lobiG=c.createGain(); M.lobiG.gain.value=(M.mod==='lobi'?0.55:0.0001); M.lobiG.connect(M.ana);
+        M.padG=c.createGain(); M.padG.gain.value=(M.mod==='lobi'?0.12:0.35); M.padG.connect(M.ana);
+        M.lobiG=c.createGain(); M.lobiG.gain.value=0.0001; M.lobiG.connect(M.ana);
+        M.oyunG=c.createGain(); M.oyunG.gain.value=0.0001; M.oyunG.connect(M.ana);
+        try{ lp.disconnect(M.ana); }catch(e){}
+        lp.connect(M.oyunG);                 // yankinin cikisi da oyun dugumunden gecer -> parca degisince birlikte soner
         var gb=c.createBuffer(1,Math.floor(c.sampleRate*0.12),c.sampleRate), gd=gb.getChannelData(0);
         for(var gi=0;gi<gd.length;gi++) gd[gi]=Math.random()*2-1;
         M.gurultu=gb;
@@ -9500,7 +9503,7 @@
       try{ M.pad.forEach(function(o){ try{ o.stop(); }catch(e){} }); }catch(e){}
       try{ if(M.ana) M.ana.disconnect(); }catch(e){}
       if(LB.zaman){ clearTimeout(LB.zaman); LB.zaman=0; }
-      M.pad=[]; M.ana=null; M.gecikme=null; M.padG=null; M.lobiG=null; M.gurultu=null;
+      M.pad=[]; M.ana=null; M.gecikme=null; M.padG=null; M.lobiG=null; M.oyunG=null; M.gurultu=null;
     }
     // ---- lobi parcasi: bas + arpej + vurus/alkis/hi-hat (hepsi sentez, dosya yok) ----
     function lbNota(f,t,sure,ses,tip){
@@ -9545,39 +9548,64 @@
     function muzikModUygula(){
       if(!M.ana || !ac) return;
       var lobi=(M.mod==='lobi');
+      // Eski parca hizla (0.12 sn) kisilir, yenisi biraz sonra girer -> iki parca ust uste binmez
       try{
-        M.padG.gain.setTargetAtTime(lobi?0.22:1, ac.currentTime, 0.6);
-        M.lobiG.gain.setTargetAtTime(lobi?0.55:0.0001, ac.currentTime, 0.4);
+        var t0=ac.currentTime;
+        M.padG.gain.setTargetAtTime(lobi?0.12:0.35, t0, 0.3);
+        M.lobiG.gain.cancelScheduledValues(t0); M.oyunG.gain.cancelScheduledValues(t0);
+        if(lobi){
+          M.oyunG.gain.setTargetAtTime(0.0001, t0, 0.12);
+          M.lobiG.gain.setTargetAtTime(0.0001, t0, 0.01);
+          M.lobiG.gain.setTargetAtTime(2.0, t0+0.5, 0.15);
+        } else {
+          M.lobiG.gain.setTargetAtTime(0.0001, t0, 0.12);
+          M.oyunG.gain.setTargetAtTime(0.0001, t0, 0.01);
+          M.oyunG.gain.setTargetAtTime(0.6, t0+0.5, 0.15);
+        }
       }catch(e){}
       if(!M.calisiyor || M.dur) return;
-      if(lobi){
-        if(M.zaman){ clearTimeout(M.zaman); M.zaman=0; }
-        if(!LB.zaman){ LB.sonraki=0; LB.zaman=setTimeout(lbDon,40); }
-      } else {
-        if(LB.zaman){ clearTimeout(LB.zaman); LB.zaman=0; }
-        if(!M.zaman) M.zaman=setTimeout(muzikCan,700);
-      }
+      if(M.zaman){ clearTimeout(M.zaman); M.zaman=0; }
+      if(LB.zaman){ clearTimeout(LB.zaman); LB.zaman=0; }
+      // yeni parca ~0.5 sn sonra, bar basindan baslar
+      if(lobi){ LB.sonraki=0; LB.adim=0; LB.zaman=setTimeout(lbDon,500); }
+      else { OG.sonraki=0; OG.adim=0; M.zaman=setTimeout(ogDon,500); }
     }
     function muzikMod(m){
       m=(m==='oyun'?'oyun':'lobi');
       if(M.mod===m) return;
       M.mod=m; muzikModUygula();
     }
-    function muzikCan(){
+    // ---- oyun parcasi: yavas (72 BPM), ritimsiz muzik kutusu ezgisi + yumusak akorlar ----
+    // Lobiden bilerek ayri: davul/bas yok, orta-tiz register (telefon hoparlorunde duyulur), tekrarlayan 4 olculuk ezgi.
+    var OG={zaman:0, adim:0, sonraki:0};
+    var OG_ADIM=60/72/2;
+    var OG_AKOR=[[261.63,329.63,392.00],[220.00,261.63,329.63],[196.00,293.66,392.00],[164.81,196.00,261.63]];
+    var OG_EZGI=[[659.25,0,783.99,0,1046.50,0,783.99,0],
+                 [880.00,0,659.25,0,523.25,0,659.25,0],
+                 [587.33,0,783.99,0,880.00,0,783.99,0],
+                 [659.25,0,587.33,0,523.25,0,0,0]];
+    function ogNota(f,t,sure,ses,tip,yansima){
+      var o=ac.createOscillator(), g=ac.createGain();
+      o.type=tip; o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(ses,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+sure);
+      o.connect(g); g.connect(M.oyunG); if(yansima && M.gecikme) g.connect(M.gecikme);
+      o.start(t); o.stop(t+sure+0.05);
+    }
+    function ogAdim(a,t){
+      var olcu=(a>>3)&3, s=a&7;
+      if(s===0){ OG_AKOR[olcu].forEach(function(f){ ogNota(f,t,3.2,0.16,'sine',false); }); }
+      var f=OG_EZGI[olcu][s];
+      if(f){ ogNota(f,t,1.5,0.42,'sine',true); ogNota(f*2,t,0.5,0.07,'sine',false); }
+    }
+    function ogDon(){
       M.zaman=0;
-      if(!M.calisiyor || !M.ana || !ac || M.mod!=='oyun') return;
+      if(!M.calisiyor || M.mod!=='oyun' || !M.ana || !ac || M.dur) return;
       try{
-        var f=M_NOTA[Math.floor(Math.random()*M_NOTA.length)]*(Math.random()<0.25?0.5:1);
-        var t=ac.currentTime+0.02;
-        var o=ac.createOscillator(), g=ac.createGain(), o2=ac.createOscillator(), g2=ac.createGain();
-        o.type='sine'; o.frequency.value=f; o2.type='sine'; o2.frequency.value=f*2;
-        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.5,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+2.6);
-        g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(0.12,t+0.01); g2.gain.exponentialRampToValueAtTime(0.0001,t+1.2);
-        o.connect(g); o2.connect(g2); g.connect(M.ana); g2.connect(M.ana);
-        if(M.gecikme) g.connect(M.gecikme);
-        o.start(t); o2.start(t); o.stop(t+2.7); o2.stop(t+1.3);
+        var simdi=ac.currentTime;
+        if(OG.sonraki<simdi) OG.sonraki=simdi+0.05;
+        while(OG.sonraki<simdi+0.5){ ogAdim(OG.adim,OG.sonraki); OG.adim=(OG.adim+1)%32; OG.sonraki+=OG_ADIM; }
       }catch(e){}
-      M.zaman=setTimeout(muzikCan, 2200+Math.random()*3800);
+      M.zaman=setTimeout(ogDon,120);
     }
     function muzikBaslat(){
       if(!ayar('muzik') || M.dur) return;
@@ -9653,7 +9681,7 @@
         try{ SOZLUK[ad](); }catch(e){}
       },
       uyandir: uyandir,
-      muzikBaslat: muzikBaslat, muzikGuncelle: muzikGuncelle, durakla: durakla, devam: devam, muzikMod: muzikMod,
+      muzikBaslat: muzikBaslat, muzikGuncelle: muzikGuncelle, durakla: durakla, devam: devam, muzikMod: muzikMod, modu: function(){ return M.mod; },
       // Magaza onizlemesi: efekt ayari kapali olsa da dinletir (oyuncu bastı)
       dinlet: function(tip){
         uyandir();
@@ -9676,6 +9704,7 @@
     // Java onPause/onResume ve sayfa gorunurlugu icin
     window.__sesDurakla=function(){ try{ SES.durakla(); }catch(e){} };
     window.__sesDevam=function(){ try{ SES.devam(); }catch(e){} };
+    // yalniz test kancasi: yayin surumunden otomatik temizlenir (tek satir, sonunda yorum olmamali)
   })();
 
   // Titresim desenleri. Isimle cagrilir: titret('ayna')

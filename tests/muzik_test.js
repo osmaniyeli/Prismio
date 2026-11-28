@@ -37,13 +37,21 @@ let bad = 0; const chk = (k, v) => { if (!v) bad++; console.log((v ? 'OK   ' : '
   await bekle(6500);
   chk('birkac sn sonra cam cinlamalari eklendi', (await osc(p)) >= 8);
 
-  // 1b) 0.12.2: lobide hareketli parca (cok nota), oyun ekraninda sakin parca (az nota); geri donunce tekrar hareketli
-  { const o0 = await osc(p); await bekle(3000); const lobiHiz = (await osc(p)) - o0;
+  // 1b) 0.12.2: lobide (menu, harita, magaza...) hareketli parca, oyun ekraninda AYRI (melodik, ritimsiz) parca; geri donunce lobi
+  { const mod = () => p.evaluate(() => window.pr_muzikModu());
+    chk('menude mod = lobi', (await mod()) === 'lobi');
+    const o0 = await osc(p); await bekle(3000); const lobiHiz = (await osc(p)) - o0;
     chk('lobi: hareketli parca (3 sn icinde cok nota: ' + lobiHiz + ')', lobiHiz >= 12);
-    await p.evaluate(() => window.pr_git('oyun')); await bekle(1500);
-    const o1 = await osc(p); await bekle(3000); const oyunHiz = (await osc(p)) - o1;
-    chk('oyun: sakin parca (3 sn icinde az nota: ' + oyunHiz + ')', oyunHiz <= 6 && oyunHiz < lobiHiz / 3);
-    await p.evaluate(() => window.pr_git('menu')); await bekle(1500);
+    await p.evaluate(() => window.pr_git('harita')); await bekle(300);
+    chk('harita da lobi parcasi', (await mod()) === 'lobi');
+    await p.evaluate(() => window.pr_git('oyun')); await bekle(300);
+    chk('oyun ekraninda mod = oyun', (await mod()) === 'oyun');
+    await bekle(1500);
+    const o1 = await osc(p); await bekle(4000); const oyunHiz = (await osc(p)) - o1;
+    chk('oyun: kendi parcasi calisiyor (4 sn icinde ' + oyunHiz + ' nota)', oyunHiz >= 3);
+    await p.evaluate(() => window.pr_git('menu')); await bekle(300);
+    chk('menuye donunce mod = lobi', (await mod()) === 'lobi');
+    await bekle(1500);
     const o2 = await osc(p); await bekle(3000);
     chk('menuye donunce hareketli parca geri geldi', (await osc(p)) - o2 >= 12); }
 
