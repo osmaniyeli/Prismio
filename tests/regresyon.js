@@ -5,7 +5,7 @@ let bad=0; const chk=(k,v)=>{ if(!v)bad++; console.log((v?'OK   ':'HATA ')+k); }
 (async()=>{
   const b=await puppeteer.launch({executablePath:process.env.CHROME_PATH||'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',headless:'new',args:['--no-sandbox']});
   async function yeni(seed){ const ctx=await b.createBrowserContext(); const p=await ctx.newPage(); await p.setViewport({width:390,height:844,deviceScaleFactor:1,isMobile:true,hasTouch:true});
-    p.hata=[]; p.on('pageerror',e=>p.hata.push(e.message)); if(seed) await p.evaluateOnNewDocument(s=>{try{localStorage.setItem('prismio_v2',s)}catch(e){}},seed); await p.goto('file:///'+html,{waitUntil:'load'}); return p; }
+    p.hata=[]; p.on('pageerror',e=>p.hata.push(e.message)); await p.evaluateOnNewDocument(()=>{try{localStorage.setItem('prismio_dil','tr')}catch(e){}}); if(seed) await p.evaluateOnNewDocument(s=>{try{localStorage.setItem('prismio_v2',s)}catch(e){}},seed); await p.goto('file:///'+html,{waitUntil:'load'}); return p; }
   const ekran=p=>p.evaluate(()=>document.querySelector('.ekran.acik').id);
   // 1) eski oyuncu: sinematik yok
   let p=await yeni(JSON.stringify({_v:2,level:5,enYuksek:5,toplamCozulen:4,coins:50,lives:5}));
